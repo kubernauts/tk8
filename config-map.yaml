@@ -4,7 +4,6 @@ metadata:
   name: prometheus-server-conf
   labels:
     name: prometheus-server-conf
-  namespace: monitoring
 data:
   prometheus.yml: |-
     global:
