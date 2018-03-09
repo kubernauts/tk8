@@ -15,4 +15,5 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 93C4A3FD7BB9C367 \
 && wget https://releases.hashicorp.com/terraform/${TERRVERSION}/terraform_${TERRVERSION}_linux_amd64.zip \
 && unzip terraform_${TERRVERSION}_linux_amd64.zip -d /usr/local/bin/ \
 && rm terraform_${TERRVERSION}_linux_amd64.zip \
-&& mkdir /tk8
+&& mkdir /tk8 \
+&& chmod +x /usr/local/bin/tk8
