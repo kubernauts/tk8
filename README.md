@@ -11,7 +11,7 @@ docker build -t tk8 ./tk8/.
 
 vi ./tk8/config.yaml
 
---> pls. provide the aws access, secret and ssh keypair name and your desired aws region
+--> pls. provide the aws access and secret keys, your ssh keypair name and your desired aws region
 
 Note: create a key pair in aws with your publich key (id_rsa.pub)
 
@@ -19,7 +19,7 @@ docker run -it --rm -v "$(pwd)"/tk8:/tk8 tk8 bash
 
 mkdir .ssh
 
-vi .ssh/id_rsa --> copy yor private key
+vi .ssh/id_rsa --> paste yor private key in id_rsa in the container
 
 chmod 400 .ssh/id_rsa
 
