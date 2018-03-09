@@ -10,10 +10,12 @@ COPY ./tk8 /usr/local/bin/tk8
 # (You may fetch or manage dependencies here,
 # either manually or with a tool like "godep".)
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 93C4A3FD7BB9C367 \
-&& apt-get update && apt-get install -y python-pip zip wget git \
+&& apt-get update && apt-get install -y vim python-pip zip wget git \
 && pip install ansible netaddr \
 && wget https://releases.hashicorp.com/terraform/${TERRVERSION}/terraform_${TERRVERSION}_linux_amd64.zip \
 && unzip terraform_${TERRVERSION}_linux_amd64.zip -d /usr/local/bin/ \
 && rm terraform_${TERRVERSION}_linux_amd64.zip \
 && mkdir /tk8 \
+&& mkdir /root/.ssh \
+&& touch /root/.ssh/id_rsa \
 && chmod +x /usr/local/bin/tk8

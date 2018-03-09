@@ -17,8 +17,6 @@ Note: create a key pair in aws with your publich key (id_rsa.pub)
 
 docker run -it --rm -v "$(pwd)"/tk8:/tk8 tk8 bash
 
-mkdir .ssh
-
 vi .ssh/id_rsa --> paste yor private key in id_rsa in the container
 
 chmod 400 .ssh/id_rsa
@@ -28,4 +26,13 @@ tk8 cluster init ### kubespray will be cloned
 tk8 cluster aws -c ### terraform brings up 2 bastion hosts and the master and worker nodes as specified in config.yaml, wail till the hosts are initialized
 
 tk8 cluster aws -i ### kubespray installs kubernetes
+
+tk8 cluster aws -d ### deytroy the cluster
+
+Note: to get the kube config you need to ssh into the master from one of the bastion host 
+
+ssh -i ~/.ssh/id_rsa core@<public ip of the bastion host>
+
+copy the id_rsa to the bastion host and ssh into the master over the private ip address of the master, you'll find it under /etc/kubernetes/admin.conf
+
 
