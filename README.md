@@ -29,10 +29,12 @@ tk8 cluster aws -i ### kubespray installs kubernetes
 
 tk8 cluster aws -d ### deytroy the cluster
 
-Note: to get the kube config you need to ssh into the master from one of the bastion host 
+Note: to get the kube config you need to ssh into the master from one of the bastion hosts 
 
-ssh -i ~/.ssh/id_rsa core@<public ip of the bastion host>
+ssh -i ~/.ssh/id_rsa core@"public ip of the bastion host"
 
 copy the id_rsa to the bastion host and ssh into the master over the private ip address of the master, you'll find it under /etc/kubernetes/admin.conf
+
+tk8 cluster addon -l ### installs jmeter on top of your new cluster
 
 
