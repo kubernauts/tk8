@@ -71,9 +71,9 @@ Clone the TK8 repo and initialize the kubespray repo also if it has not been don
 
 git clone https://github.com/kubernauts/tk8
 
-cd tk8/
+    cd tk8/
 
-./tk8 cluster init
+    ./tk8 cluster init
 
 ### Step 2:
 
