@@ -102,3 +102,12 @@ Create the infrastructure with the following command:
 Install kubernetes on the infrastructure that was created with the following command:
 
 	./tk8 cluster openstack -i
+
+### Step 5:
+
+Destroy the infrastructure, use the following command:
+
+	./tk8 cluster openstack -d
+
+N.B -- Before destroying the cluster, make sure you delete any load balancer that was created inside your kubernetes cluster, otherwise, terraform destroy will not work completely since terraform did not create the additional load balancer (the load balancer is tied to some other aspects of the cloud which will affect the terraform destroy procedure).
+
