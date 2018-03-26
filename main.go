@@ -14,7 +14,7 @@
 
 package main
 
-import "github.com/infinitydon/tk8/cmd"
+import "github.com/kubernauts/tk8/cmd"
 
 func main() {
 	cmd.Execute()
