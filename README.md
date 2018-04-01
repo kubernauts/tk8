@@ -4,11 +4,11 @@
 
 ## Problem Statement
 
-How do I deploy an HA'ed Vanilla Kubernetes in an uniform and homogenous way with a single line on Bare-Metall, OpenStack, Google Cloud, AWS Cloud or Microsoft Cloud? And integrate other add-ons for monitoring, load testing, networking or storage with ease?
+How do I deploy an HA'ed Vanilla Kubernetes in an uniform and homogenous way on any operating system of my choice with a single line on Bare-Metall, OpenStack, Google Cloud, AWS Cloud or Microsoft Cloud? And integrate other add-ons for monitoring, load testing, networking or storage with ease?
 
 ## Solution
 
-TK8 is a CLI written in Golang to deploy the upstream Vanilla Kubernetes fully automated using Terraform, Kubespray and Ansible on any environment. 
+TK8 is a CLI written in Golang to deploy the upstream Vanilla Kubernetes fully automated using Terraform, Kubespray and Ansible on any environment.
 
 With TK8 you can also install additional add-ons such as a Jmeter Cluster for load testing, Prometheus for monitoring, Jaeger, Linkerd or Zippkin for tracing, Ambassador API Gateway with Envoy for ingress and load balancing, Istio for service mesh support and Jenkins-X for CI/CD on Kubernetes.
 
