@@ -4,7 +4,7 @@
 
 ## Problem Statement
 
-How do I deploy Kubernetes or OpenShift with a single line on Bare-Metall, OpenStack, Google Cloud, AWS Cloud or Microsoft Cloud? And integrate other add-ons for monitoring, load testing, networking or storage with ease?
+How do I deploy Kubernetes in an uniform and homogenous way with a single line on Bare-Metall, OpenStack, Google Cloud, AWS Cloud or Microsoft Cloud? And integrate other add-ons for monitoring, load testing, networking or storage with ease?
 
 ## Solution
 
