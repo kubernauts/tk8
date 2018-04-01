@@ -12,11 +12,9 @@ TK8 is a CLI written in Golang to deploy the upstream Vanilla Kubernetes fully a
 
 With TK8 you can also install additional add-ons such as a Jmeter Cluster for load testing, Prometheus for monitoring, Jaeger, Linkerd or Zippkin for tracing, Ambassador API Gateway with Envoy for ingress and load balancing, Istio for service mesh support , Jenkins-X for CI/CD and Helm or Kedge for packaging on Kubernetes.
 
-Other add-ons such as Ambassador API Gateway, Istio and Jaeger are coming soon.
+This release supports the Kubernetes installation on AWS and OpenStack / Bare-Metal with HA capabilities.
 
-This release supports the Kubernetes installation on AWS and OpenStack with HA capabilities.
-
-N.B: Bare-Metall, MS Azure and GCP support will be added in the near future.
+N.B: MS Azure and GCP support will be added in the very near future.
 
 ## Kubernetes Deployment with TK8 on AWS
 
