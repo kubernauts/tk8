@@ -6,13 +6,13 @@
 
 ---
 
-How do I install Kubernetes or OpenShift with a single line on Bare-Metall, OpenStack, Google Cloud, AWS Cloud or Microsoft Cloud? And integrate other add-ons with ease?  
-  
-Solution
+How do I deploy Kubernetes or OpenShift with a single line on Bare-Metall, OpenStack, Google Cloud, AWS Cloud or Microsoft Cloud? And integrate other add-ons for monitoring, load testing, networking or storage with ease?
+
+## Solution
 
 ---
 
-TK8 is a CLI written in Golang to deploy Kubernetes fully automated using Terraform, Kubespray and Ansible.
+TK8 is a CLI written in Golang to deploy Kubernetes fully automated using Terraform, Kubespray and Ansible on any environment.
 
 With tk8 you can also install additional addons such as a Jmeter Cluster for loadtesting on Kubernetes.
 
