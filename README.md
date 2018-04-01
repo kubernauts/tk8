@@ -4,13 +4,9 @@
 
 ## Problem Statement
 
----
-
 How do I deploy Kubernetes or OpenShift with a single line on Bare-Metall, OpenStack, Google Cloud, AWS Cloud or Microsoft Cloud? And integrate other add-ons for monitoring, load testing, networking or storage with ease?
 
 ## Solution
-
----
 
 TK8 is a CLI written in Golang to deploy Kubernetes fully automated using Terraform, Kubespray and Ansible on any environment.
 
@@ -23,8 +19,6 @@ This release supports the Kubernetes installation on AWS and OpenStack with HA c
 N.B: Bare-Metall, MS Azure and GCP support will be added in the near future.
 
 ## Kubernetes Deployment with TK8 on AWS
-
----
 
 After cloning the repo you'll build a docker image which contains Terraform and Ansible and the tk8 binary for linux.
 
@@ -91,8 +85,6 @@ tk8 -h
 --&gt; provides the help
 
 ## Kubernetes Deployment with TK8 on OpenStack
-
----
 
 ### Step 1:
 
