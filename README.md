@@ -24,6 +24,8 @@ N.B: Bare-Metall, MS Azure and GCP support will be added in the near future.
 
 ## Kubernetes Deployment with TK8 on AWS
 
+---
+
 After cloning the repo you'll build a docker image which contains Terraform and Ansible and the tk8 binary for linux.
 
 If you're on mac or would like to build your own tk8 cli on linux, you've to build tk8 with "go build .".
@@ -89,6 +91,8 @@ tk8 -h
 --&gt; provides the help
 
 ## Kubernetes Deployment with TK8 on OpenStack
+
+---
 
 ### Step 1:
 
