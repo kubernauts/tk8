@@ -2,12 +2,11 @@
 
 # TK8: A multi-cloud, multi-cluster Kubernetes platform installation and integration tool with HA support!
 
-##[Problem Statement](#problem-statement)
+## [Problem Statement](#problem-statement)
 
+How do I deploy an HA'ed Vanilla Kubernetes in an uniform and homogenous way on any operating system of my choice with a single line on Bare-Metall, OpenStack, Google Cloud, AWS Cloud or Microsoft Cloud? And integrate other add-ons for monitoring, load testing, networking, tracing, security scanners or storage with ease?
 
-How do I deploy an HA'ed Vanilla Kubernetes in an uniform and homogenous way on any operating system of my choice with a single line on Bare-Metall, OpenStack, Google Cloud, AWS Cloud or Microsoft Cloud? And integrate other add-ons for monitoring, load testing, networking, monitoring, tracing, security scanners or storage with ease?
-
-##[Solution](#solution)
+## [Solution](#solution)
 
 TK8 is a CLI written in Golang to deploy the upstream Vanilla Kubernetes fully automated using Terraform, Kubespray and Ansible on any environment.
 
@@ -17,7 +16,7 @@ This release supports the Kubernetes installation on AWS and OpenStack / Bare-Me
 
 N.B: MS Azure and GCP support will be added in the very near future.
 
-##[Kubernetes Deployment with TK8 on AWS](#kubernetes-deployment-with-tK8-on-aws)
+## [Kubernetes Deployment with TK8 on AWS](#kubernetes-deployment-with-tK8-on-aws)
 
 After cloning the repo you'll build a docker image which contains Terraform and Ansible and the tk8 binary for linux.
 
@@ -83,7 +82,7 @@ tk8 -h
 
 --&gt; provides the help
 
-##[Kubernetes Deployment with TK8 on OpenStack](#kubernetes-deployment-with-tk8-on-openstack)
+## [Kubernetes Deployment with TK8 on OpenStack](#kubernetes-deployment-with-tk8-on-openstack)
 
 ### Step 1:
 
