@@ -8,7 +8,7 @@ How do I deploy an HA'ed Vanilla Kubernetes in an uniform and homogenous way on 
 
 ## Solution
 
-TK8 is a CLI written in Golang to deploy the upstream Vanilla Kubernetes fully automated using Terraform, Kubespray and Ansible on any environment.
+TK8 is a CLI written in Golang to deploy the upstream Vanilla Kubernetes fully automated using Terraform, Kubespray and Ansible on any environment. **We'll provide kubeadm support as soon kubeadm HA support is available.**
 
 With TK8 you can also install additional add-ons such as a Jmeter Cluster for load testing, Prometheus for monitoring, Jaeger, Linkerd or Zippkin for tracing, Ambassador API Gateway with Envoy for ingress and load balancing, Istio for service mesh support , Jenkins-X for CI/CD and Helm or Kedge for packaging on Kubernetes.
 
