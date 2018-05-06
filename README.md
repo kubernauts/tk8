@@ -142,6 +142,6 @@ N.B -- Before destroying the cluster, make sure you delete any load balancer tha
 
 ## Bare Metal Installation Guide with Load Balancer (MetalLB)
 
-Please refer to the follwoing installation guide
+Please refer to the following installation guide:
 
 https://bit.ly/2IhL1jd
