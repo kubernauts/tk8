@@ -140,3 +140,8 @@ Destroy the infrastructure, use the following command:
 
 N.B -- Before destroying the cluster, make sure you delete any load balancer that was created inside your kubernetes cluster, otherwise, terraform destroy will not work completely since terraform did not create the additional load balancer \(the load balancer is tied to some other aspects of the cloud which will affect the terraform destroy procedure\).
 
+## Bare Metal Installation Guide with Load Balancer (MetalLB)
+
+Please refer to the follwoing installation guide
+
+https://bit.ly/2IhL1jd
