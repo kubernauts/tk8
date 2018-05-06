@@ -145,3 +145,11 @@ N.B -- Before destroying the cluster, make sure you delete any load balancer tha
 Please refer to the following installation guide:
 
 https://bit.ly/2IhL1jd
+
+## OpenShift Origin On OpenStack Guide
+
+Please refer to the following installation guide:
+
+https://bit.ly/2wfSzy6
+
+Note: this is not integrated into the tk8 CLI yet, due to some shortcomings by terraform to create the inventory file.
