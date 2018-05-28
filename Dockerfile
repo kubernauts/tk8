@@ -14,13 +14,13 @@ RUN go install tk8
 FROM alpine
 
 #To track exactly which commit is the image built off
-ARG VCS_REF
-ARG BUILD_DATE
+ARG VCS_REF=dev
+ARG BUILD_DATE=null
 #Don't need to specify the Terraform version here as we will specify it in our hooks directory
-ARG TERRVERSION
+ARG TERRVERSION=0.11.7
 
 #Label Schemas to be used for metadata as described at http://label-schema.org/
-LABEL org.label-schema.description="CLI to deploy kubernetes using kubespray and also install additional addons." \
+LABEL  org.label-schema.description="CLI to deploy kubernetes using kubespray and also install additional addons." \
        org.label-schema.usage="docker run kubernauts/tk8:latest [command]" \
        org.label-schema.docker.cmd="docker run kubernauts/tk8:latest [command]" \
        org.label-schema.build-date=$BUILD_DATE \
@@ -37,7 +37,8 @@ RUN wget https://releases.hashicorp.com/terraform/${TERRVERSION}/terraform_${TER
     && unzip terraform_${TERRVERSION}_linux_amd64.zip -d /usr/local/bin/ \
     && rm terraform_${TERRVERSION}_linux_amd64.zip 
 
-RUN apk add --no-cache py-netaddr ansible \
+#Need git to clone the kubespray repo
+RUN apk add --no-cache py-netaddr ansible git \
     && chmod +x /usr/local/bin/tk8
 
 #The default argument to be passed to tk8 when invoked.
