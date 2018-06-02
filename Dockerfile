@@ -4,19 +4,14 @@ COPY ./ /go/src/tk8
 
 WORKDIR /go/src/tk8
 
-RUN apk add --update git curl \
-    && curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh \
-    && dep ensure -v
-
 RUN go install tk8
 
-#The final tk8 image declaration
 FROM alpine
 
 #To track exactly which commit is the image built off
 ARG VCS_REF=dev
 ARG BUILD_DATE=null
-#Don't need to specify the Terraform version here as we will specify it in our hooks directory
+#This will be overridden by the build args in hooks folder
 ARG TERRVERSION=0.11.7
 
 #Label Schemas to be used for metadata as described at http://label-schema.org/
@@ -36,12 +31,14 @@ COPY --from=builder /go/bin/tk8 /usr/local/bin/tk8
 RUN wget https://releases.hashicorp.com/terraform/${TERRVERSION}/terraform_${TERRVERSION}_linux_amd64.zip \
     && unzip terraform_${TERRVERSION}_linux_amd64.zip -d /usr/local/bin/ \
     && rm terraform_${TERRVERSION}_linux_amd64.zip 
-
-#Need git to clone the kubespray repo
-RUN apk add --no-cache py-netaddr ansible git \
+#Need git to clone kubespray
+#Need '--virtual' packages for proper package import through pip
+RUN apk --update add python py-pip openssl ca-certificates py-netaddr ansible git \
+    && apk add --virtual build-dependencies \
+            python-dev libffi-dev openssl-dev build-base \
+    && pip install --upgrade pip cffi \
+    && apk del build-dependencies \
+    && rm -rf /var/cache/apk/* \
     && chmod +x /usr/local/bin/tk8
 
-#The default argument to be passed to tk8 when invoked.
-CMD [ "--help" ]
-
-ENTRYPOINT [ "/usr/local/bin/tk8" ]
+CMD [ "/usr/local/bin/tk8" ]
