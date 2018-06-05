@@ -34,7 +34,7 @@ var initCmd = &cobra.Command{
 			fmt.Println("Kubespray clone on this system already exists")
 			os.Exit(1)
 		}
-		err := exec.Command("git", "clone", "https://github.com/kubernetes-incubator/kubespray").Run()
+		err := exec.Command("git", "clone", "https://github.com/kubernauts/kubespray.git").Run()
 		if err != nil {
 			log.Fatalf("Seems there is a problem cloning the kubespray repo, %v", err)
 			os.Exit(1)
