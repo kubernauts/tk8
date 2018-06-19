@@ -1,5 +1,5 @@
 aws:
-   clustername: kubernaut
+   clustername: kubernauts
    os: coreos
    master: 1
    worker: 1

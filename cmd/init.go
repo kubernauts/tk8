@@ -34,10 +34,15 @@ var initCmd = &cobra.Command{
 			fmt.Println("Kubespray clone on this system already exists")
 			os.Exit(1)
 		}
-		err := exec.Command("git", "clone", "https://github.com/kubernauts/kubespray.git").Run()
-		if err != nil {
-			log.Fatalf("Seems there is a problem cloning the kubespray repo, %v", err)
+		if _, err := exec.LookPath("git"); err != nil {
+			log.Fatal("either 'git' is not installed or not found in $PATH, kindly check and fix")
 			os.Exit(1)
+		} else {
+			err := exec.Command("git", "clone", "https://github.com/kubernetes-incubator/kubespray").Run()
+			if err != nil {
+				log.Fatalf("Seems there is a problem cloning the kubespray repo, %v", err)
+				os.Exit(1)
+			}
 		}
 		//os.Rename("./kubespray/contrib/terraform/aws/credentials.tfvars.example", "./kubespray/contrib/terraform/aws/credentials.tfvars")
 
