@@ -245,7 +245,7 @@ Kindly ensure that terraform is installed also.`,
 				viper.AddConfigPath("/tk8")
 				verr := viper.ReadInConfig() // Find and read the config file
 				if verr != nil {             // Handle errors reading the config file
-					panic(fmt.Errorf("Fatal error config file: %s \n", verr))
+					panic(fmt.Errorf("fatal error config file: %s", verr))
 				}
 
 				awsAccessKeyID := viper.GetString("aws.aws_access_key_id")
@@ -281,7 +281,7 @@ Kindly ensure that terraform is installed also.`,
 			viper.AddConfigPath(".")
 			verr := viper.ReadInConfig() // Find and read the config file
 			if verr != nil {             // Handle errors reading the config file
-				panic(fmt.Errorf("Fatal error config file: %s \n", verr))
+				panic(fmt.Errorf("fatal error config file: %s", verr))
 			}
 
 			awsClusterName := viper.GetString("aws.clustername")

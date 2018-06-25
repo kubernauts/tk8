@@ -88,7 +88,7 @@ Create and delete kubernetes deployment that is running on Baremetal.`,
 			viper.AddConfigPath("./baremetal/")
 			venv := viper.ReadInConfig() // Find and read the config file
 			if venv != nil {             // Handle errors reading the config file
-				panic(fmt.Errorf("Fatal error config file: %s \n", venv))
+				panic(fmt.Errorf("fatal error config file: %s", venv))
 			}
 
 			OsUser := viper.GetString("os.username")
@@ -162,7 +162,7 @@ Create and delete kubernetes deployment that is running on Baremetal.`,
 			viper.AddConfigPath("./baremetal/")
 			venv := viper.ReadInConfig() // Find and read the config file
 			if venv != nil {             // Handle errors reading the config file
-				panic(fmt.Errorf("Fatal error config file: %s \n", venv))
+				panic(fmt.Errorf("fatal error config file: %s", venv))
 			}
 
 			OsUser := viper.GetString("os.username")
