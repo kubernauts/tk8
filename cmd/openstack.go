@@ -81,7 +81,7 @@ var openstackCmd = &cobra.Command{
 				viper.AddConfigPath("./kubespray/contrib/terraform/openstack/")
 				verr := viper.ReadInConfig() // Find and read the config file
 				if verr != nil {             // Handle errors reading the config file
-					panic(fmt.Errorf("Fatal error config file: %s \n", verr))
+					panic(fmt.Errorf("fatal error config file: %s", verr))
 				}
 
 				LBIP := viper.GetString("floating-master-lb-vip")
@@ -131,7 +131,7 @@ var openstackCmd = &cobra.Command{
 			viper.AddConfigPath("./kubespray/contrib/terraform/openstack/")
 			venv := viper.ReadInConfig() // Find and read the config file
 			if venv != nil {             // Handle errors reading the config file
-				panic(fmt.Errorf("Fatal error config file: %s \n", venv))
+				panic(fmt.Errorf("fatal error config file: %s", venv))
 			}
 
 			OsAuthURL := viper.GetString("clouds.mycloud.auth.auth_url")
