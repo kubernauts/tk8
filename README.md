@@ -12,15 +12,15 @@ N.B: MS Azure and GCP support will be added in the very near future.
 
 ## Installation
 
-**Building from source**
+### Building from source
 
-```
+```shell
 go get -u github.com/kubernauts/tk8
 ```
 
-**Docker image**
+### Docker image
 
-```
+```shell
 docker pull kubernautslabs/tk8
 ```
 
@@ -28,7 +28,7 @@ docker pull kubernautslabs/tk8
 
 You can either use the cli to install a supported addon in an existing Kubernetes cluster or to provision and install Kubernetes on the supported platforms. The basic usage instructions are as below:
 
-```
+```shell
 Usage:
   tk8 [command]
 
@@ -47,9 +47,9 @@ Use "tk8 [command] --help" for more information about a command.
 
 ### Install a supported addon in an existing Kubernetes cluster
 
-**Using installed binary**
+#### Using installed binary
 
-```
+```shell
 Usage:
   tk8 addon [flags]
 
@@ -63,17 +63,17 @@ Global Flags:
       --config string   Path to the config.yaml
 ```
 
-**Using Docker image**
+#### Using Docker image
 
-```
+```shell
 docker run -it --name tk8 -v ~/.kube/config:/root/.kube/config kubernautslabs/tk8 tk8 addon [flags]
 ```
 
 ### Provision and install Kubernetes on the supported platforms
 
-**Using installed binary**
+#### Using installed binary
 
-```
+```shell
 Usage:
   tk8 cluster [flags]
   tk8 cluster [command]
@@ -95,9 +95,8 @@ Use "tk8 cluster [command] --help" for more information about a command.
 
 Specific platform instructions can be found in the [official documentation](https://kubernauts.gitbooks.io/tk8/content/) or in [docs](docs/)
 
+#### Using Docker image
 
-**Using Docker image**
-
-```
+```shell
 docker run -it --name tk8 -v ~/.ssh/id_rsa:/root/.ssh/id_rsa kubernautslabs/tk8 cluster [flags] [command]
 ```

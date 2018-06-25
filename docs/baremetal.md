@@ -6,9 +6,9 @@ This guide will make use of the kubernetes agnostic tool TK8.
 
 TK8 is a tool that is able to install vanilla kubernetes on cloud platforms and bare metal infrastructures, it is currently based on the kubespray project.
 
-## Prerequisites:
+## Prerequisites
 
-Since this is a bare metal infrastructure, this requires that the servers must be deployed ahead of time. 
+Since this is a bare metal infrastructure, this requires that the servers must be deployed ahead of time.
 
 Necessary informations like IP addresses and Hostnames should be retrieved ahead of time.
 
@@ -18,35 +18,35 @@ Basic linux administration skill is assumed.
 
 The following softwares are needed to have a successful deployment, these must be installed on the Deployment host:
 
-*	Ansible
-*	Python-netaddr
-*	Jinja2
+* Ansible
+* Python-netaddr
+* Jinja2
 
-
 ## Sample Reference Architecture
-![](images/baremetal-arch.png)
+
+![baremetal-arch](images/baremetal-arch.png)
 
 Description for some of the appliances is below:
 
-*	Master Node: This is where the API, scheduler, controllers services is installed. An external or internal LB can be used for HA purposes, an external is recommended for optimum performance because the internal LB is deployed as a separate POD inside the kubernetes cluster, this means the LB is dependent on the kubernetes deployment and it is load balancing at the same time hence the reason to consider separation of concern. The external LB can be a seperate haproxy, nginx or hardware based like F5.
+* Master Node: This is where the API, scheduler, controllers services is installed. An external or internal LB can be used for HA purposes, an external is recommended for optimum performance because the internal LB is deployed as a separate POD inside the kubernetes cluster, this means the LB is dependent on the kubernetes deployment and it is load balancing at the same time hence the reason to consider separation of concern. The external LB can be a seperate haproxy, nginx or hardware based like F5.
 
-*	ETCD: This is the key/value store service for the kubernetes deployment, it is strongly recommended for this to be HA with a odd number so as to achieve quorum.
+* ETCD: This is the key/value store service for the kubernetes deployment, it is strongly recommended for this to be HA with a odd number so as to achieve quorum.
 
-*	Worker Node:  This is where actual application containers are deployed, kubernetes services like the kubelet and kubeproxy resides on this node. The number of nodes is actually dependent on how much application workload will be deployed, additional nodes can be added to increase capacity.
+* Worker Node:  This is where actual application containers are deployed, kubernetes services like the kubelet and kubeproxy resides on this node. The number of nodes is actually dependent on how much application workload will be deployed, additional nodes can be added to increase capacity.
 
-*	Storage: This is optional, that is why a dotted line is used because sometimes worker nodes utilize local storages attached to them to create the needed persistent disks for the application containers. The recommended solution is to use centralized storage solution like NFS, Ceph, Glusterfs etc. This kind of abstracted storage can be independently optimized and expanded without affecting the running application containers, also if PODs with persistent disks are to redeployed on another node, the information persists because it is not local to the worker node. Host paths should only be used to testing or development purposes.
+* Storage: This is optional, that is why a dotted line is used because sometimes worker nodes utilize local storages attached to them to create the needed persistent disks for the application containers. The recommended solution is to use centralized storage solution like NFS, Ceph, Glusterfs etc. This kind of abstracted storage can be independently optimized and expanded without affecting the running application containers, also if PODs with persistent disks are to redeployed on another node, the information persists because it is not local to the worker node. Host paths should only be used to testing or development purposes.
 
-*	Deployment Node: This is where the installation will be initiated from. Ansible and it’s required modules (python-netaddr, Jinja2) will have to be installed on this node.
+* Deployment Node: This is where the installation will be initiated from. Ansible and it’s required modules (python-netaddr, Jinja2) will have to be installed on this node.
 
-*	Public IP Address Range: This is the range of public IPs that will be configured for use with MetalLB, it is important to note that each worker node should have a network card that is configured with an IP address from this range also because this is where the gateway settings will be reside and the LB service type will required the worker node’s routing table to properly send traffic to Edge router or Firewall.
+* Public IP Address Range: This is the range of public IPs that will be configured for use with MetalLB, it is important to note that each worker node should have a network card that is configured with an IP address from this range also because this is where the gateway settings will be reside and the LB service type will required the worker node’s routing table to properly send traffic to Edge router or Firewall.
 
 ## Getting the infrastructre ready for provisioning
 
-*	Install and prepare the servers for master, etcd, worker
-*	Configure key based SSH access from the Ansible host to the servers
-*	Create a `hosts.ini` file to be used. This is will consist details like IP address to hostname mappings, specifying the groups with the respective nodes that will be used, bastion host (if specified) etc. A sample `hosts.ini` is given below:
+* Install and prepare the servers for master, etcd, worker
+* Configure key based SSH access from the Ansible host to the servers
+* Create a `hosts.ini` file to be used. This is will consist details like IP address to hostname mappings, specifying the groups with the respective nodes that will be used, bastion host (if specified) etc. A sample `hosts.ini` is given below:
 
-```
+```ini
 # ## Configure 'ip' variable to bind kubernetes services on a
 # ## different ip than the default iface
 node1 ansible_host=95.54.0.12  # ip=10.3.0.1
@@ -89,8 +89,8 @@ Create the inventory file on the Ansible host.
 
 Initialize the kubespray repo:
 
-```
-$ tk8 cluster init
+```shell
+tk8 cluster init
 ```
 
 Set the neecessary parameters
@@ -106,14 +106,15 @@ os:
 ```
 
 **N.B*:* Using root user is not recommended, instead use a separate username with sudo rights.
-
+
 ## Kubernetes Installation
 
 Start the kubernetes installation on the bare metal servers:
 
+```shell
+tk8 cluster baremetal --install
 ```
-$ tk8 cluster baremetal --install
-```
+
 ## Configure and Deploy MetalLB
 
 The MetalLB configmap file is also located at `tk8/baremetal/lb-config.yml`, kindly edit this file with the `public/routable IPs` that will be used for the LB service type in the kubernetes deployment. Example:
@@ -136,15 +137,16 @@ data:
 The address field above is the IP address range that will be used for the LB service type, the MetalLB controller POD will listen to the LB service type calls from API.
 
 To deploy MetalLB run:
-```
-$ tk8 cluster baremetal --loadbalancer
+
+```shell
+tk8 cluster baremetal --loadbalancer
 ```
 
 ## Post Installation
 
 Below is the snapshot of the namespaces after installation:
 
-```
+```shell
 kubectl get namespace
 NAME             STATUS    AGE
 default          Active    16d
@@ -155,14 +157,14 @@ metallb-system   Active    15d
 
 Metallb-system namespace is created during installation, the PODs and configmap in this namespace is given below:
 
-```
+```shell
 kubectl -n metallb-system get pods
 NAME                          READY     STATUS    RESTARTS   AGE
 controller-786bcb6c46-769sv   1/1       Running   1          15d
 speaker-nllw7                 1/1       Running   1          15d
 ```
 
-```
+```shell
 kubectl -n metallb-system describe configmap config
 Name:         config
 Namespace:    metallb-system
