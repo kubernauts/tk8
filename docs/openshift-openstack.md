@@ -23,8 +23,7 @@ If name resolution fails, the installation will fail along the way.
 
 ## Reference Architecture
 
-![](images/openshift-openstack-arch.jpg)
-
+![openshift-openstack-arch](images/openshift-openstack-arch.jpg)
 
 **N.B**: The number of actual virtual machines will be different based on the final design architecture, the above is given as an example.
 
@@ -60,32 +59,32 @@ Your OpenStack credentials will be needed, this will be used in the `clouds.yaml
 
 Below are the steps to create the infrastructure nodes using terraform:
 
-1) Clone the Openshift terraform github: 
+1; Clone the Openshift terraform github:
 
-```
-$ git clone https://github.com/kubernauts/openshift-OpenStack
-```
-
-2) Edit the `clouds.yaml` file with respect to your OpenStack credentials
-
-3) Modify `cluster.tfvars` with details about your OpenStack inventories like the flavour, external network name, Operating system image, proposed cluster name, path to your SSH public key, volume size, elb_api_fqdn (domain for the openshift master GUI access), openshift_master_default_subdomain (application endpoint via Openshift router), etc
-
-4) Initialize terraform:
-
-```
-$ terraform init
+```shell
+git clone https://github.com/kubernauts/openshift-OpenStack
 ```
 
-5) You can preview the changes that will be applied:
+2; Edit the `clouds.yaml` file with respect to your OpenStack credentials
 
-```
-$ terraform plan -var-file=cluster.tfvars
+3; Modify `cluster.tfvars` with details about your OpenStack inventories like the flavour, external network name, Operating system image, proposed cluster name, path to your SSH public key, volume size, elb_api_fqdn (domain for the openshift master GUI access), openshift_master_default_subdomain (application endpoint via Openshift router), etc
+
+4; Initialize terraform:
+
+```shell
+terraform init
 ```
 
-6) Create the infrastructure nodes:
+5; You can preview the changes that will be applied:
 
+```shell
+terraform plan -var-file=cluster.tfvars
 ```
-$ terraform apply -var-file=cluster.tfvars
+
+6; Create the infrastructure nodes:
+
+```shell
+terraform apply -var-file=cluster.tfvars
 ```
 
 Successful output should be similar to below snapshot:
@@ -96,7 +95,7 @@ Successful output should be similar to below snapshot:
 
 ![loadbalancer](images/openshift-loadbalancer.png)
 
-7) Ensure you are able to resolve the all the node hostnames to their respective private IPs, the DNS solution is dependent on your specific environment.
+7; Ensure you are able to resolve the all the node hostnames to their respective private IPs, the DNS solution is dependent on your specific environment.
 
 ![dns](images/openshift-dns.png)
 
@@ -107,22 +106,22 @@ On your DNS configure the master FQDN to resolve to the public IP of the master 
 Also configure application URL endpoint FQDN to resolve to the public IP of the infrastructure node LB. Sample resolution is given below:
 
 ![appurl](images/openshift-appURL.png)
-
+
 ## Openshift Origin Installation
 
 The installation is done using Ansible with the respective playbooks. The steps are given below:
 
-1)  Clone the Openshift-Ansible repository:
+1; Clone the Openshift-Ansible repository:
 
-```
-$ git clone -b release-3.9 https://github.com/openshift/openshift-ansible.git
+```shell
+git clone -b release-3.9 https://github.com/openshift/openshift-ansible.git
 ```
 
 **N.B**: Don’t clone the master branch, this is always been updated and it is very likely that it has not been tested properly, hence the reason to specify the release version.
 
-2) Copy the `hosts.ini` file from the openshift folder to `/openshift-ansible/inventory/` (the terraform scripts will have helped out in filling out most of the parameters):
+2; Copy the `hosts.ini` file from the openshift folder to `/openshift-ansible/inventory/` (the terraform scripts will have helped out in filling out most of the parameters):
 
-```
+```ini
 [all]
 mercy-ops-master-1 ansible_host=10.0.0.8
 mercy-ops-infra-1 ansible_host=10.0.0.14
@@ -180,20 +179,20 @@ Make sure that your `host.ini` file is aligned with the above example, the only 
 
 If the node labels are not properly configured then you might end with a broken installation.
 
-3) Prepare the nodes by running the NetworkManager and pre-requisite playbooks:
+3; Prepare the nodes by running the NetworkManager and pre-requisite playbooks:
 
-```
-$ ansible-playbook -i ./openshift-ansible/inventory/hosts.ini ./openshift-OpenStack/openshift/network_manager.yml \
+```shell
+ansible-playbook -i ./openshift-ansible/inventory/hosts.ini ./openshift-OpenStack/openshift/network_manager.yml \
     -e ansible_user=centos -b --become-user=root --flush-cache
-
-$ ansible-playbook -i ./openshift-ansible/inventory/hosts.ini ./openshift-ansible/playbooks/prerequisites.yml \
+shell
+ansible-playbook -i ./openshift-ansible/inventory/hosts.ini ./openshift-ansible/playbooks/prerequisites.yml \
     -e ansible_user=centos -b --become-user=root --flush-cache
 ```
 
-4) Finally initiate the installation of the Openshift cluster:
+4; Finally initiate the installation of the Openshift cluster:
 
-```
-$ ansible-playbook -i /openshift-ansible/inventory/hosts.ini ./openshift-ansible/playbooks/deploy_cluster.yml -e ansible_user=centos -b --become-user=root --flush-cache
+```shell
+ansible-playbook -i /openshift-ansible/inventory/hosts.ini ./openshift-ansible/playbooks/deploy_cluster.yml -e ansible_user=centos -b --become-user=root --flush-cache
 ```
 
 If everything goes on fine, you should an output like the one below:
@@ -202,13 +201,13 @@ If everything goes on fine, you should an output like the one below:
 
 ## Post-Installation
 
-1) Check the status of the Openshift cluster:
+1; Check the status of the Openshift cluster:
 
 ![status](images/openshift-clusterstatus.png)
 
-2) Generate admin username/password (this will be done on the master node) that will be used to access the webpage:
+2; Generate admin username/password (this will be done on the master node) that will be used to access the webpage:
 
-```
+```shell
 [root@origin-master ~]# sudo htpasswd -c /etc/origin/master/htpasswd admin
 New password:
 Re-type new password:
