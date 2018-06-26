@@ -84,7 +84,7 @@ Example:
 
 **Debian Jessie**
 
-```json
+```hcl
 data "aws_ami" "distro" {
   most_recent = true
 
@@ -104,7 +104,7 @@ data "aws_ami" "distro" {
 
 **Ubuntu 16.04**
 
-```json
+```hcl
 data "aws_ami" "distro" {
   most_recent = true
 
@@ -124,7 +124,7 @@ data "aws_ami" "distro" {
 
 **Centos 7**
 
-```json
+```hcl
 data "aws_ami" "distro" {
   most_recent = true
 
