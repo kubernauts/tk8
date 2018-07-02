@@ -14,3 +14,8 @@ _book
 *.epub
 *.mobi
 *.pdf
+
+#Ignore compiled files
+tk8
+dist
+bin
