@@ -70,7 +70,7 @@ Post installation the **kubeconfig** will be available at: _./kubespray/inventor
 ```shell
 git clone https://github.com/kubernauts/tk8
 cd tk8
-vi config.yaml --> provide your AWC access and secret key and an exsiting SSH keypair in AWS
+vi config.yaml --> provide your AWS access and secret key and an exsiting SSH keypair in AWS
 docker run -it -d --name tk8 -v ~/.ssh/:/root/.ssh/ -v "$(pwd)":/tk8 kubernautslabs/tk8 sh
 docker exec -it $(dl) sh
 cd tk8
