@@ -83,7 +83,6 @@ cd tk8
 tk8 cluster init
 tk8 cluster aws --create
 pip install -r kubespray/requirements.txt
-apk add --no-cache openssh
 tk8 cluster aws --install
 exit
 KUBECONFIG=./kubespray/inventory/awscluster/artifacts/admin.conf kubectl get pods --all-namespaces
