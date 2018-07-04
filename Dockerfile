@@ -36,6 +36,7 @@ RUN wget https://releases.hashicorp.com/terraform/${TERRVERSION}/terraform_${TER
 RUN apk --update add python py-pip openssl ca-certificates py-netaddr ansible git \
     && apk add --virtual build-dependencies \
             python-dev libffi-dev openssl-dev build-base \
+    && apk add --no-cache openssh \
     && pip install --upgrade pip cffi \
     && apk del build-dependencies \
     && rm -rf /var/cache/apk/* \
