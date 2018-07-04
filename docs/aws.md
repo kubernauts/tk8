@@ -26,14 +26,13 @@ Provide the AWS credentials in either of the following ways:
 * [Environment Variables](https://docs.aws.amazon.com/cli/latest/userguide/cli-environment.html). You will need to specify `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`.
 * [Config file](../config.yaml)
 
-## Clone the tk8 repo  
+## Clone the tk8 repo
 
 ```shell
 git clone https://github.com/kubernauts/tk8
 cd tk8
 ```
 
-    
 Adapt the `config.yaml` file to specify the cluster details. [Example config](../config.yaml):
 
 ```yaml
@@ -79,8 +78,7 @@ Post installation the **kubeconfig** will be available at: _./kubespray/inventor
 git clone https://github.com/kubernauts/tk8
 cd tk8
 vi config.yaml --> provide your AWS access and secret key and an exsiting SSH keypair in AWS
-docker run -it -d --name tk8 -v ~/.ssh/:/root/.ssh/ -v "$(pwd)":/tk8 kubernautslabs/tk8 sh
-docker exec -it $(dl) sh
+docker run -it --name tk8 -v ~/.ssh/:/root/.ssh/ -v "$(pwd)":/tk8 kubernautslabs/tk8 sh
 cd tk8
 tk8 cluster init
 tk8 cluster aws --create
