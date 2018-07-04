@@ -2,6 +2,14 @@
 
 ## Step 1
 
+## Clone the tk8 repo  
+
+```shell
+git clone https://github.com/kubernauts/tk8
+cd tk8
+```
+
+
 Export your OpenStack CA CERT file and Initialize the kubespray repo:
 
 ```shell
