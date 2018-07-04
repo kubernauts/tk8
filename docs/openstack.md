@@ -1,10 +1,20 @@
-# # Provisioning and Deploying Kubernetes on OpenStack
+# Provisioning and Deploying Kubernetes on OpenStack
 
 ## Step 1
 
-Initialize the kubespray repo
+Get the tk8 repo  
 
 ```shell
+git clone https://github.com/kubernauts/tk8
+cd tk8
+```
+
+
+Export your OpenStack CA CERT file and Initialize the kubespray repo:
+
+```shell
+export OS_CACERT=/tk8/openstack/ca.crt
+
 tk8 cluster init
 ```
 
@@ -14,9 +24,7 @@ Adjust the following openstack files with your specific settings:
 
 _**~/tk8/openstack/cluster.tfvars**_ -- This file contains the parameters for the cloud components to be deployed e.g flavor, image, cluster\_name, external network id \(float network\), number of masters, number etcd nodes, number of worker nodes etc. Some values have been set but some needs to be modified to suit your environment like the image, flavor \(this is the ID not name\) and external network id.
 
-The elb\_api\_fqdn domain name should be set to a value that you can resolve within your network/deployment, this will should be resolvable to the load balancer VIP address of the master nodes i.e. Floating IP address \(you can check the load balancer on Horizon or openstack CLI to check the value of the Load Balancer floating IP address for the master nodes\). Snapshot is given below:
-
-![loadbalancer](docs/images/lb.png)
+The elb\_api\_fqdn domain name should be set to a value that you can resolve within your network/deployment, this will should be resolvable to the load balancer VIP address of the master nodes i.e. Floating IP address \(you can check the load balancer on Horizon or openstack CLI to check the value of the Load Balancer floating IP address for the master nodes\).
 
 N.B -- Currently you can only use Centos 7 image \(image can be downloaded from the centos public repo\), Ubuntu and Coreos will be added soon.
 
@@ -51,3 +59,4 @@ tk8 cluster openstack --destroy
 ```
 
 N.B -- Before destroying the cluster, make sure you delete any load balancer that was created inside your kubernetes cluster, otherwise, terraform destroy will not work completely since terraform did not create the additional load balancer \(the load balancer is tied to some other aspects of the cloud which will affect the terraform destroy procedure\).
+

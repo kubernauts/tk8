@@ -8,7 +8,9 @@
 
 ---
 
-## Provision the cluster
+## Provision the cluster using CLI
+
+You can download the TK8 CLI for Linux and Mac OSX under releases [here](https://github.com/kubernauts/tk8/releases).
 
 Make sure you have the sufficient permissions to create following resources in AWS
 
@@ -24,15 +26,20 @@ Provide the AWS credentials in either of the following ways:
 * [Environment Variables](https://docs.aws.amazon.com/cli/latest/userguide/cli-environment.html). You will need to specify `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`.
 * [Config file](../config.yaml)
 
-Create a `config.yaml` file to specify the cluster details. [Example config](../config.yaml):
+## Clone the tk8 repo  
+
+```shell
+git clone https://github.com/kubernauts/tk8
+cd tk8
+```
+
+    
+Adapt the `config.yaml` file to specify the cluster details. [Example config](../config.yaml):
 
 ```yaml
 aws:
    clustername: kubernauts
-   os: coreos # to change see below
-   master: 1
-   worker: 1
-   etcd: 1
+   os: centos # to change see below
    aws_access_key_id: # optional, see above.
    aws_secret_access_key: # optional, see above.
    aws_ssh_keypair: # needs to be an existing SSH keypair in AWS
@@ -63,6 +70,26 @@ tk8 cluster aws --install
 Post installation the **kubeconfig** will be available at: _./kubespray/inventory/awscluster/artifacts/admin.conf_
 
 **Do not** delete the kubespray directory post installation as the cluster state will be saved in it.
+
+---
+
+## Using Docker image
+
+```shell
+git clone https://github.com/kubernauts/tk8
+cd tk8
+vi config.yaml --> provide your AWS access and secret key and an exsiting SSH keypair in AWS
+docker run -it -d --name tk8 -v ~/.ssh/:/root/.ssh/ -v "$(pwd)":/tk8 kubernautslabs/tk8 sh
+docker exec -it $(dl) sh
+cd tk8
+tk8 cluster init
+tk8 cluster aws --create
+pip install -r kubespray/requirements.txt
+apk add --no-cache openssh
+tk8 cluster aws --install
+exit
+KUBECONFIG=./kubespray/inventory/awscluster/artifacts/admin.conf kubectl get pods --all-namespaces
+```
 
 ---
 
@@ -141,3 +168,6 @@ data "aws_ami" "distro" {
   owners = ["688023202711"]
 }
 ```
+
+
+
