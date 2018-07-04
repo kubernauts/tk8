@@ -1,4 +1,4 @@
-# \# Provisioning and Deploying Kubernetes on OpenStack
+# Provisioning and Deploying Kubernetes on OpenStack
 
 ## Step 1
 
