@@ -1,3 +1,5 @@
+# OpenShift Origin On OpenStack
+
 # Overview
 
 The purpose of this documentation is to provide a reference guide for installing an HA’ed OpenShift Origin deployment on an OpenStack cloud infrastructure using the Openshift-Ansible deployment method, which is the basis for our TK8 installer for the OpenShift version.
@@ -17,7 +19,7 @@ The following softwares are needed to have a successful deployment, these must b
 
 Basic Linux administration skill is needed.
 
-DNS is needed for proper resolution of all the hostnames of the nodes including the domain name of the master and application endpoint URLs (the openshift router).
+DNS is needed for proper resolution of all the hostnames of the nodes including the domain name of the master and application endpoint URLs \(the openshift router\).
 
 If name resolution fails, the installation will fail along the way.
 
@@ -29,7 +31,7 @@ If name resolution fails, the installation will fail along the way.
 
 Below gives a brief description about the components:
 
-* Master Nova Hosts:  These are the master virtual machines that are dedicated for the control aspects, this is where the controllers, APIs etc will reside, having more than one is highly encouraged for HA (even though they will not processing any payload services).
+* Master Nova Hosts:  These are the master virtual machines that are dedicated for the control aspects, this is where the controllers, APIs etc will reside, having more than one is highly encouraged for HA \(even though they will not processing any payload services\).
 
 * ETCD Nova Hosts: These are the virtual machines that will be dedicated to the key/value store, an odd number is required for quorum to be established.
 
@@ -37,11 +39,11 @@ Below gives a brief description about the components:
 
 * Infrastructure Nova Hosts: These are the virtual machines that will be dedicated to running infrastructure services like the Docker registry and Openshift routing functionality.
 
-* LB: These are the load balancers that will be based on the LBaaS functionality of OpenStack. One LB is dedicated for the Master nodes (to access the GUI) while another is dedicated to the infrastructure nodes.
+* LB: These are the load balancers that will be based on the LBaaS functionality of OpenStack. One LB is dedicated for the Master nodes \(to access the GUI\) while another is dedicated to the infrastructure nodes.
 
 **N.B**: The Load Balancer for the infrastructure nodes only exposes HTTPS port, put this in mind when creating routers for your application endpoints.
 
-* Bastion Nova Host: This will be used as a jump host to the Openshift VMs, this is aligning with best security practices so that the VMs are not exposed directly to the internet. Also the actual installation will be initiated from here (i.e. it will be used as the deployment host).
+* Bastion Nova Host: This will be used as a jump host to the Openshift VMs, this is aligning with best security practices so that the VMs are not exposed directly to the internet. Also the actual installation will be initiated from here \(i.e. it will be used as the deployment host\).
 
 ## Infrastructure Deployment
 
@@ -55,7 +57,7 @@ The infrastructure will be created using terraform, the following terraform modu
 
 * LB: To create the Load balancers
 
-Your OpenStack credentials will be needed, this will be used in the `clouds.yaml` file (this is following the OpenStack recommended procedure for using your credentials to manage OpenStack).
+Your OpenStack credentials will be needed, this will be used in the `clouds.yaml` file \(this is following the OpenStack recommended procedure for using your credentials to manage OpenStack\).
 
 Below are the steps to create the infrastructure nodes using terraform:
 
@@ -67,7 +69,7 @@ git clone https://github.com/kubernauts/openshift-OpenStack
 
 2; Edit the `clouds.yaml` file with respect to your OpenStack credentials
 
-3; Modify `cluster.tfvars` with details about your OpenStack inventories like the flavour, external network name, Operating system image, proposed cluster name, path to your SSH public key, volume size, elb_api_fqdn (domain for the openshift master GUI access), openshift_master_default_subdomain (application endpoint via Openshift router), etc
+3; Modify `cluster.tfvars` with details about your OpenStack inventories like the flavour, external network name, Operating system image, proposed cluster name, path to your SSH public key, volume size, elb\_api\_fqdn \(domain for the openshift master GUI access\), openshift\_master\_default\_subdomain \(application endpoint via Openshift router\), etc
 
 4; Initialize terraform:
 
@@ -119,7 +121,7 @@ git clone -b release-3.9 https://github.com/openshift/openshift-ansible.git
 
 **N.B**: Don’t clone the master branch, this is always been updated and it is very likely that it has not been tested properly, hence the reason to specify the release version.
 
-2; Copy the `hosts.ini` file from the openshift folder to `/openshift-ansible/inventory/` (the terraform scripts will have helped out in filling out most of the parameters):
+2; Copy the `hosts.ini` file from the openshift folder to `/openshift-ansible/inventory/` \(the terraform scripts will have helped out in filling out most of the parameters\):
 
 ```ini
 [all]
@@ -205,7 +207,7 @@ If everything goes on fine, you should an output like the one below:
 
 ![status](images/openshift-clusterstatus.png)
 
-2; Generate admin username/password (this will be done on the master node) that will be used to access the webpage:
+2; Generate admin username/password \(this will be done on the master node\) that will be used to access the webpage:
 
 ```shell
 [root@origin-master ~]# sudo htpasswd -c /etc/origin/master/htpasswd admin
@@ -215,3 +217,6 @@ Adding password for user admin
 ```
 
 > Note: The tk8 cli doesn't support openshift yet due to some shortcomings by terraform to create the inventory file.
+
+
+
