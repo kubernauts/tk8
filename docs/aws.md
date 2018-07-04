@@ -74,6 +74,8 @@ Post installation the **kubeconfig** will be available at: _./kubespray/inventor
 
 ## Using Docker image
 
+**No Prerequisites**, oh yes you need Docker :-\)
+
 ```shell
 git clone https://github.com/kubernauts/tk8
 cd tk8
@@ -83,7 +85,6 @@ cd tk8
 tk8 cluster init
 tk8 cluster aws --create
 pip install -r kubespray/requirements.txt
-apk add --no-cache openssh
 tk8 cluster aws --install
 exit
 KUBECONFIG=./kubespray/inventory/awscluster/artifacts/admin.conf kubectl get pods --all-namespaces

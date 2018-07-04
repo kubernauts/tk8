@@ -1,21 +1,31 @@
 # Provisioning and Deploying Kubernetes on OpenStack
 
+## Prerequisites
+
+* [Git](https://git-scm.com/)
+* [Terraform](https://www.terraform.io/downloads.html)
+* [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
+
 ## Step 1
 
-Get the tk8 repo  
+Get the tk8 repo
 
 ```shell
 git clone https://github.com/kubernauts/tk8
 cd tk8
+wget https://github.com/kubernauts/tk8/releases/download/0.3/tk8-linux-opentack-amd64
+chmod +x tk8-linux-opentack-amd64
+mv tk8-linux-opentack-amd64 /user/local/bin/tk8
 ```
 
-
-Export your OpenStack CA CERT file and Initialize the kubespray repo:
+Source your OpenStack rc file , export your OpenStack CA CERT file and Initialize the kubespray repo:
 
 ```shell
-export OS_CACERT=/tk8/openstack/ca.crt
+source project-openrc.sh
 
-tk8 cluster init
+export OS_CACERT=/path-to/tk8/openstack/ca.crt
+
+tk8 cluster init # initialize the kubespray repo
 ```
 
 ## Step 2
@@ -59,4 +69,29 @@ tk8 cluster openstack --destroy
 ```
 
 N.B -- Before destroying the cluster, make sure you delete any load balancer that was created inside your kubernetes cluster, otherwise, terraform destroy will not work completely since terraform did not create the additional load balancer \(the load balancer is tied to some other aspects of the cloud which will affect the terraform destroy procedure\).
+
+## Using Docker image
+
+**No Prerequisites**, oh yes you need Docker :-\)
+
+```shell
+git clone https://github.com/kubernauts/tk8
+cd tk8
+export OS_CACERT=/path-to/tk8/openstack/ca.crt
+vi openstack/cluster.tfvars
+vi openstack/stack-credentials.yaml
+docker run -it --name tk8 -v ~/.ssh/:/root/.ssh/ -v "$(pwd)":/tk8 kubernautslabs/tk8 sh
+cd tk8
+wget https://github.com/kubernauts/tk8/releases/download/0.3/tk8-linux-opentack-amd64
+chmod +x tk8-linux-opentack-amd64
+mv tk8-linux-opentack-amd64 /user/local/bin/tk8
+tk8 cluster init
+tk8 cluster openstack --create
+pip install -r kubespray/requirements.txt
+tk8 cluster openstack --install
+exit
+KUBECONFIG=./kubespray/inventory/awscluster/artifacts/admin.conf kubectl get pods --all-namespaces
+```
+
+
 
