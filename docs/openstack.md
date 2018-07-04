@@ -2,9 +2,11 @@
 
 ## Step 1
 
-Initialize the kubespray repo
+Export your OpenStack CA CERT file and Initialize the kubespray repo:
 
 ```shell
+export OS_CACERT=/tk8/openstack/ca.crt
+
 tk8 cluster init
 ```
 
