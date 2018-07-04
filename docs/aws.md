@@ -26,7 +26,15 @@ Provide the AWS credentials in either of the following ways:
 * [Environment Variables](https://docs.aws.amazon.com/cli/latest/userguide/cli-environment.html). You will need to specify `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`.
 * [Config file](../config.yaml)
 
-Create a `config.yaml` file to specify the cluster details. [Example config](../config.yaml):
+## Clone the tk8 repo  
+
+```shell
+git clone https://github.com/kubernauts/tk8
+cd tk8
+```
+
+    
+Adapt the `config.yaml` file to specify the cluster details. [Example config](../config.yaml):
 
 ```yaml
 aws:
