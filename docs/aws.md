@@ -74,6 +74,8 @@ Post installation the **kubeconfig** will be available at: _./kubespray/inventor
 
 ## Using Docker image
 
+None Prerequisites, oh yes you need Docker :-)
+
 ```shell
 git clone https://github.com/kubernauts/tk8
 cd tk8
