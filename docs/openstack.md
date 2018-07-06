@@ -1,5 +1,11 @@
 # Provisioning and Deploying Kubernetes on OpenStack
 
+## Prerequisites
+
+* [Git](https://git-scm.com/)
+* [Terraform](https://www.terraform.io/downloads.html)
+* [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
+
 ## Step 1
 
 Get the tk8 repo
