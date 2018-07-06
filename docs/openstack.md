@@ -2,18 +2,19 @@
 
 ## Step 1
 
-Get the tk8 repo  
+Get the tk8 repo
 
 ```shell
 git clone https://github.com/kubernauts/tk8
 cd tk8
 ```
 
-
-Export your OpenStack CA CERT file and Initialize the kubespray repo:
+Source your OpenStack rc file , export your OpenStack CA CERT file and Initialize the kubespray repo:
 
 ```shell
-export OS_CACERT=/tk8/openstack/ca.crt
+source project-openrc.sh
+
+export OS_CACERT=/tk8/openstack/ca.crt # needed if you use a self signed certificate
 
 tk8 cluster init
 ```
