@@ -23,7 +23,7 @@ Source your OpenStack rc file , export your OpenStack CA CERT file and Initializ
 ```shell
 source project-openrc.sh
 
-export OS_CACERT=/path-to/tk8/openstack/ca.crt # needed if you use a self signed certificate
+export OS_CACERT=/path-to/tk8/openstack/ca.crt
 
 tk8 cluster init # initialize the kubespray repo
 ```
