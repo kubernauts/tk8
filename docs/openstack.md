@@ -77,10 +77,14 @@ N.B -- Before destroying the cluster, make sure you delete any load balancer tha
 ```shell
 git clone https://github.com/kubernauts/tk8
 cd tk8
+export OS_CACERT=/path-to/tk8/openstack/ca.crt
 vi openstack/cluster.tfvars
 vi openstack/stack-credentials.yaml
 docker run -it --name tk8 -v ~/.ssh/:/root/.ssh/ -v "$(pwd)":/tk8 kubernautslabs/tk8 sh
 cd tk8
+wget https://github.com/kubernauts/tk8/releases/download/0.3/tk8-linux-opentack-amd64
+chmod +x tk8-linux-opentack-amd64
+mv tk8-linux-opentack-amd64 /user/local/bin/tk8
 tk8 cluster init
 tk8 cluster openstack --create
 pip install -r kubespray/requirements.txt
