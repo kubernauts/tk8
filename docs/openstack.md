@@ -70,3 +70,24 @@ tk8 cluster openstack --destroy
 
 N.B -- Before destroying the cluster, make sure you delete any load balancer that was created inside your kubernetes cluster, otherwise, terraform destroy will not work completely since terraform did not create the additional load balancer \(the load balancer is tied to some other aspects of the cloud which will affect the terraform destroy procedure\).
 
+## Using Docker image
+
+**No Prerequisites**, oh yes you need Docker :-\)
+
+```shell
+git clone https://github.com/kubernauts/tk8
+cd tk8
+vi openstack/cluster.tfvars
+vi openstack/stack-credentials.yaml
+docker run -it --name tk8 -v ~/.ssh/:/root/.ssh/ -v "$(pwd)":/tk8 kubernautslabs/tk8 sh
+cd tk8
+tk8 cluster init
+tk8 cluster openstack --create
+pip install -r kubespray/requirements.txt
+tk8 cluster openstack --install
+exit
+KUBECONFIG=./kubespray/inventory/awscluster/artifacts/admin.conf kubectl get pods --all-namespaces
+```
+
+
+
