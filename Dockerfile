@@ -13,6 +13,7 @@ ARG VCS_REF=dev
 ARG BUILD_DATE=null
 #This will be overridden by the build args in hooks folder
 ARG TERRVERSION=0.11.7
+ARG KUBECTLVERSION=v1.10.5
 
 #Label Schemas to be used for metadata as described at http://label-schema.org/
 LABEL  org.label-schema.description="CLI to deploy kubernetes using kubespray and also install additional addons." \
@@ -36,10 +37,22 @@ RUN wget https://releases.hashicorp.com/terraform/${TERRVERSION}/terraform_${TER
 RUN apk --update add python py-pip openssl ca-certificates py-netaddr ansible git \
     && apk add --virtual build-dependencies \
             python-dev libffi-dev openssl-dev build-base \
-    && apk add --no-cache openssh \
     && pip install --upgrade pip cffi \
+    && apk add --no-cache openssh \
     && apk del build-dependencies \
     && rm -rf /var/cache/apk/* \
     && chmod +x /usr/local/bin/tk8
+
+# Install requirements for kubectl
+RUN apk add -U curl tar gzip && \
+  wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://raw.githubusercontent.com/sgerrand/alpine-pkg-glibc/master/sgerrand.rsa.pub && \
+  wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.23-r3/glibc-2.23-r3.apk && \
+  apk add glibc-2.23-r3.apk && \
+  rm glibc-2.23-r3.apk
+
+# Install kubectl
+RUN curl -L -o /usr/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/${KUBECTLVERSION}/bin/linux/amd64/kubectl && \
+  chmod +x /usr/bin/kubectl && \
+  kubectl version --client
 
 CMD [ "/usr/local/bin/tk8" ]
