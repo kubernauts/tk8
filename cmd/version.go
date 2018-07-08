@@ -6,15 +6,20 @@ import (
   "github.com/spf13/cobra"
 )
 
-func init() {
-  rootCmd.AddCommand(versionCmd)
-}
+var (
+      VERSION = "0.0.3"
+      GITCOMMIT = "HEAD"
+)
 
 var versionCmd = &cobra.Command{
   Use:   "version",
-  Short: "Print the version number of TK8",
+  Short: "Print the version of TK8",
   Long:  `All software has versions. This is TK8's`,
   Run: func(cmd *cobra.Command, args []string) {
-    fmt.Println("0.0.1")
+    fmt.Println(VERSION + " (" + GITCOMMIT + ")")
   },
+}
+
+func init() {
+	rootCmd.AddCommand(versionCmd)
 }
