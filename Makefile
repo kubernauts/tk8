@@ -1,6 +1,6 @@
-PROJECT := ~/go/src/github.com/kubernauts/tk8
+PROJECT := github.com/kubernauts/tk8
 GITCOMMIT := $(shell git rev-parse --short HEAD 2>/dev/null)
-BUILD_FLAGS := -ldflags="-w -X /home/niki/go/src/github.com/kubernauts/tk8/cmd.GITCOMMIT=$(GITCOMMIT)"
+BUILD_FLAGS := -ldflags="-w -X $(PROJECT)/cmd.GITCOMMIT=$(GITCOMMIT)"
 
 default: bin
 
