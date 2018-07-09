@@ -21,9 +21,7 @@ tk8 cluster init # clone kubernauts/kubespray
 tk8 cluster aws --create # create the cluster infra using terraform
 pip install -r kubespray/requirements.txt # not needed with kubernauts/kubespray
 tk8 cluster aws --install
-exit
 KUBECONFIG=./kubespray/inventory/awscluster/artifacts/admin.conf kubectl get pods --all-namespaces
-
 ```
 
 ---
