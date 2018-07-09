@@ -52,7 +52,6 @@ RUN apk add -U curl tar gzip && \
 
 # Install kubectl
 RUN curl -L -o /usr/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/${KUBECTLVERSION}/bin/linux/amd64/kubectl && \
-  chmod +x /usr/bin/kubectl && \
-  kubectl version --client
+  chmod +x /usr/bin/kubectl
 
 CMD [ "/usr/local/bin/tk8" ]
