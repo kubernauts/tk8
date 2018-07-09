@@ -126,7 +126,7 @@ Kindly ensure that terraform is installed also.`,
 					fmt.Fprintf(g, "  port: 6443\n")
 				}
 			}
-			kubeSet := exec.Command("ansible-playbook", "-i", "./inventory/awscluster/hosts", "./cluster.yml", "--timeout=60", "-e ansible_user=core", "-e bootstrap_os=coreos", "-b", "--become-user=root", "--flush-cache")
+			kubeSet := exec.Command("ansible-playbook", "-i", "./inventory/awscluster/hosts", "./cluster.yml", "--timeout=60", "-e ansible_user=centos", "-e bootstrap_os=centos", "-b", "--become-user=root", "--flush-cache")
 			kubeSet.Dir = "./kubespray/"
 			stdout, _ := kubeSet.StdoutPipe()
 			kubeSet.Stderr = kubeSet.Stdout
