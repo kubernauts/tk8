@@ -6,6 +6,7 @@ This is the easiest way to deploy an HA Kubernetes cluster on AWS with kubernaut
 
 ## Prerequisites
 
+* Git
 * Docker
 * Existing SSH keypair in AWS
 * AWS access and secret keys
