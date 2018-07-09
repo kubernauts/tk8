@@ -1,5 +1,35 @@
 # Provisioning and Deploying Kubernetes on AWS
 
+## Using Docker image
+
+This is the easiest way to deploy an HA Kubernetes cluster on AWS with kubernautslabs/tk8 docker image.
+
+## Prerequisites
+
+* Docker
+* Existing SSH keypair in AWS
+* AWS access and secret keys
+
+```shell
+git clone https://github.com/kubernauts/tk8
+cd tk8
+docker build -t kubernautslabs/tk8 . # optional, only if you'd like to build your own docker image
+vi config.yaml --> provide your AWS access and secret key and an exsiting SSH keypair in AWS
+docker run -it --name tk8 -v ~/.ssh/:/root/.ssh/ -v "$(pwd)":/tk8 kubernautslabs/tk8 sh
+cd tk8
+tk8 cluster init # clone kubernauts/kubespray
+tk8 cluster aws --create # create the cluster infra using terraform
+pip install -r kubespray/requirements.txt # not needed with kubernauts/kubespray
+tk8 cluster aws --install
+exit
+KUBECONFIG=./kubespray/inventory/awscluster/artifacts/admin.conf kubectl get pods --all-namespaces
+
+```
+
+---
+
+## Provision the cluster using CLI
+
 ## Prerequisites
 
 * [Git](https://git-scm.com/)
@@ -7,8 +37,6 @@
 * [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
 
 ---
-
-## Provision the cluster using CLI
 
 You can download the TK8 CLI for Linux and Mac OSX under releases [here](https://github.com/kubernauts/tk8/releases).
 
@@ -69,26 +97,6 @@ tk8 cluster aws --install
 Post installation the **kubeconfig** will be available at: _./kubespray/inventory/awscluster/artifacts/admin.conf_
 
 **Do not** delete the kubespray directory post installation as the cluster state will be saved in it.
-
----
-
-## Using Docker image
-
-**No Prerequisites**, oh yes you need Docker :-\)
-
-```shell
-git clone https://github.com/kubernauts/tk8
-cd tk8
-vi config.yaml --> provide your AWS access and secret key and an exsiting SSH keypair in AWS
-docker run -it --name tk8 -v ~/.ssh/:/root/.ssh/ -v "$(pwd)":/tk8 kubernautslabs/tk8 sh
-cd tk8
-tk8 cluster init
-tk8 cluster aws --create
-pip install -r kubespray/requirements.txt
-tk8 cluster aws --install
-exit
-KUBECONFIG=./kubespray/inventory/awscluster/artifacts/admin.conf kubectl get pods --all-namespaces
-```
 
 ---
 
