@@ -31,12 +31,6 @@
   version = "v1.0"
 
 [[projects]]
-  name = "github.com/kubernauts/tk8"
-  packages = ["cmd"]
-  revision = "b2cc3dd9e7a65b4ead124c2871103ba22df6e1f0"
-  version = "0.3"
-
-[[projects]]
   name = "github.com/magiconair/properties"
   packages = ["."]
   revision = "c2353362d570a7bfa228149c62842019201cfb71"
@@ -127,6 +121,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "3bb14c88297c8928e3f3fa1410b90b91dc4ae1c74ee7734c863af1a162ba3abd"
+  inputs-digest = "79024c3d35c68aa3c86540372e0f702b5ce43d95db09adf2880ff8b5c1f78295"
   solver-name = "gps-cdcl"
   solver-version = 1
