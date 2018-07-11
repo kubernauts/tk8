@@ -1,5 +1,5 @@
 PROJECT := github.com/kubernauts/tk8
-GITCOMMIT := $(shell git describe --tag --abbrev=0)
+GITCOMMIT := $(shell git describe --tag --abbrev=0 2>/dev/null)
 BUILD_FLAGS := -ldflags="-w -X $(PROJECT)/cmd.GITCOMMIT=$(GITCOMMIT)"
 
 default: bin
