@@ -1,9 +1,5 @@
-<<<<<<< 1d205c236040b5b4063654bac8c16809d7a32324
-
-=======
->>>>>>> Path changed in Makefile
 PROJECT := github.com/kubernauts/tk8
-GITCOMMIT := $(shell git rev-parse --short HEAD 2>/dev/null)
+GITCOMMIT := $(shell git describe --tag --abbrev=0)
 BUILD_FLAGS := -ldflags="-w -X $(PROJECT)/cmd.GITCOMMIT=$(GITCOMMIT)"
 
 default: bin
