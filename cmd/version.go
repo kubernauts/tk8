@@ -6,7 +6,7 @@ import (
   "github.com/spf13/cobra"
 )
 
-var GITCOMMIT = ""
+var GITCOMMIT, VERSION string
 
 var versionCmd = &cobra.Command{
   Use:   "version",
@@ -14,7 +14,7 @@ var versionCmd = &cobra.Command{
   Long:  `All software has versions. This is TK8's`,
   Run: func(cmd *cobra.Command, args []string) {
   
-    fmt.Println( GITCOMMIT )
+    fmt.Println( VERSION + " (" + GITCOMMIT +")" )
   },
 }
 
