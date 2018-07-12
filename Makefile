@@ -1,6 +1,7 @@
 PROJECT := github.com/kubernauts/tk8
-GITCOMMIT := $(shell git rev-parse --short HEAD 2>/dev/null)
-BUILD_FLAGS := -ldflags="-w -X $(PROJECT)/cmd.GITCOMMIT=$(GITCOMMIT)"
+VERSION := $(shell git describe --tag --abbrev=0)
+GITCOMMIT := $(shell git rev-parse --short HEAD)
+BUILD_FLAGS := -ldflags="-w -X $(PROJECT)/cmd.GITCOMMIT=$(GITCOMMIT) -X $(PROJECT)/cmd.VERSION=$(VERSION)"
 
 default: bin
 
@@ -26,3 +27,4 @@ lint:
 .PHONY: vet
 vet:
 	go vet $(PKGS)
+
