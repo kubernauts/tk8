@@ -41,6 +41,7 @@ Create, delete and show current status of the deployment that is running on AWS.
 Kindly ensure that terraform is installed also.`,
 	Args: cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
+
 		if install {
 			// check if ansible is installed
 			terr, err := exec.LookPath("ansible")
@@ -126,7 +127,8 @@ Kindly ensure that terraform is installed also.`,
 					fmt.Fprintf(g, "  port: 6443\n")
 				}
 			}
-			kubeSet := exec.Command("ansible-playbook", "-i", "./inventory/awscluster/hosts", "./cluster.yml", "--timeout=60", "-e ansible_user=centos", "-e bootstrap_os=centos", "-b", "--become-user=root", "--flush-cache")
+			sshUser, osLabel := distSelect()
+			kubeSet := exec.Command("ansible-playbook", "-i", "./inventory/awscluster/hosts", "./cluster.yml", "--timeout=60", "-e ansible_user="+sshUser, "-e bootstrap_os="+osLabel, "-b", "--become-user=root", "--flush-cache")
 			kubeSet.Dir = "./kubespray/"
 			stdout, _ := kubeSet.StdoutPipe()
 			kubeSet.Stderr = kubeSet.Stdout
@@ -327,21 +329,7 @@ Kindly ensure that terraform is installed also.`,
 			fmt.Fprintf(tfile, "#  Product = 'kubernetes'\n")
 			fmt.Fprintf(tfile, "}")
 
-			//fmt.Println("Please enter your AWS access key ID")
-			//var awsAccessKeyID string
-			//fmt.Scanln(&awsAccessKeyID)
-
-			//fmt.Println("Please enter your AWS SECRET ACCESS KEY")
-			//var awsSecretKey string
-			//fmt.Scanln(&awsSecretKey)
-
-			//fmt.Println("Please enter your AWS SSH Key Name")
-			//var awsAccessSSHKey string
-			//fmt.Scanln(&awsAccessSSHKey)
-
-			//fmt.Println("Please enter your AWS Default Region")
-			//var awsDefaultRegion string
-			//fmt.Scanln(&awsDefaultRegion)
+			distSelect()
 
 			terrInit := exec.Command("terraform", "init")
 			terrInit.Dir = "./kubespray/contrib/terraform/aws/"
@@ -380,6 +368,81 @@ Kindly ensure that terraform is installed also.`,
 		}
 
 	},
+}
+
+func distSelect() (string, string) {
+	var sshUser, osLabel string
+
+	centos := map[string]string{
+		"user":      "centos",
+		"ami_owner": "688023202711",
+		"os":        "dcos-centos7",
+	}
+
+	debian := map[string]string{
+		"user":      "admin",
+		"ami_owner": "379101102735",
+		"os":        "debian-jessie-amd64-hvm",
+	}
+
+	ubuntu := map[string]string{
+		"user":      "ubuntu",
+		"ami_owner": "099720109477",
+		"os":        "ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64",
+	}
+
+	//Read Configuration File
+	viper.SetConfigName("config")
+
+	viper.AddConfigPath(".")
+	verr := viper.ReadInConfig() // Find and read the config file
+	if verr != nil {             // Handle errors reading the config file
+		panic(fmt.Errorf("fatal error config file: %s", verr))
+	}
+
+	awsAmiID := viper.GetString("aws.ami_id")
+	awsInstanceOS := viper.GetString("aws.os")
+	sshUser = viper.GetString("aws.ssh_user")
+
+	// Think of a better way to do this
+	if awsInstanceOS != "" {
+		fmt.Println(awsInstanceOS)
+		switch awsInstanceOS {
+		case "centos":
+			exec.Command("sh", "-c", "sed -i \"\" -e 's/dcos-centos7/"+centos["os"]+"/g' ./kubespray/contrib/terraform/aws/variables.tf").Run()
+			exec.Command("sh", "-c", "sed -i \"\" -e 's/688023202711/"+centos["ami_owner"]+"/g' ./kubespray/contrib/terraform/aws/variables.tf").Run()
+			sshUser = centos["user"]
+			osLabel = "centos"
+		case "debian":
+			exec.Command("sh", "-c", "sed -i \"\" -e 's/dcos-centos7/"+debian["os"]+"/g' ./kubespray/contrib/terraform/aws/variables.tf").Run()
+			exec.Command("sh", "-c", "sed -i \"\" -e 's/688023202711/"+debian["ami_owner"]+"/g' ./kubespray/contrib/terraform/aws/variables.tf").Run()
+			sshUser = debian["user"]
+			osLabel = "debian"
+		case "ubuntu":
+			exec.Command("sh", "-c", "sed -i \"\" -e 's#dcos-centos7#"+ubuntu["os"]+"#g' ./kubespray/contrib/terraform/aws/variables.tf").Run()
+			exec.Command("sh", "-c", "sed -i \"\" -e 's/688023202711/"+ubuntu["ami_owner"]+"/g' ./kubespray/contrib/terraform/aws/variables.tf").Run()
+			sshUser = ubuntu["user"]
+			osLabel = "ubuntu"
+			// default:
+			// 	sshUser = "core"
+			// 	osLabel = "coreos"
+			// 	return sshUser, osLabel
+		}
+	} else if awsAmiID != "" && sshUser != "" {
+		err := exec.Command("sh", "-c", "sed -i \"\" -e 's/${data.aws_ami.distro.id}/"+awsAmiID+"/g' ./kubespray/contrib/terraform/aws/create-infrastructure.tf").Run()
+		if err != nil {
+			log.Fatal("Cannot replace AMI ID in Infrastructure template", err)
+		}
+		osLabel = "Custom-AMI"
+	} else if awsAmiID != "" && sshUser == "" {
+		log.Fatal("SSH Username is required when using custom AMI")
+		return "", ""
+	} else {
+		log.Fatal("Provide either of AMI ID or OS in the config file.")
+		return "", ""
+	}
+
+	return sshUser, osLabel
 }
 
 func init() {
