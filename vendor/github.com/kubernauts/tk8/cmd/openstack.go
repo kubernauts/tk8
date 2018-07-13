@@ -81,7 +81,7 @@ var openstackCmd = &cobra.Command{
 				viper.AddConfigPath("./kubespray/contrib/terraform/openstack/")
 				verr := viper.ReadInConfig() // Find and read the config file
 				if verr != nil {             // Handle errors reading the config file
-					panic(fmt.Errorf("Fatal error config file: %s \n", verr))
+					panic(fmt.Errorf("fatal error config file: %s", verr))
 				}
 
 				LBIP := viper.GetString("floating-master-lb-vip")
@@ -131,7 +131,7 @@ var openstackCmd = &cobra.Command{
 			viper.AddConfigPath("./kubespray/contrib/terraform/openstack/")
 			venv := viper.ReadInConfig() // Find and read the config file
 			if venv != nil {             // Handle errors reading the config file
-				panic(fmt.Errorf("Fatal error config file: %s \n", venv))
+				panic(fmt.Errorf("fatal error config file: %s", venv))
 			}
 
 			OsAuthURL := viper.GetString("clouds.mycloud.auth.auth_url")
@@ -179,6 +179,39 @@ var openstackCmd = &cobra.Command{
 			os.Setenv("OS_INTERFACE", OsInterface)
 
 			os.Setenv("OS_IDENTITY_API_VERSION", OsIdentityAPIVersion)
+
+			//Include the CA cert aspect, if CA cert is set in the environment, then export the value and also create
+			//the certs folder and copy the certificate from deployment host to the remote kubernetes nodes
+
+			CertEnv := os.Getenv("OS_CACERT")
+
+			log.Println("Checking Ca cert env")
+
+			if CertEnv != "" {
+
+				log.Println(CertEnv)
+
+				CertSet := exec.Command("ansible-playbook", "-i", "./kubespray/inventory/stackcluster/hosts.ini", "./openstack/certificate-copy-playbook.yml", "-e ansible_user=centos")
+				CertSet.Dir = "."
+				stdout, _ := CertSet.StdoutPipe()
+				CertSet.Stderr = CertSet.Stdout
+				CertSet.Start()
+				scanner := bufio.NewScanner(stdout)
+				for scanner.Scan() {
+					m := scanner.Text()
+					fmt.Println(m)
+					//log.Printf(m)
+				}
+
+				CertSet.Wait()
+
+				//Set the CA cert environment to the configured value in the Ansible file certificate-copy-playbook.yml
+
+				os.Setenv("OS_CACERT", "/etc/kubernetes/ssl/openstack-tls-ca.crt")
+
+				log.Println(os.Getenv("OS_CACERT"))
+
+			}
 
 			kubeSet := exec.Command("ansible-playbook", "-i", "./inventory/stackcluster/hosts.ini", "./cluster.yml", "-e ansible_user=centos", "-b", "--become-user=root", "--flush-cache")
 			kubeSet.Dir = "./kubespray/"

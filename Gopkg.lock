@@ -33,9 +33,8 @@
 [[projects]]
   name = "github.com/kubernauts/tk8"
   packages = ["cmd"]
-  revision = "b2cc3dd9e7a65b4ead124c2871103ba22df6e1f0"
-  version = "0.3"
-
+  revision = "f69c074925d8584f1769e666fac258a4d41c7bc8"
+  version = "v0.3"
 
 [[projects]]
   name = "github.com/magiconair/properties"
@@ -58,8 +57,8 @@
 [[projects]]
   name = "github.com/pelletier/go-toml"
   packages = ["."]
-  revision = "acdc4509485b587f5e675510c4f2c63e90ff68a8"
-  version = "v1.1.0"
+  revision = "c01d1270ff3e442a8a57cddc1c92dc1138598194"
+  version = "v1.2.0"
 
 [[projects]]
   name = "github.com/spf13/afero"
@@ -67,8 +66,8 @@
     ".",
     "mem"
   ]
-  revision = "63644898a8da0bc22138abf860edaf5277b6102e"
-  version = "v1.1.0"
+  revision = "787d034dfe70e44075ccc060d346146ef53270ad"
+  version = "v1.1.1"
 
 [[projects]]
   name = "github.com/spf13/cast"
@@ -104,7 +103,7 @@
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "c11f84a56e43e20a78cee75a7c034031ecf57d1f"
+  revision = "1b2967e3c290b7c545b3db0deeda16e9be4f98a2"
 
 [[projects]]
   name = "golang.org/x/text"
@@ -128,6 +127,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "79024c3d35c68aa3c86540372e0f702b5ce43d95db09adf2880ff8b5c1f78295"
+  inputs-digest = "b486dc068c34864313b9b3611b2698cc6e480cbee8c5e011d7812f3e2594e6c9"
   solver-name = "gps-cdcl"
   solver-version = 1
