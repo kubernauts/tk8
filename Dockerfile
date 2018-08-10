@@ -1,13 +1,11 @@
+# multi-stage build 
+## builder stage
 FROM golang:alpine as builder
+RUN apk --update add git && go get -u github.com/kubernauts/tk8
+RUN go install github.com/kubernauts/tk8
 
-COPY ./ /go/src/tk8
-
-WORKDIR /go/src/tk8
-
-RUN go install tk8
-
+## os stage
 FROM alpine
-
 #To track exactly which commit is the image built off
 ARG VCS_REF=dev
 ARG BUILD_DATE=null
