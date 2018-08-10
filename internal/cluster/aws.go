@@ -71,10 +71,11 @@ func distSelect() (string, string) {
 			exec.Command("sh", "-c", "sed -i \"\" -e 's/688023202711/"+ubuntu["ami_owner"]+"/g' ./kubespray/contrib/terraform/aws/variables.tf").Run()
 			sshUser = ubuntu["user"]
 			osLabel = "ubuntu"
-			// default:
-			// 	sshUser = "core"
-			// 	osLabel = "coreos"
-			// 	return sshUser, osLabel
+		// Will only work with 'https://github.com/kubernetes-incubator/kubespray'
+		default:
+			sshUser = "core"
+			osLabel = "coreos"
+			return sshUser, osLabel
 		}
 	} else if awsAmiID != "" && sshUser != "" {
 		err := exec.Command("sh", "-c", "sed -i \"\" -e 's/${data.aws_ami.distro.id}/"+awsAmiID+"/g' ./kubespray/contrib/terraform/aws/create-infrastructure.tf").Run()
