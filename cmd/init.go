@@ -38,7 +38,7 @@ var initCmd = &cobra.Command{
 			log.Fatal("either 'git' is not installed or not found in $PATH, kindly check and fix")
 			os.Exit(1)
 		} else {
-			err := exec.Command("git", "clone", "https://github.com/kubernauts/kubespray").Run()
+			err := exec.Command("git", "clone", "https://github.com/kubernetes-incubator/kubespray").Run()
 			if err != nil {
 				log.Fatalf("Seems there is a problem cloning the kubespray repo, %v", err)
 				os.Exit(1)
