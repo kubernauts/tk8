@@ -66,7 +66,7 @@ Adapt the `config.yaml` file to specify the cluster details. [Example config](..
 ```yaml
 aws:
    clustername: kubernauts
-   os: centos # to change see below
+   os: centos # valid options are coreos/ubuntu/centos
    aws_access_key_id: # optional, see above.
    aws_secret_access_key: # optional, see above.
    aws_ssh_keypair: # needs to be an existing SSH keypair in AWS
@@ -109,72 +109,4 @@ To delete the provisioned cluster run:
 ```shell
 tk8 cluster aws --destroy
 ```
-
-## Using other distrib than CoreOs
-
-If you want to use an OS distribution other than CoreOS, you will have to modify the search filters of the `data "aws_ami" "distro" {...}` in `./kubespray/contrib/terraform/aws/variables.tf`.
-
-Example:
-
-**Debian Jessie**
-
-```hcl
-data "aws_ami" "distro" {
-  most_recent = true
-
-  filter {
-    name   = "name"
-    values = ["debian-jessie-amd64-hvm-*"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-
-  owners = ["379101102735"]
-}
-```
-
-**Ubuntu 16.04**
-
-```hcl
-data "aws_ami" "distro" {
-  most_recent = true
-
-  filter {
-    name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-*"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-
-  owners = ["099720109477"]
-}
-```
-
-**Centos 7**
-
-```hcl
-data "aws_ami" "distro" {
-  most_recent = true
-
-  filter {
-    name   = "name"
-    values = ["dcos-centos7-*"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-
-  owners = ["688023202711"]
-}
-```
-
-
 

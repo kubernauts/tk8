@@ -1,5 +1,5 @@
 PROJECT := github.com/kubernauts/tk8
-VERSION := $(shell git describe --tag --abbrev=0 2>/dev/null)
+VERSION := $(shell git tag 2>/dev/null|tail -n 1)
 GITCOMMIT := $(shell git rev-parse --short HEAD 2>/dev/null)
 BUILD_FLAGS := -ldflags="-w -X $(PROJECT)/cmd.GITCOMMIT=$(GITCOMMIT) -X $(PROJECT)/cmd.VERSION=$(VERSION)"
 
