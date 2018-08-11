@@ -19,3 +19,6 @@ _book
 tk8
 dist
 bin
+
+# Ignore kubespray
+kubespray
