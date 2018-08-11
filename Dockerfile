@@ -1,13 +1,13 @@
+# multi-stage build 
+## builder stage
 FROM golang:alpine as builder
+RUN apk --update add make git
+COPY ./ /go/src/github.com/kubernauts/tk8
+WORKDIR /go/src/github.com/kubernauts/tk8
+RUN make bin
 
-COPY ./ /go/src/tk8
-
-WORKDIR /go/src/tk8
-
-RUN go install tk8
-
+## os stage
 FROM alpine
-
 #To track exactly which commit is the image built off
 ARG VCS_REF=dev
 ARG BUILD_DATE=null
@@ -27,7 +27,7 @@ LABEL  org.label-schema.description="CLI to deploy kubernetes using kubespray an
        org.label-schema.vcs-url="https://github.com/kubernauts/tk8" \
        org.label-schema.vendor="kubernauts"
 
-COPY --from=builder /go/bin/tk8 /usr/local/bin/tk8
+COPY --from=builder /go/src/github.com/kubernauts/tk8/tk8 /usr/local/bin/tk8
 
 RUN wget https://releases.hashicorp.com/terraform/${TERRVERSION}/terraform_${TERRVERSION}_linux_amd64.zip \
     && unzip terraform_${TERRVERSION}_linux_amd64.zip -d /usr/local/bin/ \
