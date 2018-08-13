@@ -34,21 +34,18 @@ RUN wget https://releases.hashicorp.com/terraform/${TERRVERSION}/terraform_${TER
     && rm terraform_${TERRVERSION}_linux_amd64.zip 
 #Need git to clone kubespray
 #Need '--virtual' packages for proper package import through pip
-RUN apk --update add python py-pip openssl ca-certificates py-netaddr ansible git \
+
+RUN apk --update add python py-pip openssl ca-certificates py-netaddr git \
     && apk add --virtual build-dependencies \
             python-dev libffi-dev openssl-dev build-base \
-    && pip install --upgrade pip cffi \
+    && pip install --upgrade pip cffi ansible \
     && apk add --no-cache openssh \
     && apk del build-dependencies \
     && rm -rf /var/cache/apk/* \
     && chmod +x /usr/local/bin/tk8
 
 # Install requirements for kubectl
-RUN apk add -U curl tar gzip && \
-  wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://raw.githubusercontent.com/sgerrand/alpine-pkg-glibc/master/sgerrand.rsa.pub && \
-  wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.23-r3/glibc-2.23-r3.apk && \
-  apk add glibc-2.23-r3.apk && \
-  rm glibc-2.23-r3.apk
+RUN apk add -U curl tar gzip
 
 # Install kubectl
 RUN curl -L -o /usr/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/${KUBECTLVERSION}/bin/linux/amd64/kubectl && \
