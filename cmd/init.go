@@ -52,7 +52,7 @@ var initCmd = &cobra.Command{
 			// Ensure to have all the dependencies of Kubespray
 			err := exec.Command("pip", "install", "-r", "kubespray/requirements.txt").Run()
 			if err != nil {
-				log.Fatalf("Seems there is a problem cloning the kubespray repo, %v", err)
+				log.Fatalf("Seems there is a problem installing the kubespray dependencies, %v", err)
 				os.Exit(1)
 			}
 		}
