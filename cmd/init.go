@@ -45,8 +45,17 @@ var initCmd = &cobra.Command{
 				os.Exit(1)
 			}
 		}
-		//os.Rename("./kubespray/contrib/terraform/aws/credentials.tfvars.example", "./kubespray/contrib/terraform/aws/credentials.tfvars")
-
+		if _, err := exec.LookPath("pip"); err != nil {
+			log.Fatal("either 'pip' is not installed or not found in $PATH, kindly check and fix")
+			os.Exit(1)
+		} else {
+			// Ensure to have all the dependencies of Kubespray
+			err := exec.Command("pip", "install", "-r", "kubespray/requirements.txt").Run()
+			if err != nil {
+				log.Fatalf("Seems there is a problem cloning the kubespray repo, %v", err)
+				os.Exit(1)
+			}
+		}
 	},
 }
 
