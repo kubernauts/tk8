@@ -17,20 +17,22 @@ package cluster
 import (
 	"bufio"
 	"fmt"
-	"html/template"
 	"log"
 	"net"
 	"os"
 	"os/exec"
 	"strings"
+	"text/template"
+
+	"github.com/kubernauts/tk8/internal/templates"
 )
 
 var ec2IP string
 
-func parseTemplate(templateName string, outputFileName string, data interface{}) {
+func parseTemplate(templateString string, outputFileName string, data interface{}) {
 	// open template
-	filePath := GetFilePath(templateName)
-	template := template.Must(template.ParseFiles(filePath))
+	template := template.New("template")
+	template, _ = template.Parse(templateString)
 	// open output file
 	outputFile, err := os.Create(GetFilePath(outputFileName))
 	defer outputFile.Close()
@@ -55,11 +57,10 @@ func distSelect() (string, string) {
 		log.Fatal("Provide either of AMI ID or OS in the config file.")
 		return "", ""
 	}
-
-	parseTemplate("../../templates/variables.tf", "../../kubespray/contrib/terraform/aws/variables.tf", DistOSMap[awsInstanceOS])
-	parseTemplate("../../templates/create-infrastructure.tf", "../../kubespray/contrib/terraform/aws/create-infrastructure.tf", DistOSMap[awsInstanceOS])
-	parseTemplate("../../templates/credentials.tfvars", "../../kubespray/contrib/terraform/aws/variables.tf", GetCredentials())
-	parseTemplate("../../templates/terraform.tfvars", "../../kubespray/contrib/terraform/aws/terraform.tfvars", DistOSMap[awsInstanceOS])
+	go parseTemplate(templates.Variables, "./kubespray/contrib/terraform/aws/variables.tf", DistOSMap[awsInstanceOS])
+	go parseTemplate(templates.Infrastructure, "./kubespray/contrib/terraform/aws/create-infrastructure.tf", DistOSMap[awsInstanceOS])
+	go parseTemplate(templates.Credentials, "./kubespray/contrib/terraform/aws/credentials.tfvars", GetCredentials())
+	go parseTemplate(templates.Terraform, "./kubespray/contrib/terraform/aws/terraform.tfvars", GetClusterConfig())
 
 	return sshUser, osLabel
 }
@@ -242,33 +243,7 @@ func AWSDestroy() {
 	if _, err := os.Stat("./kubespray/contrib/terraform/aws/credentials.tfvars"); err == nil {
 		fmt.Println("Credentials file already exists, creation skipped")
 	} else {
-
-		fmt.Println("Please enter your AWS access key ID")
-		var awsAccessKeyID string
-		fmt.Scanln(&awsAccessKeyID)
-
-		fmt.Println("Please enter your AWS SECRET ACCESS KEY")
-		var awsSecretKey string
-		fmt.Scanln(&awsSecretKey)
-
-		fmt.Println("Please enter your AWS SSH Key Name")
-		var awsAccessSSHKey string
-		fmt.Scanln(&awsAccessSSHKey)
-
-		fmt.Println("Please enter your AWS Default Region")
-		var awsDefaultRegion string
-		fmt.Scanln(&awsDefaultRegion)
-
-		file, err := os.Create("./kubespray/contrib/terraform/aws/credentials.tfvars")
-		if err != nil {
-			log.Fatal("Cannot create file", err)
-		}
-		defer file.Close()
-
-		fmt.Fprintf(file, "AWS_ACCESS_KEY_ID = %s\n", awsAccessKeyID)
-		fmt.Fprintf(file, "AWS_SECRET_ACCESS_KEY = %s\n", awsSecretKey)
-		fmt.Fprintf(file, "AWS_SSH_KEY_NAME = %s\n", awsAccessSSHKey)
-		fmt.Fprintf(file, "AWS_DEFAULT_REGION = %s\n", awsDefaultRegion)
+		parseTemplate(templates.Credentials, "./kubespray/contrib/terraform/aws/credentials.tfvars", GetCredentials())
 	}
 	terrSet := exec.Command("terraform", "destroy", "-var-file=credentials.tfvars", "-force")
 	terrSet.Dir = "./kubespray/contrib/terraform/aws/"

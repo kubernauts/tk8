@@ -1,3 +1,6 @@
+package templates
+
+var Infrastructure = `
 terraform {
     required_version = ">= 0.8.7"
 }
@@ -53,7 +56,7 @@ module "aws-iam" {
 */
 
 resource "aws_instance" "bastion-server" {
-    ami = "{{.OS}}"
+    ami = "${data.aws_ami.distro.id}"
     instance_type = "${var.aws_bastion_size}"
     count = "${length(var.aws_cidr_subnets_public)}"
     associate_public_ip_address = true
@@ -79,7 +82,7 @@ resource "aws_instance" "bastion-server" {
 */
 
 resource "aws_instance" "k8s-master" {
-    ami = "{{.OS}}"
+    ami = "${data.aws_ami.distro.id}"
     instance_type = "${var.aws_kube_master_size}"
 
     count = "${var.aws_kube_master_num}"
@@ -111,7 +114,7 @@ resource "aws_elb_attachment" "attach_master_nodes" {
 
 
 resource "aws_instance" "k8s-etcd" {
-    ami = "{{.OS}}"
+    ami = "${data.aws_ami.distro.id}"
     instance_type = "${var.aws_etcd_size}"
 
     count = "${var.aws_etcd_num}"
@@ -135,7 +138,7 @@ resource "aws_instance" "k8s-etcd" {
 
 
 resource "aws_instance" "k8s-worker" {
-    ami = "{{.OS}}"
+    ami = "${data.aws_ami.distro.id}"
     instance_type = "${var.aws_kube_worker_size}"
 
     count = "${var.aws_kube_worker_num}"
@@ -189,3 +192,4 @@ resource "null_resource" "inventories" {
   }
 
 }
+`

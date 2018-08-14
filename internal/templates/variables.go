@@ -1,3 +1,6 @@
+package templates
+
+var Variables = `
 variable "AWS_ACCESS_KEY_ID" {
   description = "AWS Access Key"
 }
@@ -103,3 +106,4 @@ variable "default_tags" {
   description = "Default tags for all resources"
   type = "map"
 }
+`

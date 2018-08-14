@@ -37,7 +37,7 @@ var DistOSMap = map[string]DistOS{
 	},
 	"coreos": DistOS{
 		User:     "core",
-		AmiOwner: "688023202711",
+		AmiOwner: "595879546273",
 		OS:       "CoreOS-stable-*",
 	},
 }

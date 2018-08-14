@@ -1,7 +1,10 @@
+package templates
+
+var Terraform = `
 aws_cluster_name = "{{.AwsClusterName}}"
 aws_vpc_cidr_block = "{{.AwsVpcCidrBlock}}"
-aws_cidr_subnets_private = "{{.AwsCidrSubnetsPrivate}}"
-aws_cidr_subnets_public = "{{.AwsCidrSubnetsPublic}}"
+aws_cidr_subnets_private = {{.AwsCidrSubnetsPrivate}}
+aws_cidr_subnets_public = {{.AwsCidrSubnetsPublic}}
 
 aws_bastion_size = "{{.AwsBastionSize}}"
 aws_kube_master_num = "{{.AwsKubeMasterNum}}"
@@ -19,3 +22,4 @@ default_tags = {
     Env = "devtest"
     Product = "kubernetes"
 }
+`
