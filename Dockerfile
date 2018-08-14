@@ -38,7 +38,7 @@ RUN wget https://releases.hashicorp.com/terraform/${TERRVERSION}/terraform_${TER
 RUN apk --update add python py-pip openssl ca-certificates py-netaddr git \
     && apk add --virtual build-dependencies \
             python-dev libffi-dev openssl-dev build-base \
-    && pip install --upgrade pip cffi ansible \
+    && pip install --upgrade pip cffi ansible ansible-modules-hashivault \
     && apk add --no-cache openssh \
     && apk del build-dependencies \
     && rm -rf /var/cache/apk/* \
@@ -50,5 +50,6 @@ RUN apk add -U curl tar gzip
 # Install kubectl
 RUN curl -L -o /usr/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/${KUBECTLVERSION}/bin/linux/amd64/kubectl && \
   chmod +x /usr/bin/kubectl
-
-CMD [ "/usr/local/bin/tk8" ]
+RUN mkdir /tk8
+WORKDIR /tk8
+ENTRYPOINT [ "/usr/local/bin/tk8" ]
