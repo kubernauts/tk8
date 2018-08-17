@@ -43,7 +43,7 @@ func parseTemplate(templateString string, outputFileName string, data interface{
 }
 
 func distSelect() (string, string) {
-	var sshUser, osLabel string
+	var sshUser string
 
 	//Read Configuration File
 	ReadViperConfigFile("config")
@@ -57,12 +57,26 @@ func distSelect() (string, string) {
 		log.Fatal("Provide either of AMI ID or OS in the config file.")
 		return "", ""
 	}
-	go parseTemplate(templates.Variables, "./kubespray/contrib/terraform/aws/variables.tf", DistOSMap[awsInstanceOS])
-	go parseTemplate(templates.Infrastructure, "./kubespray/contrib/terraform/aws/create-infrastructure.tf", DistOSMap[awsInstanceOS])
+
+	if awsAmiID != "" && sshUser != "" {
+		awsInstanceOS = "custom"
+		DistOSMap["custom"] = DistOS{
+			User:     sshUser,
+			AmiOwner: awsAmiID,
+			OS:       "custom",
+		}
+	}
+	if awsInstanceOS == "custom" {
+		go parseTemplate(templates.CustomInfrastructure, "./kubespray/contrib/terraform/aws/create-infrastructure.tf", DistOSMap[awsInstanceOS])
+	} else {
+		go parseTemplate(templates.Infrastructure, "./kubespray/contrib/terraform/aws/create-infrastructure.tf", DistOSMap[awsInstanceOS])
+	}
+
 	go parseTemplate(templates.Credentials, "./kubespray/contrib/terraform/aws/credentials.tfvars", GetCredentials())
+	go parseTemplate(templates.Variables, "./kubespray/contrib/terraform/aws/variables.tf", DistOSMap[awsInstanceOS])
 	go parseTemplate(templates.Terraform, "./kubespray/contrib/terraform/aws/terraform.tfvars", GetClusterConfig())
 
-	return sshUser, osLabel
+	return sshUser, awsInstanceOS
 }
 
 func AWSCreate() {
