@@ -76,7 +76,7 @@ func distSelect() (string, string) {
 	go parseTemplate(templates.Variables, "./kubespray/contrib/terraform/aws/variables.tf", DistOSMap[awsInstanceOS])
 	go parseTemplate(templates.Terraform, "./kubespray/contrib/terraform/aws/terraform.tfvars", GetClusterConfig())
 
-	return sshUser, awsInstanceOS
+	return DistOSMap[awsInstanceOS].User, DistOSMap[awsInstanceOS].OS
 }
 
 func AWSCreate() {
