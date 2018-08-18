@@ -1,3 +1,6 @@
+package templates
+
+var Config = `
 aws:
    clustername: kubernauts
    os: coreos
@@ -21,3 +24,4 @@ aws:
    aws_elb_api_port : 6443
    k8s_secure_api_port : 6443
    kube_insecure_apiserver_address : "0.0.0.0"
+   `

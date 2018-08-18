@@ -22,3 +22,7 @@ bin
 
 # Ignore kubespray
 kubespray
+
+# Ignore personal configs
+config.yml
+config.yaml

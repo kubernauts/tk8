@@ -21,77 +21,62 @@ import (
 	"net"
 	"os"
 	"os/exec"
-	"strconv"
 	"strings"
+	"text/template"
 
-	"github.com/spf13/viper"
+	"github.com/kubernauts/tk8/internal/templates"
 )
 
 var ec2IP string
 
+func parseTemplate(templateString string, outputFileName string, data interface{}) {
+	// open template
+	template := template.New("template")
+	template, _ = template.Parse(templateString)
+	// open output file
+	outputFile, err := os.Create(GetFilePath(outputFileName))
+	defer outputFile.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
+	template.Execute(outputFile, data)
+}
+
 func distSelect() (string, string) {
-	var sshUser, osLabel string
-
-	centos := map[string]string{
-		"user":      "centos",
-		"ami_owner": "688023202711",
-		"os":        "dcos-centos7",
-	}
-
-	ubuntu := map[string]string{
-		"user":      "ubuntu",
-		"ami_owner": "099720109477",
-		"os":        "ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64",
-	}
+	var sshUser string
 
 	//Read Configuration File
-	viper.SetConfigName("config")
+	ReadViperConfigFile("config")
+	awsAmiID, awsInstanceOS, sshUser := GetDistConfig()
 
-	viper.AddConfigPath(".")
-	verr := viper.ReadInConfig() // Find and read the config file
-	if verr != nil {             // Handle errors reading the config file
-		panic(fmt.Errorf("fatal error config file: %s", verr))
-	}
-
-	awsAmiID := viper.GetString("aws.ami_id")
-	awsInstanceOS := viper.GetString("aws.os")
-	sshUser = viper.GetString("aws.ssh_user")
-
-	// Think of a better way to do this
-	if awsInstanceOS != "" {
-		fmt.Println(awsInstanceOS)
-		switch awsInstanceOS {
-		case "centos":
-			exec.Command("sh", "-c", "sed -i \"\" -e 's/dcos-centos7/"+centos["os"]+"/g' ./kubespray/contrib/terraform/aws/variables.tf").Run()
-			exec.Command("sh", "-c", "sed -i \"\" -e 's/688023202711/"+centos["ami_owner"]+"/g' ./kubespray/contrib/terraform/aws/variables.tf").Run()
-			sshUser = centos["user"]
-			osLabel = "centos"
-		case "ubuntu":
-			exec.Command("sh", "-c", "sed -i \"\" -e 's#dcos-centos7#"+ubuntu["os"]+"#g' ./kubespray/contrib/terraform/aws/variables.tf").Run()
-			exec.Command("sh", "-c", "sed -i \"\" -e 's/688023202711/"+ubuntu["ami_owner"]+"/g' ./kubespray/contrib/terraform/aws/variables.tf").Run()
-			sshUser = ubuntu["user"]
-			osLabel = "ubuntu"
-		// Will only work with 'https://github.com/kubernetes-incubator/kubespray'
-		default:
-			sshUser = "core"
-			osLabel = "coreos"
-			return sshUser, osLabel
-		}
-	} else if awsAmiID != "" && sshUser != "" {
-		err := exec.Command("sh", "-c", "sed -i \"\" -e 's/${data.aws_ami.distro.id}/"+awsAmiID+"/g' ./kubespray/contrib/terraform/aws/create-infrastructure.tf").Run()
-		if err != nil {
-			log.Fatal("Cannot replace AMI ID in Infrastructure template", err)
-		}
-		osLabel = "Custom-AMI"
-	} else if awsAmiID != "" && sshUser == "" {
+	if awsAmiID != "" && sshUser == "" {
 		log.Fatal("SSH Username is required when using custom AMI")
 		return "", ""
-	} else {
+	}
+	if awsAmiID == "" && awsInstanceOS == "" {
 		log.Fatal("Provide either of AMI ID or OS in the config file.")
 		return "", ""
 	}
 
-	return sshUser, osLabel
+	if awsAmiID != "" && sshUser != "" {
+		awsInstanceOS = "custom"
+		DistOSMap["custom"] = DistOS{
+			User:     sshUser,
+			AmiOwner: awsAmiID,
+			OS:       "custom",
+		}
+	}
+	if awsInstanceOS == "custom" {
+		go parseTemplate(templates.CustomInfrastructure, "./kubespray/contrib/terraform/aws/create-infrastructure.tf", DistOSMap[awsInstanceOS])
+	} else {
+		go parseTemplate(templates.Infrastructure, "./kubespray/contrib/terraform/aws/create-infrastructure.tf", DistOSMap[awsInstanceOS])
+	}
+
+	go parseTemplate(templates.Credentials, "./kubespray/contrib/terraform/aws/credentials.tfvars", GetCredentials())
+	go parseTemplate(templates.Variables, "./kubespray/contrib/terraform/aws/variables.tf", DistOSMap[awsInstanceOS])
+	go parseTemplate(templates.Terraform, "./kubespray/contrib/terraform/aws/terraform.tfvars", GetClusterConfig())
+
+	return DistOSMap[awsInstanceOS].User, awsInstanceOS
 }
 
 func AWSCreate() {
@@ -106,100 +91,6 @@ func AWSCreate() {
 		log.Fatal(err)
 	}
 	fmt.Printf(string(rr))
-
-	// Check if credentials file exist, if it exists skip asking to input the AWS values
-	if _, err := os.Stat("./kubespray/contrib/terraform/aws/credentials.tfvars"); err == nil {
-		fmt.Println("Credentials file already exists, creation skipped")
-	} else {
-
-		//Read Configuration File
-		viper.SetConfigName("config")
-
-		viper.AddConfigPath(".")
-		viper.AddConfigPath("/tk8")
-		verr := viper.ReadInConfig() // Find and read the config file
-		if verr != nil {             // Handle errors reading the config file
-			panic(fmt.Errorf("fatal error config file: %s", verr))
-		}
-
-		awsAccessKeyID := viper.GetString("aws.aws_access_key_id")
-
-		awsSecretKey := viper.GetString("aws.aws_secret_access_key")
-
-		awsAccessSSHKey := viper.GetString("aws.aws_ssh_keypair")
-
-		awsDefaultRegion := viper.GetString("aws.aws_default_region")
-
-		file, err := os.Create("./kubespray/contrib/terraform/aws/credentials.tfvars")
-		if err != nil {
-			log.Fatal("Cannot create file", err)
-		}
-		defer file.Close()
-
-		fmt.Fprintf(file, "AWS_ACCESS_KEY_ID = %s\n", strconv.Quote(awsAccessKeyID))
-		fmt.Fprintf(file, "AWS_SECRET_ACCESS_KEY = %s\n", strconv.Quote(awsSecretKey))
-		fmt.Fprintf(file, "AWS_SSH_KEY_NAME = %s\n", strconv.Quote(awsAccessSSHKey))
-		fmt.Fprintf(file, "AWS_DEFAULT_REGION = %s\n", strconv.Quote(awsDefaultRegion))
-
-	}
-	// Remove tftvars file
-
-	err = os.Remove("./kubespray/contrib/terraform/aws/terraform.tfvars")
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	//Read Configuration File
-	viper.SetConfigName("config")
-
-	viper.AddConfigPath(".")
-	verr := viper.ReadInConfig() // Find and read the config file
-	if verr != nil {             // Handle errors reading the config file
-		panic(fmt.Errorf("fatal error config file: %s", verr))
-	}
-
-	awsClusterName := viper.GetString("aws.clustername")
-	awsVpcCidrBlock := viper.GetString("aws.aws_vpc_cidr_block")
-	awsCidrSubnetsPrivate := viper.GetString("aws.aws_cidr_subnets_private")
-	awsCidrSubnetsPublic := viper.GetString("aws.aws_cidr_subnets_public")
-	awsBastionSize := viper.GetString("aws.aws_bastion_size")
-	awsKubeMasterNum := viper.GetString("aws.aws_kube_master_num")
-	awsKubeMasterSize := viper.GetString("aws.aws_kube_master_size")
-	awsEtcdNum := viper.GetString("aws.aws_etcd_num")
-	awsEtcdSize := viper.GetString("aws.aws_etcd_size")
-	awsKubeWorkerNum := viper.GetString("aws.aws_kube_worker_num")
-	awsKubeWorkerSize := viper.GetString("aws.aws_kube_worker_size")
-	awsElbAPIPort := viper.GetString("aws.aws_elb_api_port")
-	k8sSecureAPIPort := viper.GetString("aws.k8s_secure_api_port")
-	kubeInsecureApiserverAddress := viper.GetString("aws.")
-
-	tfile, err := os.Create("./kubespray/contrib/terraform/aws/terraform.tfvars")
-	if err != nil {
-		log.Fatal("Cannot create file", err)
-	}
-	defer tfile.Close()
-
-	fmt.Fprintf(tfile, "aws_cluster_name = %s\n", strconv.Quote(awsClusterName))
-	fmt.Fprintf(tfile, "aws_vpc_cidr_block = %s\n", strconv.Quote(awsVpcCidrBlock))
-	fmt.Fprintf(tfile, "aws_cidr_subnets_private = %s\n", awsCidrSubnetsPrivate)
-	fmt.Fprintf(tfile, "aws_cidr_subnets_public = %s\n", awsCidrSubnetsPublic)
-
-	fmt.Fprintf(tfile, "aws_bastion_size = %s\n", strconv.Quote(awsBastionSize))
-	fmt.Fprintf(tfile, "aws_kube_master_num = %s\n", awsKubeMasterNum)
-	fmt.Fprintf(tfile, "aws_kube_master_size = %s\n", strconv.Quote(awsKubeMasterSize))
-	fmt.Fprintf(tfile, "aws_etcd_num = %s\n", awsEtcdNum)
-
-	fmt.Fprintf(tfile, "aws_etcd_size = %s\n", strconv.Quote(awsEtcdSize))
-	fmt.Fprintf(tfile, "aws_kube_worker_num = %s\n", awsKubeWorkerNum)
-	fmt.Fprintf(tfile, "aws_kube_worker_size = %s\n", strconv.Quote(awsKubeWorkerSize))
-	fmt.Fprintf(tfile, "aws_elb_api_port = %s\n", awsElbAPIPort)
-	fmt.Fprintf(tfile, "k8s_secure_api_port = %s\n", k8sSecureAPIPort)
-	fmt.Fprintf(tfile, "kube_insecure_apiserver_address = %s\n", strconv.Quote(kubeInsecureApiserverAddress))
-
-	fmt.Fprintf(tfile, "default_tags = {\n")
-	fmt.Fprintf(tfile, "#  Env = 'devtest'\n")
-	fmt.Fprintf(tfile, "#  Product = 'kubernetes'\n")
-	fmt.Fprintf(tfile, "}")
 
 	distSelect()
 
@@ -320,6 +211,7 @@ func AWSInstall() {
 		}
 	}
 	sshUser, osLabel := distSelect()
+	fmt.Println("starting playbook for user", sshUser, "with os", osLabel)
 	kubeSet := exec.Command("ansible-playbook", "-i", "./inventory/awscluster/hosts", "./cluster.yml", "--timeout=60", "-e ansible_user="+sshUser, "-e bootstrap_os="+osLabel, "-b", "--become-user=root", "--flush-cache")
 	kubeSet.Dir = "./kubespray/"
 	stdout, _ := kubeSet.StdoutPipe()
@@ -366,33 +258,7 @@ func AWSDestroy() {
 	if _, err := os.Stat("./kubespray/contrib/terraform/aws/credentials.tfvars"); err == nil {
 		fmt.Println("Credentials file already exists, creation skipped")
 	} else {
-
-		fmt.Println("Please enter your AWS access key ID")
-		var awsAccessKeyID string
-		fmt.Scanln(&awsAccessKeyID)
-
-		fmt.Println("Please enter your AWS SECRET ACCESS KEY")
-		var awsSecretKey string
-		fmt.Scanln(&awsSecretKey)
-
-		fmt.Println("Please enter your AWS SSH Key Name")
-		var awsAccessSSHKey string
-		fmt.Scanln(&awsAccessSSHKey)
-
-		fmt.Println("Please enter your AWS Default Region")
-		var awsDefaultRegion string
-		fmt.Scanln(&awsDefaultRegion)
-
-		file, err := os.Create("./kubespray/contrib/terraform/aws/credentials.tfvars")
-		if err != nil {
-			log.Fatal("Cannot create file", err)
-		}
-		defer file.Close()
-
-		fmt.Fprintf(file, "AWS_ACCESS_KEY_ID = %s\n", awsAccessKeyID)
-		fmt.Fprintf(file, "AWS_SECRET_ACCESS_KEY = %s\n", awsSecretKey)
-		fmt.Fprintf(file, "AWS_SSH_KEY_NAME = %s\n", awsAccessSSHKey)
-		fmt.Fprintf(file, "AWS_DEFAULT_REGION = %s\n", awsDefaultRegion)
+		parseTemplate(templates.Credentials, "./kubespray/contrib/terraform/aws/credentials.tfvars", GetCredentials())
 	}
 	terrSet := exec.Command("terraform", "destroy", "-var-file=credentials.tfvars", "-force")
 	terrSet.Dir = "./kubespray/contrib/terraform/aws/"
