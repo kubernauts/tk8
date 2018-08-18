@@ -62,7 +62,7 @@ func distSelect() (string, string) {
 	go parseTemplate(templates.Credentials, "./kubespray/contrib/terraform/aws/credentials.tfvars", GetCredentials())
 	go parseTemplate(templates.Terraform, "./kubespray/contrib/terraform/aws/terraform.tfvars", GetClusterConfig())
 
-	return sshUser, osLabel
+	return DistOSMap[awsInstanceOS].User, awsInstanceOS
 }
 
 func AWSCreate() {
@@ -197,6 +197,7 @@ func AWSInstall() {
 		}
 	}
 	sshUser, osLabel := distSelect()
+	fmt.Println("starting playbook for user", sshUser, "with os", osLabel)
 	kubeSet := exec.Command("ansible-playbook", "-i", "./inventory/awscluster/hosts", "./cluster.yml", "--timeout=60", "-e ansible_user="+sshUser, "-e bootstrap_os="+osLabel, "-b", "--become-user=root", "--flush-cache")
 	kubeSet.Dir = "./kubespray/"
 	stdout, _ := kubeSet.StdoutPipe()
