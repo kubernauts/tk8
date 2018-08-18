@@ -1,6 +1,6 @@
 aws:
    clustername: kubernauts
-   os: ubuntu
+   os: centos
    master: 1
    worker: 1
    etcd: 1

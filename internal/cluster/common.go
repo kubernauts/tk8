@@ -45,11 +45,11 @@ var DistOSMap = map[string]DistOS{
 		AmiOwner: "379101102735",
 		OS:       "debian-jessie-amd64-hvm-*",
 	},
-	//"opensuse": DistOS{
-	//	User:     "suse",
-	//	AmiOwner: "1534584447727",
-	//	OS:       "opensuse/openSUSE-42.3-x86_64-*",
-	//},
+	"opensuse": DistOS{
+		User:     "suse",
+		AmiOwner: "056126556840",
+		OS:       "opensuse/openSUSE-42.3-x86_64-*",
+	},
 }
 
 type ClusterConfig struct {
