@@ -22,25 +22,11 @@ import (
 	"os"
 	"os/exec"
 	"strings"
-	"text/template"
 
 	"github.com/kubernauts/tk8/internal/templates"
 )
 
 var ec2IP string
-
-func parseTemplate(templateString string, outputFileName string, data interface{}) {
-	// open template
-	template := template.New("template")
-	template, _ = template.Parse(templateString)
-	// open output file
-	outputFile, err := os.Create(GetFilePath(outputFileName))
-	defer outputFile.Close()
-	if err != nil {
-		log.Fatal(err)
-	}
-	template.Execute(outputFile, data)
-}
 
 func distSelect() (string, string) {
 	//Read Configuration File
@@ -76,82 +62,73 @@ func distSelect() (string, string) {
 	return DistOSMap[awsInstanceOS].User, awsInstanceOS
 }
 
+// AWSCreate is used to create a infrastructure on AWS.
 func AWSCreate() {
-	// check if terraform is installed
-	terr, err := exec.LookPath("terraform")
-	if err != nil {
-		log.Fatal("Terraform command not found, kindly check")
-	}
-	fmt.Printf("Found terraform at %s\n", terr)
-	rr, err := exec.Command("terraform", "version").Output()
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Printf(string(rr))
+	// check if terraform is available
+	terrPath, err := exec.LookPath("terraform")
+	ErrorCheck("Terraform command not found, kindly check: %v", err)
+	fmt.Printf("Found terraform at %s\n", terrPath)
+
+	terrVersion, err := exec.Command("terraform", "version").Output()
+	ErrorCheck("Error executing Terraform: %v", err)
+	fmt.Printf(string(terrVersion))
 
 	distSelect()
 
-	terrInit := exec.Command("terraform", "init")
-	terrInit.Dir = "./kubespray/contrib/terraform/aws/"
-	out, _ := terrInit.StdoutPipe()
-	terrInit.Start()
-	scanInit := bufio.NewScanner(out)
-	for scanInit.Scan() {
-		m := scanInit.Text()
-		fmt.Println(m)
-		//log.Printf(m)
-	}
+	// terrInit := exec.Command("terraform", "init")
+	// terrInit.Dir = "./kubespray/contrib/terraform/aws/"
+	// out, _ := terrInit.StdoutPipe()
+	// terrInit.Start()
+	// scanInit := bufio.NewScanner(out)
+	// for scanInit.Scan() {
+	// 	m := scanInit.Text()
+	// 	fmt.Println(m)
+	// }
 
-	terrInit.Wait()
+	// terrInit.Wait()
 
-	terrSet := exec.Command("terraform", "apply", "-var-file=credentials.tfvars", "-auto-approve")
-	terrSet.Dir = "./kubespray/contrib/terraform/aws/"
-	stdout, err := terrSet.StdoutPipe()
-	terrSet.Stderr = terrSet.Stdout
-	terrSet.Start()
+	// terrSet := exec.Command("terraform", "apply", "-var-file=credentials.tfvars", "-auto-approve")
+	// terrSet.Dir = "./kubespray/contrib/terraform/aws/"
+	// stdout, err := terrSet.StdoutPipe()
+	// terrSet.Stderr = terrSet.Stdout
+	// terrSet.Start()
 
-	scanner := bufio.NewScanner(stdout)
-	for scanner.Scan() {
-		m := scanner.Text()
-		fmt.Println(m)
-		//log.Printf(m)
-	}
+	// scanner := bufio.NewScanner(stdout)
+	// for scanner.Scan() {
+	// 	m := scanner.Text()
+	// 	fmt.Println(m)
+	// }
 
-	terrSet.Wait()
+	// terrSet.Wait()
 	os.Exit(0)
 
 }
 
+// AWSInstall is used for installing Kubernetes on the available infrastructure.
 func AWSInstall() {
 	// check if ansible is installed
-	terr, err := exec.LookPath("ansible")
-	if err != nil {
-		log.Fatal("Ansible command not found, kindly check")
-	}
-	fmt.Printf("Found Ansible at %s\n", terr)
-	rr, err := exec.Command("ansible", "--version").Output()
+	ansPath, err := exec.LookPath("ansible")
+	ErrorCheck("Ansible not found.", err)
+	fmt.Printf("Found Ansible at %s\n", ansPath)
+
+	ansVersion, err := exec.Command("ansible", "--version").Output()
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf(string(rr))
+	fmt.Printf(string(ansVersion))
 
 	//Start Kubernetes Installation
-
 	//check if ansible host file exists
-
-	if _, err := os.Stat("./kubespray/inventory/hosts"); err != nil {
-		fmt.Println("./kubespray/inventory/host inventory file not found")
-		os.Exit(1)
-	}
+	_, err = os.Stat("./kubespray/inventory/hosts")
+	ErrorCheck("./kubespray/inventory/host inventory file not found", err)
 
 	// Copy the configuraton files as indicated in the kubespray docs
-
-	if _, err := os.Stat("./kubespray/inventory/awscluster"); err == nil {
+	if _, err = os.Stat("./kubespray/inventory/awscluster"); err == nil {
 		fmt.Println("Configuration folder already exists")
 	} else {
+
 		//os.MkdirAll("./kubespray/inventory/awscluster/group_vars", 0755)
 		exec.Command("cp", "-rfp", "./kubespray/inventory/sample/", "./kubespray/inventory/awscluster/").Run()
-
 		exec.Command("cp", "./kubespray/inventory/hosts", "./kubespray/inventory/awscluster/hosts").Run()
 
 		//Enable load balancer api access and copy the kubeconfig file locally
@@ -159,57 +136,43 @@ func AWSInstall() {
 		if err != nil {
 			fmt.Println("Problem getting the load balancer domain name", err)
 		} else {
+
 			//Make a copy of kubeconfig on Ansible host
-			f, err := os.OpenFile("./kubespray/inventory/awscluster/group_vars/k8s-cluster.yml", os.O_APPEND|os.O_WRONLY, 0600)
-			if err != nil {
-				panic(err)
-			}
+			k8sClusterFile, err := os.OpenFile("./kubespray/inventory/awscluster/group_vars/k8s-cluster.yml", os.O_APPEND|os.O_WRONLY, 0600)
+			defer k8sClusterFile.Close()
+			ErrorCheck("Error while trying to open k8s-cluster.yml: %v.", err)
+			fmt.Fprintf(k8sClusterFile, "kubeconfig_localhost: true\n")
 
-			defer f.Close()
-			fmt.Fprintf(f, "kubeconfig_localhost: true\n")
-
-			g, err := os.OpenFile("./kubespray/inventory/awscluster/group_vars/all.yml", os.O_APPEND|os.O_WRONLY, 0600)
-			if err != nil {
-				panic(err)
-			}
-
-			defer g.Close()
+			groupVars, err := os.OpenFile("./kubespray/inventory/awscluster/group_vars/all.yml", os.O_APPEND|os.O_WRONLY, 0600)
+			defer groupVars.Close()
+			ErrorCheck("Error while trying to open group_vars/all.yml: %v.", err)
 
 			// Resolve Load Balancer Domain Name and pick the first IP
+			elbNameRaw, _ := exec.Command("sh", "-c", "grep apiserver_loadbalancer_domain_name= ./kubespray/inventory/hosts | cut -d'=' -f2 | sed 's/\"//g'").CombinedOutput()
 
-			s, _ := exec.Command("sh", "-c", "grep apiserver_loadbalancer_domain_name= ./kubespray/inventory/hosts | cut -d'=' -f2 | sed 's/\"//g'").CombinedOutput()
-			// Convert the Domain name to string and strip all spaces so that Lookup does not return errors
-			r := string(s)
-			t := strings.TrimSpace(r)
-
-			fmt.Println(t)
-			node, err := net.LookupHost(t)
-
-			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
-			}
-
-			ec2IP := node[0]
-
+			// Convert the Domain name to string, strip all spaces so that Lookup does not return errors
+			elbName := strings.TrimSpace(string(elbNameRaw))
+			fmt.Println(elbName)
+			node, err := net.LookupHost(elbName)
+			ErrorCheck("Error resolving ELB name: %v", err)
+			elbIP := node[0]
 			fmt.Println(node)
 
 			DomainName := strings.TrimSpace(string(loadBalancerName))
 			loadBalancerDomainName := "apiserver_loadbalancer_domain_name: " + DomainName
 
-			fmt.Fprintf(g, "#Set cloud provider to AWS\n")
-			fmt.Fprintf(g, "cloud_provider: 'aws'\n")
-			fmt.Fprintf(g, "#Load Balancer Configuration\n")
-			fmt.Fprintf(g, "loadbalancer_apiserver_localhost: false\n")
-			fmt.Fprintf(g, "%s\n", loadBalancerDomainName)
-			fmt.Fprintf(g, "loadbalancer_apiserver:\n")
-			fmt.Fprintf(g, "  address: %s\n", ec2IP)
-			fmt.Fprintf(g, "  port: 6443\n")
+			fmt.Fprintf(groupVars, "#Set cloud provider to AWS\n")
+			fmt.Fprintf(groupVars, "cloud_provider: 'aws'\n")
+			fmt.Fprintf(groupVars, "#Load Balancer Configuration\n")
+			fmt.Fprintf(groupVars, "loadbalancer_apiserver_localhost: false\n")
+			fmt.Fprintf(groupVars, "%s\n", loadBalancerDomainName)
+			fmt.Fprintf(groupVars, "loadbalancer_apiserver:\n")
+			fmt.Fprintf(groupVars, "  address: %s\n", elbIP)
+			fmt.Fprintf(groupVars, "  port: 6443\n")
 		}
 	}
 	sshUser, osLabel := distSelect()
-
-	fmt.Println("starting playbook for user", sshUser, "with os", osLabel)
+	fmt.Printf("\nStarting playbook for user %s with os %s\n", sshUser, osLabel)
 	kubeSet := exec.Command("ansible-playbook", "-i", "./inventory/awscluster/hosts", "./cluster.yml", "--timeout=60", "-e ansible_user="+sshUser, "-e bootstrap_os="+osLabel, "-b", "--become-user=root", "--flush-cache")
 	kubeSet.Dir = "./kubespray/"
 	stdout, _ := kubeSet.StdoutPipe()
@@ -219,7 +182,6 @@ func AWSInstall() {
 	for scanner.Scan() {
 		m := scanner.Text()
 		fmt.Println(m)
-		//log.Printf(m)
 	}
 
 	kubeSet.Wait()
@@ -227,6 +189,7 @@ func AWSInstall() {
 	os.Exit(0)
 }
 
+// AWSDestroy is used to destroy the infrastructure created.
 func AWSDestroy() {
 	// check if terraform is installed
 	terr, err := exec.LookPath("terraform")
@@ -270,7 +233,6 @@ func AWSDestroy() {
 	for scanner.Scan() {
 		m := scanner.Text()
 		fmt.Println(m)
-		//log.Printf(m)
 	}
 
 	terrSet.Wait()

@@ -2,10 +2,13 @@ package cluster
 
 import (
 	"fmt"
+	"os"
 
+	"github.com/alecthomas/template"
 	"github.com/spf13/viper"
 )
 
+// AwsCredentials defines the structure to hold AWS auth credentials.
 type AwsCredentials struct {
 	AwsAccessKeyID   string
 	AwsSecretKey     string
@@ -13,17 +16,16 @@ type AwsCredentials struct {
 	AwsDefaultRegion string
 }
 
-/*
- DistOs struct holds the main dist OS information
- It is possible easly extend the list of OS
- Append new DistOS to cluster.DistOSMap and use the key(string) in the config
-*/
+// DistOS defines the structure to hold the dist OS informations.
+// It is possible to easily extend the list of OS.
+// Append new entry to cluster.DistOSMap and use the key(string) in the config.
 type DistOS struct {
 	User     string
 	AmiOwner string
 	OS       string
 }
 
+// DistOSMap holds the main OS distrubution mapping informations.
 var DistOSMap = map[string]DistOS{
 	"centos": DistOS{
 		User:     "centos",
@@ -69,17 +71,20 @@ type ClusterConfig struct {
 	KubeInsecureApiserverAddress string
 }
 
+// ReadViperConfigFile is define the config paths and read the configuration file.
 func ReadViperConfigFile(configName string) {
-	//Read Configuration File
 	viper.SetConfigName(configName)
 	viper.AddConfigPath(".")
 	viper.AddConfigPath("/tk8")
 	viper.AddConfigPath("./../..")
-	verr := viper.ReadInConfig() // Find and read the config file
-	if verr != nil {             // Handle errors reading the config file
-		panic(fmt.Errorf("fatal error config file: %s", verr))
+	verr := viper.ReadInConfig() // Find and read the config file.
+	if verr != nil {             // Handle errors reading the config file.
+		CreateConfig()
 	}
 }
+
+// GetDistConfig is used to get config details specific to a particular distribution.
+// Used to determine various details such as the SSH user about the distribution.
 func GetDistConfig() (string, string, string) {
 	ReadViperConfigFile("config")
 	awsAmiID := viper.GetString("aws.ami_id")
@@ -88,7 +93,7 @@ func GetDistConfig() (string, string, string) {
 	return awsAmiID, awsInstanceOS, sshUser
 }
 
-// GetCredentials get the aws credentials from config file
+// GetCredentials get the aws credentials from the config file.
 func GetCredentials() AwsCredentials {
 	ReadViperConfigFile("config")
 	return AwsCredentials{
@@ -99,7 +104,7 @@ func GetCredentials() AwsCredentials {
 	}
 }
 
-// GetClusterConfig get the configuration from config file
+// GetClusterConfig get the configuration from the config file.
 func GetClusterConfig() ClusterConfig {
 	ReadViperConfigFile("config")
 	return ClusterConfig{
@@ -118,4 +123,30 @@ func GetClusterConfig() ClusterConfig {
 		K8sSecureAPIPort:             viper.GetString("aws.k8s_secure_api_port"),
 		KubeInsecureApiserverAddress: viper.GetString("aws."),
 	}
+}
+
+func parseTemplate(templateString string, outputFileName string, data interface{}) {
+	// open template
+	template := template.New("template")
+	template, _ = template.Parse(templateString)
+	// open output file
+	outputFile, err := os.Create(GetFilePath(outputFileName))
+	defer outputFile.Close()
+	if err != nil {
+		ExitErrorf("Error creating file %s: %v", outputFile, err)
+	}
+	err = template.Execute(outputFile, data)
+	ErrorCheck("Error executing template: %v", err)
+
+}
+
+func ErrorCheck(msg string, err error) {
+	if err != nil {
+		ExitErrorf(msg, err)
+	}
+}
+
+func ExitErrorf(msg string, args ...interface{}) {
+	fmt.Fprintf(os.Stderr, msg+"\n", args...)
+	os.Exit(1)
 }
