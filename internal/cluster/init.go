@@ -34,7 +34,7 @@ func KubesprayInit() {
 		os.Exit(1)
 	} else {
 		// issue-23 kubespray upstream
-		err := exec.Command("git", "clone", "https://github.com/kubernauts/kubespray").Run()
+		err := exec.Command("git", "clone", "https://github.com/kubernetes-incubator/kubespray").Run()
 		if err != nil {
 			log.Fatalf("Seems there is a problem cloning the kubespray repo, %v", err)
 			os.Exit(1)

@@ -1,9 +1,6 @@
 aws:
    clustername: kubernauts
    os: centos
-   master: 1
-   worker: 1
-   etcd: 1
    aws_access_key_id: ""
    aws_secret_access_key: ""
    aws_ssh_keypair: ""
