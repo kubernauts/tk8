@@ -43,10 +43,7 @@ func parseTemplate(templateString string, outputFileName string, data interface{
 }
 
 func distSelect() (string, string) {
-	var sshUser string
-
 	//Read Configuration File
-	ReadViperConfigFile("config")
 	awsAmiID, awsInstanceOS, sshUser := GetDistConfig()
 
 	if awsAmiID != "" && sshUser == "" {
@@ -211,6 +208,7 @@ func AWSInstall() {
 		}
 	}
 	sshUser, osLabel := distSelect()
+
 	fmt.Println("starting playbook for user", sshUser, "with os", osLabel)
 	kubeSet := exec.Command("ansible-playbook", "-i", "./inventory/awscluster/hosts", "./cluster.yml", "--timeout=60", "-e ansible_user="+sshUser, "-e bootstrap_os="+osLabel, "-b", "--become-user=root", "--flush-cache")
 	kubeSet.Dir = "./kubespray/"
