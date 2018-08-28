@@ -3,6 +3,8 @@ package cluster
 import (
 	"flag"
 	"fmt"
+	"math/rand"
+	"time"
 
 	petname "github.com/dustinkirkland/golang-petname"
 	"github.com/kubernauts/tk8/internal/templates"
@@ -28,6 +30,7 @@ func generateName() string {
 		separator = flag.String("separator", "", "The separator between words in the name")
 	)
 	flag.Parse()
+	rand.Seed(time.Now().UnixNano())
 	generatedName := petname.Generate(*words, *separator)
 	return generatedName
 }
