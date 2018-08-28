@@ -142,6 +142,21 @@ func parseTemplate(templateString string, outputFileName string, data interface{
 
 }
 
+// EnableKubeadm check for kubeadm_enable option and set the config respectively in playbook.
+func EnableKubeadm() {
+	ReadViperConfigFile("config")
+	kubeadmEnabled := viper.GetString("aws.kubeadm_enabled")
+	if kubeadmEnabled == "true" {
+		viper.SetConfigName("main")
+		viper.AddConfigPath("/Users/arush/go/src/github.com/kubernauts/tk8/kubespray/roles/kubespray-defaults/defaults")
+		err := viper.ReadInConfig()
+		if err == nil {
+			viper.Set("kubeadm_enabled", true)
+		}
+		_ = viper.WriteConfig()
+	}
+}
+
 // ErrorCheck is responsbile to check if there is any error returned by a command.
 func ErrorCheck(msg string, err error) {
 	if err != nil {

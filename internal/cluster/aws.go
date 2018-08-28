@@ -136,6 +136,8 @@ func AWSInstall() {
 		if err != nil {
 			fmt.Println("Problem getting the load balancer domain name", err)
 		} else {
+			// Check if Kubeadm is enabled
+			EnableKubeadm()
 
 			//Make a copy of kubeconfig on Ansible host
 			k8sClusterFile, err := os.OpenFile("./kubespray/inventory/awscluster/group_vars/k8s-cluster.yml", os.O_APPEND|os.O_WRONLY, 0600)
