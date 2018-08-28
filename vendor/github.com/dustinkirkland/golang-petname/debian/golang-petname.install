@@ -1,0 +1,3 @@
+#!/usr/bin/dh-exec
+usr/bin/petname => /usr/bin/golang-petname
+golang-petname.1 => /usr/share/man/man1/golang-petname.1

@@ -75,31 +75,31 @@ func AWSCreate() {
 
 	distSelect()
 
-	// terrInit := exec.Command("terraform", "init")
-	// terrInit.Dir = "./kubespray/contrib/terraform/aws/"
-	// out, _ := terrInit.StdoutPipe()
-	// terrInit.Start()
-	// scanInit := bufio.NewScanner(out)
-	// for scanInit.Scan() {
-	// 	m := scanInit.Text()
-	// 	fmt.Println(m)
-	// }
+	terrInit := exec.Command("terraform", "init")
+	terrInit.Dir = "./kubespray/contrib/terraform/aws/"
+	out, _ := terrInit.StdoutPipe()
+	terrInit.Start()
+	scanInit := bufio.NewScanner(out)
+	for scanInit.Scan() {
+		m := scanInit.Text()
+		fmt.Println(m)
+	}
 
-	// terrInit.Wait()
+	terrInit.Wait()
 
-	// terrSet := exec.Command("terraform", "apply", "-var-file=credentials.tfvars", "-auto-approve")
-	// terrSet.Dir = "./kubespray/contrib/terraform/aws/"
-	// stdout, err := terrSet.StdoutPipe()
-	// terrSet.Stderr = terrSet.Stdout
-	// terrSet.Start()
+	terrSet := exec.Command("terraform", "apply", "-var-file=credentials.tfvars", "-auto-approve")
+	terrSet.Dir = "./kubespray/contrib/terraform/aws/"
+	stdout, err := terrSet.StdoutPipe()
+	terrSet.Stderr = terrSet.Stdout
+	terrSet.Start()
 
-	// scanner := bufio.NewScanner(stdout)
-	// for scanner.Scan() {
-	// 	m := scanner.Text()
-	// 	fmt.Println(m)
-	// }
+	scanner := bufio.NewScanner(stdout)
+	for scanner.Scan() {
+		m := scanner.Text()
+		fmt.Println(m)
+	}
 
-	// terrSet.Wait()
+	terrSet.Wait()
 	os.Exit(0)
 
 }

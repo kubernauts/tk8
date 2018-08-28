@@ -21,6 +21,7 @@ import (
 	"os/exec"
 )
 
+// KubesprayInit is responsible for cloning the kubespray diretory in CWD.
 func KubesprayInit() {
 	fmt.Println("Initialising kubespray git repo")
 	if _, err := os.Stat("./kubespray"); err == nil {

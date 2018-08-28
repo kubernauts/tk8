@@ -54,6 +54,8 @@ var DistOSMap = map[string]DistOS{
 	//},
 }
 
+// ClusterConfig holds the info required to create a cluster.
+// This value is read from the config.yaml file through viper.
 type ClusterConfig struct {
 	AwsClusterName               string
 	AwsVpcCidrBlock              string
@@ -140,12 +142,14 @@ func parseTemplate(templateString string, outputFileName string, data interface{
 
 }
 
+// ErrorCheck is responsbile to check if there is any error returned by a command.
 func ErrorCheck(msg string, err error) {
 	if err != nil {
 		ExitErrorf(msg, err)
 	}
 }
 
+// ExitErrorf exits the program with an error code of '1' and an error message.
 func ExitErrorf(msg string, args ...interface{}) {
 	fmt.Fprintf(os.Stderr, msg+"\n", args...)
 	os.Exit(1)

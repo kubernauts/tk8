@@ -1,0 +1,18 @@
+#!/usr/bin/make -f
+
+ifneq ($(shell ls -d /usr/share/doc/golang-any-shared-dev/),/usr/share/doc/golang-any-shared-dev/)
+	export DH_OPTIONS := -Nlibgolang-petname1
+endif
+export DH_GOPKG := github.com/dustinkirkland/golang-petname
+
+%:
+	dh $@ --buildsystem=golang --with=golang
+
+override_dh_install:
+	mkdir -p ${PWD}/debian/tmp/usr/lib
+	dh_install
+
+ifeq ($(shell ls -d /usr/share/doc/golang-any-shared-dev/),/usr/share/doc/golang-any-shared-dev/)
+override_dh_gencontrol:
+	dh_gencontrol -- -V'extra:Depends=libgolang-petname1'
+endif

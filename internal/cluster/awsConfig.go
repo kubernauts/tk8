@@ -9,6 +9,7 @@ import (
 	"github.com/spf13/viper"
 )
 
+// Config holds the variables to be used in the default configuration.
 type Config struct {
 	ClusterName string
 	SSHName     string
@@ -31,6 +32,7 @@ func generateName() string {
 	return generatedName
 }
 
+// CreateConfig is responsible for creating a default config incase when none is provided.
 func CreateConfig() {
 	generatedName := generateName()
 	fmt.Printf("\nNo default config was provided. Generating one for you...\n")

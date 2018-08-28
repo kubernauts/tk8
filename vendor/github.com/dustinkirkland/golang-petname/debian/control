@@ -1,0 +1,53 @@
+Source: golang-petname
+Section: admin
+Priority: optional
+Maintainer: Dustin Kirkland <kirkland@ubuntu.com>
+Build-Depends: debhelper (>= 9), dh-exec, dh-golang, golang-go, golang-any-shared-dev | dh-apparmor
+Standards-Version: 3.9.5
+Homepage: http://launchpad.net/petname
+Vcs-Browser: http://bazaar.launchpad.net/~petname/petname/trunk/files
+Vcs-Bzr: https://code.launchpad.net/petname/petname/trunk
+
+Package: golang-petname
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Built-Using: ${misc:Built-Using}
+Description: generate pronouncable, perhaps even memorable, pet names
+ This utility will generate "pet names", consisting of a random
+ combination of an adverb, adjective, and proper name.  These are
+ useful for unique hostnames, for instance.
+ The default packaging contains about 2000 names, 1300 adjectives,
+ and 4000 adverbs, yielding nearly 10 billion unique combinations,
+ covering over 32 bits of unique namespace.
+ As such, PetName tries to follow the tenets of Zooko's triangle:
+ names are human meaningful, decentralized, and secure.
+
+Package: golang-petname-dev
+Architecture: any
+Depends: ${misc:Depends}, ${extra:Depends}
+Description: golang library for generating pronouncable, memorable, pet names
+ This package provides a library for generating "pet names", consisting
+ of a random combination of an adverb, adjective, and proper name.
+ These are useful for unique hostnames, for instance.
+ The default packaging contains about 2000 names, 1300 adjectives,
+ and 4000 adverbs, yielding nearly 10 billion unique combinations,
+ covering over 32 bits of unique namespace.
+ As such, PetName tries to follow the tenets of Zooko's triangle:
+ names are human meaningful, decentralized, and secure.
+
+Package: golang-github-dustinkirkland-golang-petname-dev
+Architecture: all
+Depends: ${misc:Depends}, golang-petname-dev
+Description: golang library for generating pronouncable, memorable, pet names
+ This is a metapackage for golang-petname-dev, which adheres to the
+ naming convention.
+
+Package: libgolang-petname1
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Provides: ${golang:Provides}
+Description: golang library for generating pronouncable, memorable, pet names -- shared library
+ This package provides a library for generating "pet names", consisting
+ of a random combination of an adverb, adjective, and proper name.
+ .
+ This package provides the library built as a shared library.
