@@ -122,6 +122,9 @@ func AWSInstall() {
 	_, err = os.Stat("./kubespray/inventory/hosts")
 	ErrorCheck("./kubespray/inventory/host inventory file not found", err)
 
+	// Check if Kubeadm is enabled
+	EnableKubeadm()
+
 	// Copy the configuraton files as indicated in the kubespray docs
 	if _, err = os.Stat("./kubespray/inventory/awscluster"); err == nil {
 		fmt.Println("Configuration folder already exists")
@@ -136,9 +139,6 @@ func AWSInstall() {
 		if err != nil {
 			fmt.Println("Problem getting the load balancer domain name", err)
 		} else {
-			// Check if Kubeadm is enabled
-			EnableKubeadm()
-
 			//Make a copy of kubeconfig on Ansible host
 			k8sClusterFile, err := os.OpenFile("./kubespray/inventory/awscluster/group_vars/k8s-cluster.yml", os.O_APPEND|os.O_WRONLY, 0600)
 			defer k8sClusterFile.Close()

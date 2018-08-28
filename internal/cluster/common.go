@@ -150,10 +150,10 @@ func EnableKubeadm() {
 		viper.SetConfigName("main")
 		viper.AddConfigPath("./kubespray/roles/kubespray-defaults/defaults")
 		err := viper.ReadInConfig()
-		if err == nil {
-			viper.Set("kubeadm_enabled", true)
-		}
-		_ = viper.WriteConfig()
+		ErrorCheck("Error reading the main.yaml config file", err)
+		viper.Set("kubeadm_enabled", true)
+		err = viper.WriteConfig()
+		ErrorCheck("Error writing the main.yaml config file", err)
 	}
 }
 
