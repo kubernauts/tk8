@@ -51,7 +51,7 @@ func KubesprayInit() {
 				"Please run following command:" +
 				"\n\n\t" +
 				"pip install -r kubespray/requirements.txt" +
-				"NOTE: Elevated permission may require.")
+				"\nNOTE: Elevated permission may require.")
 			os.Exit(1)
 		}
 	}
