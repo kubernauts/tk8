@@ -32,7 +32,7 @@ func CreateSSHKey(pairName, region string) {
 	fmt.Fprintf(sshKey, *result.KeyMaterial)
 	fmt.Printf("\n" + "Successfully created config file and SSH key." + "\n" +
 		"You can use the newly created SSH key by adding it to the SSH agent. More info: " +
-		"https://www.ssh.com/ssh/add" + "\n")
+		"https://www.ssh.com/ssh/add" + "\n\n")
 }
 
 func errorCheck(err error) {

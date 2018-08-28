@@ -148,7 +148,7 @@ func EnableKubeadm() {
 	kubeadmEnabled := viper.GetString("aws.kubeadm_enabled")
 	if kubeadmEnabled == "true" {
 		viper.SetConfigName("main")
-		viper.AddConfigPath("/Users/arush/go/src/github.com/kubernauts/tk8/kubespray/roles/kubespray-defaults/defaults")
+		viper.AddConfigPath("./kubespray/roles/kubespray-defaults/defaults")
 		err := viper.ReadInConfig()
 		if err == nil {
 			viper.Set("kubeadm_enabled", true)
