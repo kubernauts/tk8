@@ -25,14 +25,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var ltaas, prom, heapster bool
+var ltaas, prom, heapster, rancher bool
 
 // addonCmd represents the addon command
 var addonCmd = &cobra.Command{
 	Use:   "addon",
 	Short: "Install kubernetes addon packages",
 	Long: `
-Install additional packages on top of your kubernetes deployment. Examples: Prometheus, 
+Install additional packages on top of your kubernetes deployment. Examples: Prometheus,
 Zipkin, Kibana, Load Testing As A Service`,
 	Args: cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
@@ -360,6 +360,33 @@ Zipkin, Kibana, Load Testing As A Service`,
 
 			os.Exit(0)
 		}
+		if rancher {
+			/* This is to install the Rancher addon where all the k8s objects
+            for this are provided with main.yml
+            This is applied with the kubectl create -f command
+            */
+            //get the kubeconfig file full path
+			var kubeConfig = getKubeConfig()
+            //Check if kubectl cmd is installed
+            checkKubectl(kubeConfig)
+            //Check if yaml for Rancher is present relative to current directory
+            pwd, _ := os.Getwd()
+            _, err1 := os.Stat(pwd + "/addons/rancher/master.yaml")
+			if err1 != nil {
+				print(err1.Error())
+			} else {
+				fmt.Println("Deploying Rancher")
+				RancherDeploy := exec.Command("kubectl", "--kubeconfig", kubeConfig, "create", "-f", pwd + "/addons/rancher/master.yaml")
+				stdout, _ := RancherDeploy.StdoutPipe()
+				RancherDeploy.Start()
+				scanner := bufio.NewScanner(stdout)
+				for scanner.Scan() {
+					m := scanner.Text()
+					fmt.Println(m)
+				}
+				RancherDeploy.Wait()
+			}
+		}
 
 		if len(args) == 0 {
 			cmd.Help()
@@ -367,6 +394,38 @@ Zipkin, Kibana, Load Testing As A Service`,
 		}
 
 	},
+}
+
+func getKubeConfig() string {
+    /* This function gets the path to the kubeconfig, cluster details and auth
+    for using with the kubectl.
+    Then use this to install the addon on this cluster
+    */
+    fmt.Println("Please enter the path to your kubeconfig:")
+    var kubeConfig string
+    fmt.Scanln(&kubeConfig)
+    fmt.Printf("path: %s\n", kubeConfig)
+    if _, err := os.Stat(kubeConfig); err != nil {
+        fmt.Println("Kubeconfig file not found, kindly check")
+        os.Exit(1)
+    }
+    return kubeConfig
+}
+
+func checkKubectl(kubeConfig string) {
+    /*This function is used to check the whether kubectl command is installed &
+    it works with the kubeConfig provided
+    */
+    kerr, err := exec.LookPath("kubectl")
+    if err != nil {
+        log.Fatal("kubectl command not found, kindly check")
+    }
+    fmt.Printf("Found kubectl at %s\n", kerr)
+    rr, err := exec.Command("kubectl", "--kubeconfig", kubeConfig, "version", "--short").Output()
+    if err != nil {
+        log.Fatal(err)
+    }
+    fmt.Printf(string(rr))
 }
 
 func init() {
@@ -385,4 +444,5 @@ func init() {
 	addonCmd.Flags().BoolVarP(&ltaas, "ltaas", "l", false, "Deploy Load Testing As A Service")
 	addonCmd.Flags().BoolVarP(&prom, "prom", "p", false, "Deploy prometheus")
 	addonCmd.Flags().BoolVarP(&heapster, "heapster", "m", false, "Deploy Heapster")
+	addonCmd.Flags().BoolVarP(&rancher, "rancher", "r", false, "Deploy Rancher")
 }
