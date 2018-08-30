@@ -67,8 +67,8 @@ Adapt the `config.yaml` file to specify the cluster details. [Example config](..
 aws:
    clustername: kubernauts
    os: centos # valid options are coreos/ubuntu/centos
-   aws_access_key_id: # optional, see above.
-   aws_secret_access_key: # optional, see above.
+   aws_access_key_id: # optional, see above
+   aws_secret_access_key: # optional, see above
    aws_ssh_keypair: # needs to be an existing SSH keypair in AWS
    aws_default_region:
    aws_vpc_cidr_block : "10.250.192.0/18"
@@ -84,6 +84,7 @@ aws:
    aws_elb_api_port : 6443
    k8s_secure_api_port : 6443
    kube_insecure_apiserver_address : "0.0.0.0"
+   kubeadm_enabled: false # set to true to enable Kubeadm support
 ```
 
 Once done run:
@@ -109,4 +110,3 @@ To delete the provisioned cluster run:
 ```shell
 tk8 cluster aws --destroy
 ```
-

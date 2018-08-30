@@ -15,11 +15,7 @@
 package cmd
 
 import (
-	"fmt"
-	"log"
-	"os"
-	"os/exec"
-
+	"github.com/kubernauts/tk8/internal/cluster"
 	"github.com/spf13/cobra"
 )
 
@@ -29,46 +25,10 @@ var initCmd = &cobra.Command{
 	Short: "Initialise kubespray repository",
 	Long:  `Clone the kubespray repositiory in Github.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Initialising kubespray git repo")
-		if _, err := os.Stat("./kubespray"); err == nil {
-			fmt.Println("Kubespray clone on this system already exists")
-			os.Exit(1)
-		}
-		if _, err := exec.LookPath("git"); err != nil {
-			log.Fatal("either 'git' is not installed or not found in $PATH, kindly check and fix")
-			os.Exit(1)
-		} else {
-			// issue-23 kubespray upstream
-			err := exec.Command("git", "clone", "https://github.com/kubernetes-incubator/kubespray").Run()
-			if err != nil {
-				log.Fatalf("Seems there is a problem cloning the kubespray repo, %v", err)
-				os.Exit(1)
-			}
-		}
-		if _, err := exec.LookPath("pip"); err != nil {
-			log.Fatal("either 'pip' is not installed or not found in $PATH, kindly check and fix")
-			os.Exit(1)
-		} else {
-			// Ensure to have all the dependencies of Kubespray
-			err := exec.Command("pip", "install", "-r", "kubespray/requirements.txt").Run()
-			if err != nil {
-				log.Fatalf("Seems there is a problem cloning the kubespray repo, %v", err)
-				os.Exit(1)
-			}
-		}
+		cluster.KubesprayInit()
 	},
 }
 
 func init() {
 	clusterCmd.AddCommand(initCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// initCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// initCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
