@@ -24,7 +24,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var monitor, heapster, rancher bool
+var monitor, rancher bool
 
 // addonCmd represents the addon command
 var addonCmd = &cobra.Command{
@@ -169,7 +169,6 @@ func init() {
 	// is called directly, e.g.:
 	// addonCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
-	addonCmd.Flags().BoolVarP(&monitor, "monitor", "l", false, "Deploy Monitoring and Alerting")
-	addonCmd.Flags().BoolVarP(&heapster, "heapster", "m", false, "Deploy Heapster")
+	addonCmd.Flags().BoolVarP(&monitor, "monitor", "m", false, "Deploy Monitoring and Alerting")
 	addonCmd.Flags().BoolVarP(&rancher, "rancher", "r", false, "Deploy Rancher")
 }
