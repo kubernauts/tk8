@@ -142,7 +142,7 @@ func AWSInstall() {
 			fmt.Println("Problem getting the load balancer domain name", err)
 		} else {
 			//Make a copy of kubeconfig on Ansible host
-			k8sClusterFile, err := os.OpenFile("./kubespray/inventory/awscluster/group_vars/k8s-cluster.yml", os.O_APPEND|os.O_WRONLY, 0600)
+			k8sClusterFile, err := os.OpenFile("./kubespray/inventory/awscluster/group_vars/k8s-cluster/k8s-cluster.yml", os.O_APPEND|os.O_WRONLY, 0600)
 			defer k8sClusterFile.Close()
 			ErrorCheck("Error while trying to open k8s-cluster.yml: %v.", err)
 			fmt.Fprintf(k8sClusterFile, "kubeconfig_localhost: true\n")
