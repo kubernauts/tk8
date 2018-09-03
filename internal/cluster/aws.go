@@ -124,6 +124,8 @@ func AWSInstall() {
 
 	// Check if Kubeadm is enabled
 	EnableKubeadm()
+	// Set Kube Network Proxy
+	SetNetworkPlugin()
 
 	// Copy the configuraton files as indicated in the kubespray docs
 	if _, err = os.Stat("./kubespray/inventory/awscluster"); err == nil {
