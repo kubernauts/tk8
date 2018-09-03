@@ -162,7 +162,7 @@ func SetNetworkPlugin() {
 	ReadViperConfigFile("config")
 	kubeNetworkPlugin := viper.GetString("aws.kube_network_plugin")
 	viper.SetConfigName("k8s-cluster")
-	viper.AddConfigPath("./kubespray/inventory/local/group_vars/k8s-cluster.yml")
+	viper.AddConfigPath("./kubespray/inventory/local/group_vars/k8s-cluster/k8s-cluster.yml")
 	err := viper.ReadInConfig()
 	ErrorCheck("Error reading the main.yaml config file", err)
 	viper.Set("kube_network_plugin", kubeNetworkPlugin)
@@ -170,7 +170,7 @@ func SetNetworkPlugin() {
 
 	// not sure which file used
 	viper.SetConfigName("k8s-cluster")
-	viper.AddConfigPath("./kubespray/inventory/sample/group_vars/k8s-cluster.yml")
+	viper.AddConfigPath("./kubespray/inventory/sample/group_vars/k8s-cluster/k8s-cluster.yml")
 	err = viper.ReadInConfig()
 	ErrorCheck("Error reading the main.yaml config file", err)
 	viper.Set("kube_network_plugin", kubeNetworkPlugin)
