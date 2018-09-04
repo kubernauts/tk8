@@ -16,6 +16,8 @@ type AwsCredentials struct {
 	AwsDefaultRegion string
 }
 
+var kubesprayVersion = "version-0-4"
+
 // DistOS defines the structure to hold the dist OS informations.
 // It is possible to easily extend the list of OS.
 // Append new entry to cluster.DistOSMap and use the key(string) in the config.
@@ -157,25 +159,16 @@ func EnableKubeadm() {
 	}
 }
 
-func SetNetworkPlugin() {
+func SetNetworkPlugin(clusterFolder string) {
 
 	ReadViperConfigFile("config")
 	kubeNetworkPlugin := viper.GetString("aws.kube_network_plugin")
 	viper.SetConfigName("k8s-cluster")
-	viper.AddConfigPath("./kubespray/inventory/local/group_vars/k8s-cluster")
+	viper.AddConfigPath(clusterFolder)
 	err := viper.ReadInConfig()
 	ErrorCheck("Error reading the main.yaml config file", err)
 	viper.Set("kube_network_plugin", kubeNetworkPlugin)
 	err = viper.WriteConfig()
-
-	// not sure which file used
-	viper.SetConfigName("k8s-cluster")
-	viper.AddConfigPath("./kubespray/inventory/sample/group_vars/k8s-cluster")
-	err = viper.ReadInConfig()
-	ErrorCheck("Error reading the main.yaml config file", err)
-	viper.Set("kube_network_plugin", kubeNetworkPlugin)
-	err = viper.WriteConfig()
-	ErrorCheck("Error writing the main.yaml config file", err)
 }
 
 // ErrorCheck is responsbile to check if there is any error returned by a command.
