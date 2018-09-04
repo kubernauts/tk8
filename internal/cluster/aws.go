@@ -147,7 +147,7 @@ func AWSInstall() {
 			ErrorCheck("Error while trying to open k8s-cluster.yml: %v.", err)
 			fmt.Fprintf(k8sClusterFile, "kubeconfig_localhost: true\n")
 
-			groupVars, err := os.OpenFile("./kubespray/inventory/awscluster/group_vars/all.yml", os.O_APPEND|os.O_WRONLY, 0600)
+			groupVars, err := os.OpenFile("./kubespray/inventory/awscluster/group_vars/all/all.yml", os.O_APPEND|os.O_WRONLY, 0600)
 			defer groupVars.Close()
 			ErrorCheck("Error while trying to open group_vars/all.yml: %v.", err)
 

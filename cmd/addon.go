@@ -98,22 +98,28 @@ Zipkin, Kibana, Load Testing As A Service`,
 			//Check if kubectl cmd is installed
 			checkKubectl(kubeConfig)
 			//Check if yaml for Rancher is present relative to current directory
-			pwd, _ := os.Getwd()
-			_, err1 := os.Stat(pwd + "/addons/rancher/master.yaml")
-			if err1 != nil {
-				print(err1.Error())
+			if _, err := os.Stat("./tk"); err == nil {
+				fmt.Println("Addon Files already exist on this system ... skip")
 			} else {
-				fmt.Println("Deploying Rancher")
-				RancherDeploy := exec.Command("kubectl", "--kubeconfig", kubeConfig, "create", "-f", pwd+"/addons/rancher/master.yaml")
-				stdout, _ := RancherDeploy.StdoutPipe()
-				RancherDeploy.Start()
-				scanner := bufio.NewScanner(stdout)
-				for scanner.Scan() {
-					m := scanner.Text()
-					fmt.Println(m)
+
+				err := exec.Command("git", "clone", "-b", "master", "--single-branch", "https://github.com/kubernauts/tk8", "tk").Run()
+				if err != nil {
+					log.Fatalf("Seems there is a problem cloning the Addon Files repo, %v", err)
+					os.Exit(1)
 				}
-				RancherDeploy.Wait()
 			}
+			fmt.Println("Deploying Rancher")
+			RancherDeploy := exec.Command("kubectl", "--kubeconfig", kubeConfig, "create", "-f", "tk/addons/rancher/master.yaml")
+			stdout, _ := RancherDeploy.StdoutPipe()
+			RancherDeploy.Start()
+			scanner := bufio.NewScanner(stdout)
+			for scanner.Scan() {
+				m := scanner.Text()
+				fmt.Println(m)
+			}
+			RancherDeploy.Wait()
+			os.Exit(0)
+
 		}
 
 		if len(args) == 0 {
