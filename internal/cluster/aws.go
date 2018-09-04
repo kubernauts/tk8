@@ -125,7 +125,6 @@ func AWSInstall() {
 	// Check if Kubeadm is enabled
 	EnableKubeadm()
 	// Set Kube Network Proxy
-	SetNetworkPlugin()
 
 	// Copy the configuraton files as indicated in the kubespray docs
 	if _, err = os.Stat("./kubespray/inventory/awscluster"); err == nil {
@@ -144,9 +143,11 @@ func AWSInstall() {
 			var groupVars *os.File
 			//Make a copy of kubeconfig on Ansible host
 			if kubesprayVersion == "develop" {
+				SetNetworkPlugin("./kubespray/inventory/sample/group_vars")
 				prepareInventoryClusterFile("./kubespray/inventory/awscluster/group_vars/k8s-cluster/k8s-cluster.yml")
 				groupVars = prepareInventoryGroupAllFile("./kubespray/inventory/awscluster/group_vars/all/all.yml")
 			} else {
+				SetNetworkPlugin("./kubespray/inventory/sample/group_vars/k8s-cluster")
 				prepareInventoryClusterFile("./kubespray/inventory/awscluster/group_vars/k8s-cluster.yml")
 				groupVars = prepareInventoryGroupAllFile("./kubespray/inventory/awscluster/group_vars/all.yml")
 			}
@@ -193,7 +194,6 @@ func AWSInstall() {
 }
 
 func prepareInventoryGroupAllFile(fileName string) *os.File {
-
 	groupVars, err := os.OpenFile(fileName, os.O_APPEND|os.O_WRONLY, 0600)
 	defer groupVars.Close()
 	ErrorCheck("Error while trying to open "+fileName+": %v.", err)
