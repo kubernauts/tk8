@@ -16,6 +16,8 @@ type AwsCredentials struct {
 	AwsDefaultRegion string
 }
 
+var kubesprayVersion = "version-0-4"
+
 // DistOS defines the structure to hold the dist OS informations.
 // It is possible to easily extend the list of OS.
 // Append new entry to cluster.DistOSMap and use the key(string) in the config.
