@@ -27,3 +27,14 @@ lint:
 .PHONY: vet
 vet:
 	go vet $(PKGS)
+
+release:
+	./scripts/check-gofmt.sh
+	go build -o golint github.com/golang/lint/golint
+	./golint $(PKGS)
+	go vet $(PKGS)
+	go build ${BUILD_FLAGS} -o tk8 main.go
+	GOOS=darwin GOARCH=amd64 CGO_ENABLED=1 go build ${BUILD_FLAGS} -o tk8-darwin-amd64 main.go
+	GOOS=darwin GOARCH=386 CGO_ENABLED=1 go build ${BUILD_FLAGS}  -o tk8-darwin-386 main.go
+	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build ${BUILD_FLAGS}  -o tk8-linux-amd64 main.go
+	GOOS=linux GOARCH=386 CGO_ENABLED=0 go build ${BUILD_FLAGS}  -o tk8-linux-386 main.go

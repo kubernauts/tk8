@@ -1,12 +1,12 @@
 package test
 
 import (
-	"testing"
 	"github.com/kubernauts/tk8/cmd"
+	"testing"
 )
 
 func TestVersion(t *testing.T) {
-	
+
 	if cmd.VERSION != "dev-build" {
 		t.Errorf("Version was not passed correctly")
 	} else {
