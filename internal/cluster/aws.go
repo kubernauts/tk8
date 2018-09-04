@@ -143,11 +143,11 @@ func AWSInstall() {
 			var groupVars *os.File
 			//Make a copy of kubeconfig on Ansible host
 			if kubesprayVersion == "develop" {
-				SetNetworkPlugin("./kubespray/inventory/awscluster/group_vars")
+				SetNetworkPlugin("./kubespray/inventory/awscluster/group_vars/k8s-cluster")
 				prepareInventoryClusterFile("./kubespray/inventory/awscluster/group_vars/k8s-cluster/k8s-cluster.yml")
 				groupVars = prepareInventoryGroupAllFile("./kubespray/inventory/awscluster/group_vars/all/all.yml")
 			} else {
-				SetNetworkPlugin("./kubespray/inventory/awscluster/group_vars/k8s-cluster")
+				SetNetworkPlugin("./kubespray/inventory/awscluster/group_vars")
 				prepareInventoryClusterFile("./kubespray/inventory/awscluster/group_vars/k8s-cluster.yml")
 				groupVars = prepareInventoryGroupAllFile("./kubespray/inventory/awscluster/group_vars/all.yml")
 			}
