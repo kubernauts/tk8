@@ -141,16 +141,15 @@ func AWSInstall() {
 		if err != nil {
 			fmt.Println("Problem getting the load balancer domain name", err)
 		} else {
+			var groupVars *os.File
 			//Make a copy of kubeconfig on Ansible host
-			k8sClusterFile, err := os.OpenFile("./kubespray/inventory/awscluster/group_vars/k8s-cluster/k8s-cluster.yml", os.O_APPEND|os.O_WRONLY, 0600)
-			defer k8sClusterFile.Close()
-			ErrorCheck("Error while trying to open k8s-cluster.yml: %v.", err)
-			fmt.Fprintf(k8sClusterFile, "kubeconfig_localhost: true\n")
-
-			groupVars, err := os.OpenFile("./kubespray/inventory/awscluster/group_vars/all/all.yml", os.O_APPEND|os.O_WRONLY, 0600)
-			defer groupVars.Close()
-			ErrorCheck("Error while trying to open group_vars/all.yml: %v.", err)
-
+			if kubesprayVersion == "develop" {
+				prepareInventoryClusterFile("./kubespray/inventory/awscluster/group_vars/k8s-cluster/k8s-cluster.yml")
+				groupVars = prepareInventoryGroupAllFile("./kubespray/inventory/awscluster/group_vars/all/all.yml")
+			} else {
+				prepareInventoryClusterFile("./kubespray/inventory/awscluster/group_vars/k8s-cluster.yml")
+				groupVars = prepareInventoryGroupAllFile("./kubespray/inventory/awscluster/group_vars/all.yml")
+			}
 			// Resolve Load Balancer Domain Name and pick the first IP
 			elbNameRaw, _ := exec.Command("sh", "-c", "grep apiserver_loadbalancer_domain_name= ./kubespray/inventory/hosts | cut -d'=' -f2 | sed 's/\"//g'").CombinedOutput()
 
@@ -191,6 +190,22 @@ func AWSInstall() {
 	kubeSet.Wait()
 
 	os.Exit(0)
+}
+
+func prepareInventoryGroupAllFile(fileName string) *os.File {
+
+	groupVars, err := os.OpenFile(fileName, os.O_APPEND|os.O_WRONLY, 0600)
+	defer groupVars.Close()
+	ErrorCheck("Error while trying to open "+fileName+": %v.", err)
+	return groupVars
+}
+
+func prepareInventoryClusterFile(fileName string) *os.File {
+	k8sClusterFile, err := os.OpenFile(fileName, os.O_APPEND|os.O_WRONLY, 0600)
+	defer k8sClusterFile.Close()
+	ErrorCheck("Error while trying to open "+fileName+": %v.", err)
+	fmt.Fprintf(k8sClusterFile, "kubeconfig_localhost: true\n")
+	return k8sClusterFile
 }
 
 // AWSDestroy is used to destroy the infrastructure created.
