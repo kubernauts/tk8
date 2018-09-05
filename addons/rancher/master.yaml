@@ -62,7 +62,7 @@ spec:
       name: https
     selector:
       app: cattle
-    type: LoadBalancer
+    type: NodePort
 
 ---
 
