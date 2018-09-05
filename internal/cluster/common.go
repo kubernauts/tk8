@@ -171,6 +171,18 @@ func SetNetworkPlugin(clusterFolder string) {
 	err = viper.WriteConfig()
 }
 
+func SetKubernetesVersion(clusterFolder string) {
+
+	ReadViperConfigFile("config")
+	kubeVersion := viper.GetString("aws.kubernetes-version")
+	viper.SetConfigName("k8s-cluster")
+	viper.AddConfigPath(clusterFolder)
+	err := viper.ReadInConfig()
+	ErrorCheck("Error reading the main.yaml config file", err)
+	viper.Set("kube_version", kubeVersion)
+	err = viper.WriteConfig()
+}
+
 // ErrorCheck is responsbile to check if there is any error returned by a command.
 func ErrorCheck(msg string, err error) {
 	if err != nil {

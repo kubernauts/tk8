@@ -20,3 +20,4 @@ aws:
    kube_insecure_apiserver_address : "0.0.0.0"
    kubeadm_enabled: false
    kube_network_plugin: "flannel"
+   kubernetes-version: "1.11.2"
