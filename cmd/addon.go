@@ -15,12 +15,12 @@
 package cmd
 
 import (
-	"bufio"
 	"fmt"
 	"log"
 	"os"
 	"os/exec"
 
+	"github.com/kubernauts/tk8/internal/addon"
 	"github.com/spf13/cobra"
 )
 
@@ -28,105 +28,76 @@ var monitor, rancher bool
 
 // addonCmd represents the addon command
 var addonCmd = &cobra.Command{
-	Use:   "addon",
-	Short: "Install kubernetes addon packages",
-	Long: `
-Install additional packages on top of your kubernetes deployment. Examples: Prometheus,
-Zipkin, Kibana, Load Testing As A Service`,
-	Args: cobra.NoArgs,
+	Use:   "addon [command]",
+	Short: "Manage addon packages",
+	Long:  `Manage your addons on kubernetes with this cli.`,
+	Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-
-		if monitor {
-			// Get kubeconfig file location
-			fmt.Println("Please enter the path to your kubeconfig")
-			var kubeConfig string
-			fmt.Scanln(&kubeConfig)
-
-			if _, err := os.Stat(kubeConfig); err != nil {
-				fmt.Println("Kubeconfig not found, kindly check")
-				os.Exit(1)
-			}
-
-			// check if kubectl is installed
-			kerr, err := exec.LookPath("kubectl")
-			if err != nil {
-				log.Fatal("kubectl command not found, kindly check")
-			}
-			fmt.Printf("Found kubectl at %s\n", kerr)
-			rr, err := exec.Command("kubectl", "--kubeconfig", kubeConfig, "version", "--short").Output()
-			if err != nil {
-				log.Fatal(err)
-			}
-			fmt.Printf(string(rr))
-
-			if _, err := os.Stat("./prometheus-grafana-alerting"); err == nil {
-				fmt.Println("Addon Files already exist on this system ... skip")
-			} else {
-
-				err := exec.Command("git", "clone", "https://github.com/arashkaffamanesh/prometheus-grafana-alerting").Run()
-				if err != nil {
-					log.Fatalf("Seems there is a problem cloning the Addon Files repo, %v", err)
-					os.Exit(1)
-				}
-			}
-
-			cmdSet := exec.Command("./build.sh")
-			cmdSet.Dir = "./prometheus-grafana-alerting"
-			cmdOut, er := cmdSet.CombinedOutput()
-			if er != nil {
-				log.Fatal(er)
-			}
-			cmdSet.Wait()
-			fmt.Println(cmdOut)
-			cmdSet = exec.Command("kubectl", "--kubeconfig", kubeConfig, "apply", "-f", "./prometheus-grafana-alerting/manifests-all.yaml")
-			cmdOut, er = cmdSet.CombinedOutput()
-			if er != nil {
-				log.Fatal(er)
-			}
-			cmdSet.Wait()
-			fmt.Println(cmdOut)
-			os.Exit(0)
-		}
-
-		if rancher {
-			/* This is to install the Rancher addon where all the k8s objects
-			   for this are provided with main.yml
-			   This is applied with the kubectl create -f command
-			*/
-			//get the kubeconfig file full path
-			var kubeConfig = getKubeConfig()
-			//Check if kubectl cmd is installed
-			checkKubectl(kubeConfig)
-			//Check if yaml for Rancher is present relative to current directory
-			if _, err := os.Stat("./tk"); err == nil {
-				fmt.Println("Addon Files already exist on this system ... skip")
-			} else {
-
-				err := exec.Command("git", "clone", "-b", "master", "--single-branch", "https://github.com/kubernauts/tk8", "tk").Run()
-				if err != nil {
-					log.Fatalf("Seems there is a problem cloning the Addon Files repo, %v", err)
-					os.Exit(1)
-				}
-			}
-			fmt.Println("Deploying Rancher")
-			RancherDeploy := exec.Command("kubectl", "--kubeconfig", kubeConfig, "create", "-f", "tk/addons/rancher/master.yaml")
-			stdout, _ := RancherDeploy.StdoutPipe()
-			RancherDeploy.Start()
-			scanner := bufio.NewScanner(stdout)
-			for scanner.Scan() {
-				m := scanner.Text()
-				fmt.Println(m)
-			}
-			RancherDeploy.Wait()
-			os.Exit(0)
-
-		}
-
 		if len(args) == 0 {
 			cmd.Help()
-			os.Exit(0)
+			os.Exit(1)
 		}
+	},
+}
 
+// addonCmd represents the addon command
+var addonInstallCmd = &cobra.Command{
+	Use:   "install [addon name or git url]",
+	Short: "Install a addon on your kubernetes cluster",
+	Long:  `Install additional packages on top of your kubernetes deployment.`,
+	Args:  cobra.MinimumNArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) == 0 {
+			cmd.Help()
+			os.Exit(1)
+		}
+		addon.InstallAddon(args[0])
+	},
+}
+
+// addonCmd represents the addon command
+var addonDestroyCmd = &cobra.Command{
+	Use:   "destroy [addon name]",
+	Short: "Destroy a running addon on your kubernetes cluster",
+	Long:  `You don´t need a addon on your cluster anymore then easly destroy it.`,
+	Args:  cobra.MinimumNArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) == 0 {
+			cmd.Help()
+			os.Exit(1)
+		}
+		addon.DestroyAddon(args[0])
+	},
+}
+
+// addonCmd represents the addon command
+var addonCreateCmd = &cobra.Command{
+	Use:   "create [addon name]",
+	Short: "create a new kubernetes addon packages on your local machine for development",
+	Long: `Create your own addons for your kubernetes cluster. 
+This command will prepare a example package in a folder with the addon name`,
+	Args: cobra.MinimumNArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) == 0 {
+			cmd.Help()
+			os.Exit(1)
+		}
+		addon.PrepareExample(args[0])
+	},
+}
+
+// addonCmd represents the addon command
+var addonGetCmd = &cobra.Command{
+	Use:   "get [git url]",
+	Short: "Get a addon to your local machine",
+	Long:  `If you need to prepare some configs for a addon on your local machine then you can get it with this command in a local folder.`,
+	Args:  cobra.MinimumNArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) == 0 {
+			cmd.Help()
+			os.Exit(1)
+		}
+		addon.GetAddon(args[0])
 	},
 }
 
@@ -163,6 +134,10 @@ func checkKubectl(kubeConfig string) {
 }
 
 func init() {
+	addonCmd.AddCommand(addonCreateCmd)
+	addonCmd.AddCommand(addonInstallCmd)
+	addonCmd.AddCommand(addonGetCmd)
+	addonCmd.AddCommand(addonDestroyCmd)
 	rootCmd.AddCommand(addonCmd)
 
 	// Here you will define your flags and configuration settings.
@@ -175,6 +150,6 @@ func init() {
 	// is called directly, e.g.:
 	// addonCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
-	addonCmd.Flags().BoolVarP(&monitor, "monitor", "m", false, "Deploy Monitoring and Alerting")
-	addonCmd.Flags().BoolVarP(&rancher, "rancher", "r", false, "Deploy Rancher")
+	// addonCmd.Flags().BoolVarP(&monitor, "monitor", "m", false, "Deploy Monitoring and Alerting")
+	addonCmd.PersistentFlags().StringVar(&addon.KubeConfig, "kubeconfig", "", "kubeconfig path")
 }
