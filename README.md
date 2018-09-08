@@ -1,8 +1,8 @@
 ![Logo](docs/images/tk8.png)
 
-# TK8: A multi-cloud, multi-cluster Kubernetes platform installation and integration tool with HA support!
+# TK8: A multi-cloud, multi-cluster Kubernetes platform installation and integration tool based on Kubespray!
 
-TK8 is a CLI written in Golang to deploy the upstream Vanilla Kubernetes fully automated using Terraform, Kubespray and Ansible on any environment. **We'll provide kubeadm support as soon kubeadm HA support is available.**
+TK8 is a CLI written in Golang to deploy the upstream Vanilla Kubernetes fully automated based on [Kubespray](https://github.com/kubernetes-incubator/kubespray) on any environment. **We'll provide kubeadm support as soon kubeadm HA support is available through Kubespray project.**
 
 With TK8 you can also install additional add-ons such as a Jmeter Cluster for load testing, Prometheus for monitoring, Jaeger, Linkerd or Zippkin for tracing, Ambassador API Gateway with Envoy for ingress and load balancing, Istio for service mesh support , Jenkins-X for CI/CD and Helm or Kedge for packaging on Kubernetes.
 
@@ -100,3 +100,6 @@ Specific platform instructions can be found in the [official documentation](http
 ```shell
 docker run -it --name tk8 -v ~/.ssh/id_rsa:/root/.ssh/id_rsa kubernautslabs/tk8 cluster [flags] [command]
 ```
+
+
+
