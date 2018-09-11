@@ -26,7 +26,7 @@ func applyMainYml(addonName string, fileType string) {
 	if err == nil {
 		fmt.Println("apply main." + fileType)
 		if len(KubeConfig) > 1 {
-			cEx = exec.Command("kubectl", "--kubeconfig="+KubeConfig, "apply", "-f", "main."+fileType)
+			cEx = exec.Command("kubectl", "--kubeconfig", KubeConfig, "apply", "-f", "main."+fileType)
 		} else {
 			cEx = exec.Command("kubectl", "apply", "-f", "main."+fileType)
 		}

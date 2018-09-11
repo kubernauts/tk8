@@ -134,8 +134,8 @@ func checkKubectl(kubeConfig string) {
 }
 
 func init() {
-	addonCmd.AddCommand(addonCreateCmd)
 	addonCmd.AddCommand(addonInstallCmd)
+	addonCmd.AddCommand(addonCreateCmd)
 	addonCmd.AddCommand(addonGetCmd)
 	addonCmd.AddCommand(addonDestroyCmd)
 	rootCmd.AddCommand(addonCmd)

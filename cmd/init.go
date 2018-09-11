@@ -30,5 +30,5 @@ var initCmd = &cobra.Command{
 }
 
 func init() {
-	clusterCmd.AddCommand(initCmd)
+	//	clusterCmd.AddCommand(initCmd)
 }
