@@ -151,6 +151,7 @@ func AWSInstall() {
 				prepareInventoryClusterFile("./kubespray/inventory/awscluster/group_vars/k8s-cluster.yml")
 				groupVars = prepareInventoryGroupAllFile("./kubespray/inventory/awscluster/group_vars/all.yml")
 			}
+			defer groupVars.Close()
 			// Resolve Load Balancer Domain Name and pick the first IP
 			elbNameRaw, _ := exec.Command("sh", "-c", "grep apiserver_loadbalancer_domain_name= ./kubespray/inventory/hosts | cut -d'=' -f2 | sed 's/\"//g'").CombinedOutput()
 
@@ -195,7 +196,6 @@ func AWSInstall() {
 
 func prepareInventoryGroupAllFile(fileName string) *os.File {
 	groupVars, err := os.OpenFile(fileName, os.O_APPEND|os.O_WRONLY, 0600)
-	defer groupVars.Close()
 	ErrorCheck("Error while trying to open "+fileName+": %v.", err)
 	return groupVars
 }
