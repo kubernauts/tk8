@@ -54,10 +54,9 @@ Usage:
   tk8 addon [flags]
 
 Flags:
-  -m, --heapster   Deploy Heapster
-  -h, --help       help for addon
-  -l, --ltaas      Deploy Load Testing As A Service
-  -p, --prom       Deploy prometheus
+  -h, --help      help for addon
+  -m, --monitor   Deploy Monitoring and Alerting
+  -r, --rancher   Deploy Rancher
 
 Global Flags:
       --config string   Path to the config.yaml
