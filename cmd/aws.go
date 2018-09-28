@@ -53,7 +53,7 @@ Kindly ensure that terraform is installed also.`,
 }
 
 func init() {
-	clusterCmd.AddCommand(awsCmd)
+	// clusterCmd.AddCommand(awsCmd)
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
@@ -63,9 +63,9 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// awsCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	awsCmd.Flags().BoolVarP(&install, "install", "i", false, "Install Kubernetes on the AWS infrastructure")
+	// awsCmd.Flags().BoolVarP(&install, "install", "i", false, "Install Kubernetes on the AWS infrastructure")
 	// Flags to initiate the terraform installation
-	awsCmd.Flags().BoolVarP(&create, "create", "c", false, "Deploy the AWS infrastructure using terraform")
+	// awsCmd.Flags().BoolVarP(&create, "create", "c", false, "Deploy the AWS infrastructure using terraform")
 	// Flag to destroy the AWS infrastructure using terraform
-	awsCmd.Flags().BoolVarP(&destroy, "destroy", "d", false, "Destroy the AWS infrastructure")
+	// awsCmd.Flags().BoolVarP(&destroy, "destroy", "d", false, "Destroy the AWS infrastructure")
 }

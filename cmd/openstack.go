@@ -370,7 +370,7 @@ var openstackCmd = &cobra.Command{
 }
 
 func init() {
-	clusterCmd.AddCommand(openstackCmd)
+	// clusterCmd.AddCommand(openstackCmd)
 
 	// Here you will define your flags and configuration settings.
 
@@ -382,9 +382,9 @@ func init() {
 	// is called directly, e.g.:
 	// openstackCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
-	openstackCmd.Flags().BoolVarP(&create, "create", "c", false, "Deploy the Openstack infrastructure using terraform")
+	// openstackCmd.Flags().BoolVarP(&create, "create", "c", false, "Deploy the Openstack infrastructure using terraform")
 
-	openstackCmd.Flags().BoolVarP(&destroy, "destroy", "d", false, "Destroy the infrastructure using terraform")
+	// openstackCmd.Flags().BoolVarP(&destroy, "destroy", "d", false, "Destroy the infrastructure using terraform")
 
-	openstackCmd.Flags().BoolVarP(&install, "install", "i", false, "Install kuberntes on the Openstack infrastructure")
+	// openstackCmd.Flags().BoolVarP(&install, "install", "i", false, "Install kuberntes on the Openstack infrastructure")
 }

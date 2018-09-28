@@ -80,7 +80,6 @@ func ReadViperConfigFile(configName string) {
 	viper.SetConfigName(configName)
 	viper.AddConfigPath(".")
 	viper.AddConfigPath("/tk8")
-	viper.AddConfigPath("./../..")
 	verr := viper.ReadInConfig() // Find and read the config file.
 	if verr != nil {             // Handle errors reading the config file.
 		CreateConfig()
@@ -167,8 +166,11 @@ func SetNetworkPlugin(clusterFolder string) {
 	viper.AddConfigPath(clusterFolder)
 	err := viper.ReadInConfig()
 	ErrorCheck("Error reading the main.yaml config file", err)
-	viper.Set("kube_network_plugin", kubeNetworkPlugin)
-	err = viper.WriteConfig()
+	if len(kubeNetworkPlugin) > 3 {
+		viper.Set("kube_network_plugin", kubeNetworkPlugin)
+		err = viper.WriteConfig()
+	}
+
 }
 
 // ErrorCheck is responsbile to check if there is any error returned by a command.
@@ -182,4 +184,25 @@ func ErrorCheck(msg string, err error) {
 func ExitErrorf(msg string, args ...interface{}) {
 	fmt.Fprintf(os.Stderr, msg+"\n", args...)
 	os.Exit(1)
+}
+
+type Provisioner interface {
+	Init()
+	Setup()
+	Upgrade()
+	Destroy()
+}
+
+var Name string
+
+func NotImplemented() {
+	fmt.Println("Not implemented yet. Coming soon")
+	os.Exit(0)
+}
+
+func SetClusteName() {
+	if len(Name) < 1 {
+		config := GetClusterConfig()
+		Name = config.AwsClusterName
+	}
 }

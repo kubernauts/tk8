@@ -26,7 +26,7 @@ func KubesprayInit() {
 	fmt.Println("Initialising kubespray git repo")
 	if _, err := os.Stat("./kubespray"); err == nil {
 		fmt.Println("Kubespray clone on this system already exists")
-		os.Exit(1)
+		return
 	}
 
 	if _, err := exec.LookPath("git"); err != nil {
