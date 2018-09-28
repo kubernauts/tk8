@@ -190,8 +190,11 @@ func SetNetworkPlugin(clusterFolder string) {
 	viper.AddConfigPath(clusterFolder)
 	err := viper.ReadInConfig()
 	ErrorCheck("Error reading the main.yaml config file", err)
-	viper.Set("kube_network_plugin", kubeNetworkPlugin)
-	err = viper.WriteConfig()
+	if len(kubeNetworkPlugin) > 3 {
+		viper.Set("kube_network_plugin", kubeNetworkPlugin)
+		err = viper.WriteConfig()
+	}
+
 }
 
 // ErrorCheck is responsbile to check if there is any error returned by a command.
@@ -208,6 +211,7 @@ func ExitErrorf(msg string, args ...interface{}) {
 }
 
 type Provisioner interface {
+
 	Init(args []string)
 	Setup(args []string)
 	Upgrade(args []string)

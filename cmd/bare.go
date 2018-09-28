@@ -330,9 +330,10 @@ func init() {
 	// is called directly, e.g.:
 	// bareCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
-	// 	bareCmd.Flags().BoolVarP(&load, "loadbalancer", "l", false, "Deploy the load balancer")
+	// bareCmd.Flags().BoolVarP(&load, "loadbalancer", "l", false, "Deploy the load balancer")
 
-	// 	bareCmd.Flags().BoolVarP(&destroy, "destroy", "d", false, "Destroy the baremetal kubernetes")
+	// bareCmd.Flags().BoolVarP(&destroy, "destroy", "d", false, "Destroy the baremetal kubernetes")
 
-	// 	bareCmd.Flags().BoolVarP(&install, "install", "i", false, "Install kuberntes on the baremetal infrastructure")
+	// bareCmd.Flags().BoolVarP(&install, "install", "i", false, "Install kuberntes on the baremetal infrastructure")
+
 }
