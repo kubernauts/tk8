@@ -335,4 +335,5 @@ func init() {
 	// bareCmd.Flags().BoolVarP(&destroy, "destroy", "d", false, "Destroy the baremetal kubernetes")
 
 	// bareCmd.Flags().BoolVarP(&install, "install", "i", false, "Install kuberntes on the baremetal infrastructure")
+
 }

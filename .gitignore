@@ -20,9 +20,11 @@ tk8
 dist
 bin
 inventory
+addons
 
 # Ignore kubespray
 kubespray
+golint
 
 # Ignore personal configs
 config.yml

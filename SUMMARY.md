@@ -12,4 +12,3 @@
 ## Add-ons
 
 * [Install an add-on ](docs/add-on.md)
-

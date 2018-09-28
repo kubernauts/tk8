@@ -50,15 +50,14 @@ func distSelect() (string, string) {
 		}
 	}
 	if awsInstanceOS == "custom" {
-		go parseTemplate(templates.CustomInfrastructure, "./inventory/"+Name+"/provisioner/create-infrastructure.tf", DistOSMap[awsInstanceOS])
+		go ParseTemplate(templates.CustomInfrastructure, "./inventory/"+Name+"/provisioner/create-infrastructure.tf", DistOSMap[awsInstanceOS])
 	} else {
-		go parseTemplate(templates.Infrastructure, "./inventory/"+Name+"/provisioner/create-infrastructure.tf", DistOSMap[awsInstanceOS])
+		go ParseTemplate(templates.Infrastructure, "./inventory/"+Name+"/provisioner/create-infrastructure.tf", DistOSMap[awsInstanceOS])
 	}
 
-	go parseTemplate(templates.Credentials, "./inventory/"+Name+"/provisioner/credentials.tfvars", GetCredentials())
-	go parseTemplate(templates.Variables, "./inventory/"+Name+"/provisioner/variables.tf", DistOSMap[awsInstanceOS])
-	go parseTemplate(templates.Terraform, "./inventory/"+Name+"/provisioner/terraform.tfvars", GetClusterConfig())
-
+	go ParseTemplate(templates.Credentials, "./inventory/"+Name+"/provisioner/credentials.tfvars", GetCredentials())
+	go ParseTemplate(templates.Variables, "./inventory/"+Name+"/provisioner/variables.tf", DistOSMap[awsInstanceOS])
+	go ParseTemplate(templates.Terraform, "./inventory/"+Name+"/provisioner/terraform.tfvars", GetClusterConfig())
 	return DistOSMap[awsInstanceOS].User, awsInstanceOS
 }
 
@@ -73,21 +72,23 @@ func AWSCreate() {
 	ErrorCheck("Error executing Terraform: %v", err)
 	fmt.Printf(string(terrVersion))
 
-	os.MkdirAll("./inventory/"+Name+"/provisioner", 0755)
-	exec.Command("cp", "-rfp", "./kubespray/contrib/terraform/aws/", "./inventory/"+Name+"/provisioner").Run()
-	distSelect()
-
-	terrInit := exec.Command("terraform", "init")
-	terrInit.Dir = "./inventory/" + Name + "/provisioner/"
-	out, _ := terrInit.StdoutPipe()
-	terrInit.Start()
-	scanInit := bufio.NewScanner(out)
-	for scanInit.Scan() {
-		m := scanInit.Text()
-		fmt.Println(m)
+	if _, err = os.Stat("./inventory/" + Name + "/installer"); err == nil {
+		fmt.Println("Configuration folder already exists")
+	} else {
+		os.MkdirAll("./inventory/"+Name+"/provisioner", 0755)
+		exec.Command("cp", "-rfp", "./kubespray/contrib/terraform/aws/", "./inventory/"+Name+"/provisioner").Run()
+		distSelect()
+		terrInit := exec.Command("terraform", "init")
+		terrInit.Dir = "./inventory/" + Name + "/provisioner/"
+		out, _ := terrInit.StdoutPipe()
+		terrInit.Start()
+		scanInit := bufio.NewScanner(out)
+		for scanInit.Scan() {
+			m := scanInit.Text()
+			fmt.Println(m)
+		}
+		terrInit.Wait()
 	}
-
-	terrInit.Wait()
 
 	terrSet := exec.Command("terraform", "apply", "-var-file=credentials.tfvars", "-auto-approve")
 	terrSet.Dir = "./inventory/" + Name + "/provisioner/"
@@ -139,16 +140,22 @@ func AWSInstall() {
 		cpKube.Run()
 		cpKube.Wait()
 
+		mvInstallerHost := exec.Command("cp", "./inventory/"+Name+"/hosts", "./inventory/"+Name+"/installer/hosts")
+		mvInstallerHost.Run()
+		mvInstallerHost.Wait()
+
 		// Check if Kubeadm is enabled
 		EnableKubeadm()
 
 		//Start Kubernetes Installation
 		//check if ansible host file exists
 		_, err = os.Stat("./inventory/" + Name + "/hosts")
-		ErrorCheck("./inventory/"+Name+"/hosts inventory file not found", err)
+
+		ErrorCheck("./inventory/"+Name+"/installer/hosts inventory file not found", err)
 
 		//Enable load balancer api access and copy the kubeconfig file locally
-		loadBalancerName, err := exec.Command("sh", "-c", "grep apiserver_loadbalancer_domain_name= ./inventory/"+Name+"/installer/hosts | cut -d'=' -f2").CombinedOutput()
+		loadBalancerName, err := exec.Command("sh", "-c", "grep apiserver_loadbalancer_domain_name= ./inventory/"+Name+"/hosts | cut -d'=' -f2").CombinedOutput()
+
 		if err != nil {
 			fmt.Println("Problem getting the load balancer domain name", err)
 		} else {
@@ -167,7 +174,8 @@ func AWSInstall() {
 			}
 			defer groupVars.Close()
 			// Resolve Load Balancer Domain Name and pick the first IP
-			elbNameRaw, _ := exec.Command("sh", "-c", "grep apiserver_loadbalancer_domain_name= ./inventory/"+Name+"installer/hosts | cut -d'=' -f2 | sed 's/\"//g'").CombinedOutput()
+
+			elbNameRaw, _ := exec.Command("sh", "-c", "grep apiserver_loadbalancer_domain_name= ./inventory/"+Name+"/hosts | cut -d'=' -f2 | sed 's/\"//g'").CombinedOutput()
 
 			// Convert the Domain name to string, strip all spaces so that Lookup does not return errors
 			elbName := strings.TrimSpace(string(elbNameRaw))
@@ -240,9 +248,11 @@ func AWSDestroy() {
 	if _, err := os.Stat("./inventory/" + Name + "/provisioner/credentials.tfvars"); err == nil {
 		fmt.Println("Credentials file already exists, creation skipped")
 	} else {
-		parseTemplate(templates.Credentials, "./inventory/"+Name+"/provisioner/credentials.tfvars", GetCredentials())
+
+		ParseTemplate(templates.Credentials, "./inventory/"+Name+"/provisioner/credentials.tfvars", GetCredentials())
 	}
-	cpHost := exec.Command("cp", "./inventory/"+Name+"/installer/hosts", "./inventory/hosts")
+	cpHost := exec.Command("cp", "./inventory/"+Name+"/hosts", "./inventory/hosts")
+
 	cpHost.Run()
 	cpHost.Wait()
 	terrSet := exec.Command("terraform", "destroy", "-var-file=credentials.tfvars", "-force")
@@ -261,8 +271,10 @@ func AWSDestroy() {
 
 	terrSet.Wait()
 
-	// exec.Command("rm", "./inventory/hosts").Run()
-	// exec.Command("rm", "-rf", "./inventory/"+Name).Run()
+
+	exec.Command("rm", "./inventory/hosts").Run()
+	exec.Command("rm", "-rf", "./inventory/"+Name).Run()
+
 
 	return
 }

@@ -11,6 +11,7 @@ import (
 	eks "github.com/kubernauts/tk8/internal/provisioner/eks"
 	nutanix "github.com/kubernauts/tk8/internal/provisioner/nutanix"
 	openstack "github.com/kubernauts/tk8/internal/provisioner/openstack"
+
 	"github.com/spf13/cobra"
 )
 
@@ -27,15 +28,16 @@ var provisioners = map[string]cluster.Provisioner{
 var provisionerInstallCmd = &cobra.Command{
 	Use:              "install [" + GetAvaibleProvisioner() + "]",
 	TraverseChildren: true,
-	Short:            "Manages the infrastructure on AWS",
-	Long: `
-Create, delete and show current status of the deployment that is running on AWS.
-Kindly ensure that terraform is installed also.`,
-	Args: ArgsValidation,
+
+	Short:            "install the infrastructure",
+	Long:             `This command will provide the infrastructure which is needed to install and run kubernetes on your selected platform`,
+	Args:             ArgsValidation,
 	Run: func(cmd *cobra.Command, args []string) {
 		if val, ok := provisioners[args[0]]; ok {
-			val.Init()
-			val.Setup()
+			cluster.KubesprayInit()
+			val.Init(args[1:])
+			val.Setup(args[1:])
+
 		}
 	},
 }
@@ -43,14 +45,12 @@ Kindly ensure that terraform is installed also.`,
 var provisionerDestroyCmd = &cobra.Command{
 	Use:              "destroy [" + GetAvaibleProvisioner() + "]",
 	TraverseChildren: true,
-	Short:            "Manages the infrastructure on AWS",
-	Long: `
-Create, delete and show current status of the deployment that is running on AWS.
-Kindly ensure that terraform is installed also.`,
-	Args: ArgsValidation,
+	Short:            "destroy the infrastructure",
+	Long:             `This command will destroy the infrastructure which was created with the install command.`,
+	Args:             ArgsValidation,
 	Run: func(cmd *cobra.Command, args []string) {
 		if val, ok := provisioners[args[0]]; ok {
-			val.Destroy()
+			val.Destroy(args[1:])
 		}
 	},
 }
@@ -65,7 +65,7 @@ Kindly ensure that terraform is installed also.`,
 	Args: ArgsValidation,
 	Run: func(cmd *cobra.Command, args []string) {
 		if val, ok := provisioners[args[0]]; ok {
-			val.Upgrade()
+			val.Upgrade(args[1:])
 		}
 	},
 }

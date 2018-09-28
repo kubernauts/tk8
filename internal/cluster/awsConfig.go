@@ -84,7 +84,7 @@ func CreateConfig() {
 		accessKey, secretKey := getCreds()
 		confStruct = Config{AccessKey: accessKey, SecretKey: secretKey, ClusterName: generatedName, SSHName: generatedName}
 	}
-	parseTemplate(templates.Config, "./config.yaml", confStruct)
+	ParseTemplate(templates.Config, "./config.yaml", confStruct)
 	ReadViperConfigFile("config")
 	region := viper.GetString("aws.aws_default_region")
 	CreateSSHKey(generatedName, region)
