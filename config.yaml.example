@@ -20,3 +20,12 @@ aws:
    kube_insecure_apiserver_address : "0.0.0.0"
    kubeadm_enabled: false
    kube_network_plugin: "flannel"
+
+eks:
+  cluster-name: "kubernauts-eks"
+  aws_region: "us-west-2"
+  node-instance-type: "m4.large"
+  desired-capacity: 1
+  autoscalling-max-size: 2
+  autoscalling-min-size: 1  
+  key-file-path: "~/.ssh/id_rsa.pub"

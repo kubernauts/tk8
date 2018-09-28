@@ -50,15 +50,14 @@ func distSelect() (string, string) {
 		}
 	}
 	if awsInstanceOS == "custom" {
-		go parseTemplate(templates.CustomInfrastructure, "./kubespray/contrib/terraform/aws/create-infrastructure.tf", DistOSMap[awsInstanceOS])
+		go ParseTemplate(templates.CustomInfrastructure, "./inventory/"+Name+"/provisioner/create-infrastructure.tf", DistOSMap[awsInstanceOS])
 	} else {
-		go parseTemplate(templates.Infrastructure, "./kubespray/contrib/terraform/aws/create-infrastructure.tf", DistOSMap[awsInstanceOS])
+		go ParseTemplate(templates.Infrastructure, "./inventory/"+Name+"/provisioner/create-infrastructure.tf", DistOSMap[awsInstanceOS])
 	}
 
-	go parseTemplate(templates.Credentials, "./kubespray/contrib/terraform/aws/credentials.tfvars", GetCredentials())
-	go parseTemplate(templates.Variables, "./kubespray/contrib/terraform/aws/variables.tf", DistOSMap[awsInstanceOS])
-	go parseTemplate(templates.Terraform, "./kubespray/contrib/terraform/aws/terraform.tfvars", GetClusterConfig())
-
+	go ParseTemplate(templates.Credentials, "./inventory/"+Name+"/provisioner/credentials.tfvars", GetCredentials())
+	go ParseTemplate(templates.Variables, "./inventory/"+Name+"/provisioner/variables.tf", DistOSMap[awsInstanceOS])
+	go ParseTemplate(templates.Terraform, "./inventory/"+Name+"/provisioner/terraform.tfvars", GetClusterConfig())
 	return DistOSMap[awsInstanceOS].User, awsInstanceOS
 }
 
@@ -73,19 +72,23 @@ func AWSCreate() {
 	ErrorCheck("Error executing Terraform: %v", err)
 	fmt.Printf(string(terrVersion))
 
-	distSelect()
-
-	terrInit := exec.Command("terraform", "init")
-	terrInit.Dir = "./kubespray/contrib/terraform/aws/"
-	out, _ := terrInit.StdoutPipe()
-	terrInit.Start()
-	scanInit := bufio.NewScanner(out)
-	for scanInit.Scan() {
-		m := scanInit.Text()
-		fmt.Println(m)
+	if _, err = os.Stat("./inventory/" + Name + "/installer"); err == nil {
+		fmt.Println("Configuration folder already exists")
+	} else {
+		os.MkdirAll("./inventory/"+Name+"/provisioner", 0755)
+		exec.Command("cp", "-rfp", "./kubespray/contrib/terraform/aws/", "./inventory/"+Name+"/provisioner").Run()
+		distSelect()
+		terrInit := exec.Command("terraform", "init")
+		terrInit.Dir = "./inventory/" + Name + "/provisioner/"
+		out, _ := terrInit.StdoutPipe()
+		terrInit.Start()
+		scanInit := bufio.NewScanner(out)
+		for scanInit.Scan() {
+			m := scanInit.Text()
+			fmt.Println(m)
+		}
+		terrInit.Wait()
 	}
-
-	terrInit.Wait()
 
 	terrSet := exec.Command("terraform", "apply", "-var-file=credentials.tfvars", "-auto-approve")
 	terrSet.Dir = "./kubespray/contrib/terraform/aws/"
@@ -130,13 +133,36 @@ func AWSInstall() {
 	if _, err = os.Stat("./kubespray/inventory/awscluster"); err == nil {
 		fmt.Println("Configuration folder already exists")
 	} else {
+		os.MkdirAll("./inventory/"+Name+"/installer", 0755)
+		mvHost := exec.Command("mv", "./inventory/hosts", "./inventory/"+Name+"/hosts")
+		mvHost.Run()
+		mvHost.Wait()
+		mvShhBastion := exec.Command("mv", "./kubespray/ssh-bastion.conf", "./inventory/"+Name+"/ssh-bastion.conf")
+		mvShhBastion.Run()
+		mvShhBastion.Wait()
+		//os.MkdirAll("./inventory/"+Name+"/installer/group_vars", 0755)
+		cpSample := exec.Command("cp", "-rfp", "./kubespray/inventory/sample/", "./inventory/"+Name+"/installer/")
+		cpSample.Run()
+		cpSample.Wait()
 
-		//os.MkdirAll("./kubespray/inventory/awscluster/group_vars", 0755)
-		exec.Command("cp", "-rfp", "./kubespray/inventory/sample/", "./kubespray/inventory/awscluster/").Run()
-		exec.Command("cp", "./kubespray/inventory/hosts", "./kubespray/inventory/awscluster/hosts").Run()
+		cpKube := exec.Command("cp", "-rfp", "./kubespray/", "./inventory/"+Name+"/installer/")
+		cpKube.Run()
+		cpKube.Wait()
+
+		mvInstallerHost := exec.Command("cp", "./inventory/"+Name+"/hosts", "./inventory/"+Name+"/installer/hosts")
+		mvInstallerHost.Run()
+		mvInstallerHost.Wait()
+
+		// Check if Kubeadm is enabled
+		EnableKubeadm()
+
+		//Start Kubernetes Installation
+		//check if ansible host file exists
+		_, err = os.Stat("./inventory/" + Name + "/hosts")
+		ErrorCheck("./inventory/"+Name+"/installer/hosts inventory file not found", err)
 
 		//Enable load balancer api access and copy the kubeconfig file locally
-		loadBalancerName, err := exec.Command("sh", "-c", "grep apiserver_loadbalancer_domain_name= ./kubespray/inventory/hosts | cut -d'=' -f2").CombinedOutput()
+		loadBalancerName, err := exec.Command("sh", "-c", "grep apiserver_loadbalancer_domain_name= ./inventory/"+Name+"/hosts | cut -d'=' -f2").CombinedOutput()
 		if err != nil {
 			fmt.Println("Problem getting the load balancer domain name", err)
 		} else {
@@ -153,8 +179,7 @@ func AWSInstall() {
 			}
 			defer groupVars.Close()
 			// Resolve Load Balancer Domain Name and pick the first IP
-			elbNameRaw, _ := exec.Command("sh", "-c", "grep apiserver_loadbalancer_domain_name= ./kubespray/inventory/hosts | cut -d'=' -f2 | sed 's/\"//g'").CombinedOutput()
-
+			elbNameRaw, _ := exec.Command("sh", "-c", "grep apiserver_loadbalancer_domain_name= ./inventory/"+Name+"/hosts | cut -d'=' -f2 | sed 's/\"//g'").CombinedOutput()
 			// Convert the Domain name to string, strip all spaces so that Lookup does not return errors
 			elbName := strings.TrimSpace(string(elbNameRaw))
 			fmt.Println(elbName)
@@ -238,8 +263,11 @@ func AWSDestroy() {
 	if _, err := os.Stat("./kubespray/contrib/terraform/aws/credentials.tfvars"); err == nil {
 		fmt.Println("Credentials file already exists, creation skipped")
 	} else {
-		parseTemplate(templates.Credentials, "./kubespray/contrib/terraform/aws/credentials.tfvars", GetCredentials())
+		ParseTemplate(templates.Credentials, "./inventory/"+Name+"/provisioner/credentials.tfvars", GetCredentials())
 	}
+	cpHost := exec.Command("cp", "./inventory/"+Name+"/hosts", "./inventory/hosts")
+	cpHost.Run()
+	cpHost.Wait()
 	terrSet := exec.Command("terraform", "destroy", "-var-file=credentials.tfvars", "-force")
 	terrSet.Dir = "./kubespray/contrib/terraform/aws/"
 	stdout, _ := terrSet.StdoutPipe()
@@ -256,5 +284,8 @@ func AWSDestroy() {
 
 	terrSet.Wait()
 
-	os.Exit(0)
+	exec.Command("rm", "./inventory/hosts").Run()
+	exec.Command("rm", "-rf", "./inventory/"+Name).Run()
+
+	return
 }
