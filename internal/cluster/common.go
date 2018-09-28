@@ -107,6 +107,30 @@ func GetCredentials() AwsCredentials {
 	}
 }
 
+type EKSConfig struct {
+	ClusterName         string
+	AWSRegion           string
+	NodeInstanceType    string
+	DesiredCapacity     int
+	AutoScallingMinSize int
+	AutoScallingMaxSize int
+	KeyPath             string
+}
+
+// GetCredentials get the aws credentials from the config file.
+func GetEKSConfig() EKSConfig {
+	ReadViperConfigFile("config")
+	return EKSConfig{
+		ClusterName:         viper.GetString("eks.cluster-name"),
+		AWSRegion:           viper.GetString("eks.aws_region"),
+		NodeInstanceType:    viper.GetString("eks.node-instance-type"),
+		DesiredCapacity:     viper.GetInt("eks.desired-capacity"),
+		AutoScallingMinSize: viper.GetInt("eks.autoscalling-min-size"),
+		AutoScallingMaxSize: viper.GetInt("eks.autoscalling-max-size"),
+		KeyPath:             viper.GetString("eks.key-file-path"),
+	}
+}
+
 // GetClusterConfig get the configuration from the config file.
 func GetClusterConfig() ClusterConfig {
 	ReadViperConfigFile("config")
@@ -128,7 +152,7 @@ func GetClusterConfig() ClusterConfig {
 	}
 }
 
-func parseTemplate(templateString string, outputFileName string, data interface{}) {
+func ParseTemplate(templateString string, outputFileName string, data interface{}) {
 	// open template
 	template := template.New("template")
 	template, _ = template.Parse(templateString)
@@ -181,4 +205,25 @@ func ErrorCheck(msg string, err error) {
 func ExitErrorf(msg string, args ...interface{}) {
 	fmt.Fprintf(os.Stderr, msg+"\n", args...)
 	os.Exit(1)
+}
+
+type Provisioner interface {
+	Init(args []string)
+	Setup(args []string)
+	Upgrade(args []string)
+	Destroy(args []string)
+}
+
+var Name string
+
+func NotImplemented() {
+	fmt.Println("Not implemented yet. Coming soon")
+	os.Exit(0)
+}
+
+func SetClusteName() {
+	if len(Name) < 1 {
+		config := GetClusterConfig()
+		Name = config.AwsClusterName
+	}
 }
