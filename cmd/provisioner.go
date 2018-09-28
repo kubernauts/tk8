@@ -5,12 +5,12 @@ import (
 	"strings"
 
 	"github.com/kubernauts/tk8/internal/cluster"
-	aws "github.com/kubernauts/tk8/internal/provisioner/aws"
-	azure "github.com/kubernauts/tk8/internal/provisioner/azure"
-	baremetal "github.com/kubernauts/tk8/internal/provisioner/baremetal"
-	eks "github.com/kubernauts/tk8/internal/provisioner/eks"
-	nutanix "github.com/kubernauts/tk8/internal/provisioner/nutanix"
-	openstack "github.com/kubernauts/tk8/internal/provisioner/openstack"
+	aws "github.com/kubernauts/tk8/provisioner/aws"
+	azure "github.com/kubernauts/tk8/provisioner/azure"
+	baremetal "github.com/kubernauts/tk8/provisioner/baremetal"
+	eks "github.com/kubernauts/tk8/provisioner/eks"
+	nutanix "github.com/kubernauts/tk8/provisioner/nutanix"
+	openstack "github.com/kubernauts/tk8/provisioner/openstack"
 
 	"github.com/spf13/cobra"
 )
@@ -29,9 +29,9 @@ var provisionerInstallCmd = &cobra.Command{
 	Use:              "install [" + GetAvaibleProvisioner() + "]",
 	TraverseChildren: true,
 
-	Short:            "install the infrastructure",
-	Long:             `This command will provide the infrastructure which is needed to install and run kubernetes on your selected platform`,
-	Args:             ArgsValidation,
+	Short: "install the infrastructure",
+	Long:  `This command will provide the infrastructure which is needed to install and run kubernetes on your selected platform`,
+	Args:  ArgsValidation,
 	Run: func(cmd *cobra.Command, args []string) {
 		if val, ok := provisioners[args[0]]; ok {
 			cluster.KubesprayInit()
