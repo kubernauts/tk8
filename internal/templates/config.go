@@ -5,11 +5,8 @@ var Config = `
 aws:
    clustername: {{.ClusterName}}
    os: centos
-   master: 1
-   worker: 1
-   etcd: 1
-   aws_access_key_id: 
-   aws_secret_access_key: 
+   aws_access_key_id: {{.AccessKey}}
+   aws_secret_access_key: {{.SecretKey}}
    aws_ssh_keypair: {{.SSHName}}
    aws_default_region: us-east-1
    aws_vpc_cidr_block : "10.250.192.0/18"

@@ -80,7 +80,6 @@ func ReadViperConfigFile(configName string) {
 	viper.SetConfigName(configName)
 	viper.AddConfigPath(".")
 	viper.AddConfigPath("/tk8")
-	viper.AddConfigPath("./../..")
 	verr := viper.ReadInConfig() // Find and read the config file.
 	if verr != nil {             // Handle errors reading the config file.
 		CreateConfig()
