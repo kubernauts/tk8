@@ -23,11 +23,12 @@ import (
 
 // KubesprayInit is responsible for cloning the kubespray diretory in CWD.
 func KubesprayInit() {
-	fmt.Println("Initialising kubespray git repo")
 	if _, err := os.Stat("./kubespray"); err == nil {
 		fmt.Println("Kubespray clone on this system already exists")
 		return
 	}
+
+	fmt.Println("Initialising kubespray git repo")
 
 	if _, err := exec.LookPath("git"); err != nil {
 		log.Fatal("either 'git' is not installed or not found in $PATH, kindly check and fix")
