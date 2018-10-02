@@ -13,6 +13,21 @@ func (p Nutanix) Setup(args []string) {
 	cluster.NotImplemented()
 }
 
+func (p Nutanix) Scale(args []string) {
+	cluster.NotImplemented()
+
+}
+
+func (p Nutanix) Reset(args []string) {
+	cluster.NotImplemented()
+
+}
+
+func (p Nutanix) Remove(args []string) {
+	cluster.NotImplemented()
+
+}
+
 func (p Nutanix) Upgrade(args []string) {
 	cluster.NotImplemented()
 }

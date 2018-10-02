@@ -14,6 +14,21 @@ func (p AWS) Setup(args []string) {
 
 }
 
+func (p AWS) Scale(args []string) {
+	cluster.AWSScale()
+
+}
+
+func (p AWS) Reset(args []string) {
+	cluster.AWSReset()
+
+}
+
+func (p AWS) Remove(args []string) {
+	cluster.AWSRemove()
+
+}
+
 func (p AWS) Upgrade(args []string) {
 	cluster.NotImplemented()
 }
@@ -23,7 +38,7 @@ func (p AWS) Destroy(args []string) {
 }
 
 func NewAWS() cluster.Provisioner {
-	cluster.SetClusteName()
+	cluster.SetClusterName()
 	provisioner := new(AWS)
 	return provisioner
 }
