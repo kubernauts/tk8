@@ -30,14 +30,55 @@ var provisionerInstallCmd = &cobra.Command{
 	TraverseChildren: true,
 
 	Short: "install the infrastructure",
-	Long:  `This command will provide the infrastructure which is needed to install and run kubernetes on your selected platform`,
+	Long:  `This command will provide the infrastructure which is needed to install and run kubernetes on your selected platform.`,
 	Args:  ArgsValidation,
 	Run: func(cmd *cobra.Command, args []string) {
 		if val, ok := provisioners[args[0]]; ok {
-			cluster.KubesprayInit()
 			val.Init(args[1:])
 			val.Setup(args[1:])
 
+		}
+	},
+}
+
+var provisionerScaleCmd = &cobra.Command{
+	Use:              "scale [" + GetAvaibleProvisioner() + "]",
+	TraverseChildren: true,
+
+	Short: "scale up the infrastructure",
+	Long:  `This command will scale up the existing infrastructure and the kubernetes cluster to the desired strength as per the config file.`,
+	Args:  ArgsValidation,
+	Run: func(cmd *cobra.Command, args []string) {
+		if val, ok := provisioners[args[0]]; ok {
+			val.Scale(args[1:])
+		}
+	},
+}
+
+var provisionerResetCmd = &cobra.Command{
+	Use:              "reset [" + GetAvaibleProvisioner() + "]",
+	TraverseChildren: true,
+
+	Short: "reset the infrastructure",
+	Long:  `This command will reset the existing infrastructure and will remove kubernetes from it.`,
+	Args:  ArgsValidation,
+	Run: func(cmd *cobra.Command, args []string) {
+		if val, ok := provisioners[args[0]]; ok {
+			val.Reset(args[1:])
+		}
+	},
+}
+
+var provisionerRemoveCmd = &cobra.Command{
+	Use:              "remove [" + GetAvaibleProvisioner() + "]",
+	TraverseChildren: true,
+
+	Short: "scale down the infrastructure",
+	Long:  `This command will scale down the existing infrastructure and the kubernetes cluster to the desired strength as per the config file.`,
+	Args:  ArgsValidation,
+	Run: func(cmd *cobra.Command, args []string) {
+		if val, ok := provisioners[args[0]]; ok {
+			val.Remove(args[1:])
 		}
 	},
 }
@@ -90,6 +131,9 @@ func GetAvaibleProvisioner() string {
 }
 func init() {
 	clusterCmd.AddCommand(provisionerInstallCmd)
+	clusterCmd.AddCommand(provisionerScaleCmd)
+	clusterCmd.AddCommand(provisionerResetCmd)
+	clusterCmd.AddCommand(provisionerRemoveCmd)
 	clusterCmd.AddCommand(provisionerUpgradeCmd)
 	clusterCmd.AddCommand(provisionerDestroyCmd)
 	// Here you will define your flags and configuration settings.
@@ -106,6 +150,9 @@ func init() {
 	// awsCmd.Flags().BoolVarP(&create, "create", "c", false, "Deploy the AWS infrastructure using terraform")
 	// Flag to destroy the AWS infrastructure using terraform
 	provisionerInstallCmd.Flags().StringVar(&cluster.Name, "name", cluster.Name, "name of the cluster workspace")
+	provisionerScaleCmd.Flags().StringVar(&cluster.Name, "name", cluster.Name, "name of the cluster workspace")
+	provisionerResetCmd.Flags().StringVar(&cluster.Name, "name", cluster.Name, "name of the cluster workspace")
+	provisionerRemoveCmd.Flags().StringVar(&cluster.Name, "name", cluster.Name, "name of the cluster workspace")
 	provisionerUpgradeCmd.Flags().StringVar(&cluster.Name, "name", cluster.Name, "name of the cluster workspace")
 	provisionerDestroyCmd.Flags().StringVar(&cluster.Name, "name", cluster.Name, "name of the cluster workspace")
 }

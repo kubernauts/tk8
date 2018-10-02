@@ -3,6 +3,7 @@ package cluster
 import (
 	"fmt"
 	"os"
+	"os/exec"
 
 	"github.com/alecthomas/template"
 	"github.com/spf13/viper"
@@ -16,7 +17,10 @@ type AwsCredentials struct {
 	AwsDefaultRegion string
 }
 
-var kubesprayVersion = "version-0-4"
+var (
+	kubesprayVersion = "version-0-4"
+	Name             string
+)
 
 // DistOS defines the structure to hold the dist OS informations.
 // It is possible to easily extend the list of OS.
@@ -204,6 +208,17 @@ func ErrorCheck(msg string, err error) {
 	}
 }
 
+// DependencyCheck check if the binary is installed
+func DependencyCheck(bin string) {
+	path, err := exec.LookPath(bin)
+	ErrorCheck(bin+" not found.", err)
+	fmt.Printf("Found %s at %s\n", bin, path)
+
+	version, err := exec.Command(bin, "--version").Output()
+	ErrorCheck("Error executing "+bin, err)
+	fmt.Printf(string(version))
+}
+
 // ExitErrorf exits the program with an error code of '1' and an error message.
 func ExitErrorf(msg string, args ...interface{}) {
 	fmt.Fprintf(os.Stderr, msg+"\n", args...)
@@ -211,21 +226,21 @@ func ExitErrorf(msg string, args ...interface{}) {
 }
 
 type Provisioner interface {
-
 	Init(args []string)
 	Setup(args []string)
+	Scale(args []string)
+	Remove(args []string)
+	Reset(args []string)
 	Upgrade(args []string)
 	Destroy(args []string)
 }
 
-var Name string
-
 func NotImplemented() {
-	fmt.Println("Not implemented yet. Coming soon")
+	fmt.Println("Not implemented yet. Coming soon...")
 	os.Exit(0)
 }
 
-func SetClusteName() {
+func SetClusterName() {
 	if len(Name) < 1 {
 		config := GetClusterConfig()
 		Name = config.AwsClusterName

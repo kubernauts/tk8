@@ -61,18 +61,26 @@ func distSelect() (string, string) {
 	return DistOSMap[awsInstanceOS].User, awsInstanceOS
 }
 
+func prepareInventoryGroupAllFile(fileName string) *os.File {
+	groupVars, err := os.OpenFile(fileName, os.O_APPEND|os.O_WRONLY, 0600)
+	ErrorCheck("Error while trying to open "+fileName+": %v.", err)
+	return groupVars
+}
+
+func prepareInventoryClusterFile(fileName string) *os.File {
+	k8sClusterFile, err := os.OpenFile(fileName, os.O_APPEND|os.O_WRONLY, 0600)
+	defer k8sClusterFile.Close()
+	ErrorCheck("Error while trying to open "+fileName+": %v.", err)
+	fmt.Fprintf(k8sClusterFile, "kubeconfig_localhost: true\n")
+	return k8sClusterFile
+}
+
 // AWSCreate is used to create a infrastructure on AWS.
 func AWSCreate() {
 	// check if terraform is available
-	terrPath, err := exec.LookPath("terraform")
-	ErrorCheck("Terraform command not found, kindly check: %v", err)
-	fmt.Printf("Found terraform at %s\n", terrPath)
+	DependencyCheck("terraform")
 
-	terrVersion, err := exec.Command("terraform", "version").Output()
-	ErrorCheck("Error executing Terraform: %v", err)
-	fmt.Printf(string(terrVersion))
-
-	if _, err = os.Stat("./inventory/" + Name + "/installer"); err == nil {
+	if _, err := os.Stat("./inventory/" + Name + "/installer"); err == nil {
 		fmt.Println("Configuration folder already exists")
 	} else {
 		os.MkdirAll("./inventory/"+Name+"/provisioner", 0755)
@@ -92,7 +100,7 @@ func AWSCreate() {
 
 	terrSet := exec.Command("terraform", "apply", "-var-file=credentials.tfvars", "-auto-approve")
 	terrSet.Dir = "./inventory/" + Name + "/provisioner/"
-	stdout, err := terrSet.StdoutPipe()
+	stdout, _ := terrSet.StdoutPipe()
 	terrSet.Stderr = terrSet.Stdout
 	terrSet.Start()
 
@@ -110,18 +118,10 @@ func AWSCreate() {
 // AWSInstall is used for installing Kubernetes on the available infrastructure.
 func AWSInstall() {
 	// check if ansible is installed
-	ansPath, err := exec.LookPath("ansible")
-	ErrorCheck("Ansible not found.", err)
-	fmt.Printf("Found Ansible at %s\n", ansPath)
-
-	ansVersion, err := exec.Command("ansible", "--version").Output()
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Printf(string(ansVersion))
+	DependencyCheck("ansible")
 
 	// Copy the configuraton files as indicated in the kubespray docs
-	if _, err = os.Stat("./inventory/" + Name + "/installer"); err == nil {
+	if _, err := os.Stat("./inventory/" + Name + "/installer"); err == nil {
 		fmt.Println("Configuration folder already exists")
 	} else {
 		os.MkdirAll("./inventory/"+Name+"/installer", 0755)
@@ -216,33 +216,10 @@ func AWSInstall() {
 	return
 }
 
-func prepareInventoryGroupAllFile(fileName string) *os.File {
-	groupVars, err := os.OpenFile(fileName, os.O_APPEND|os.O_WRONLY, 0600)
-	ErrorCheck("Error while trying to open "+fileName+": %v.", err)
-	return groupVars
-}
-
-func prepareInventoryClusterFile(fileName string) *os.File {
-	k8sClusterFile, err := os.OpenFile(fileName, os.O_APPEND|os.O_WRONLY, 0600)
-	defer k8sClusterFile.Close()
-	ErrorCheck("Error while trying to open "+fileName+": %v.", err)
-	fmt.Fprintf(k8sClusterFile, "kubeconfig_localhost: true\n")
-	return k8sClusterFile
-}
-
 // AWSDestroy is used to destroy the infrastructure created.
 func AWSDestroy() {
 	// check if terraform is installed
-	terr, err := exec.LookPath("terraform")
-	if err != nil {
-		log.Fatal("Terraform command not found, kindly check")
-	}
-	fmt.Printf("Found terraform at %s\n", terr)
-	rr, err := exec.Command("terraform", "version").Output()
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Printf(string(rr))
+	DependencyCheck("terraform")
 
 	// Check if credentials file exist, if it exists skip asking to input the AWS values
 	if _, err := os.Stat("./inventory/" + Name + "/provisioner/credentials.tfvars"); err == nil {
@@ -271,10 +248,76 @@ func AWSDestroy() {
 
 	terrSet.Wait()
 
-
 	exec.Command("rm", "./inventory/hosts").Run()
 	exec.Command("rm", "-rf", "./inventory/"+Name).Run()
 
+	return
+}
+
+// AWSScale is used to scale the AWS infrastructure and Kubernetes cluster.
+func AWSScale() {
+	var confirmation string
+	// Scale the AWS infrastructure
+	fmt.Printf("\t\t===============Starting AWS Scaling====================\n\n")
+	DependencyCheck("terraform")
+
+	distSelect()
+
+	terrSet := exec.Command("terraform", "apply", "-var-file=credentials.tfvars", "-auto-approve")
+	terrSet.Dir = "./kubespray/contrib/terraform/aws/"
+	terrSet.Stdout = os.Stdout
+	terrSet.Stderr = os.Stderr
+
+	err := terrSet.Start()
+	ErrorCheck("Error in destroying the cluster: ", err)
+	terrSet.Wait()
+
+	// Scale the Kubernetes cluster
+	fmt.Printf("\n\n\t\t===============Starting Kubernetes Scaling====================\n\n")
+	DependencyCheck("ansible")
+	_, err = os.Stat("./kubespray/inventory/awscluster")
+	ErrorCheck("No host file found.", err)
+
+	fmt.Printf("\n\nThis will overwrite the previous host file with a new one. Type \"yes\" to confirm:\n")
+	fmt.Scanln(&confirmation)
+	if confirmation != "yes" {
+		fmt.Printf("Confirmation denied. Exiting...")
+		os.Exit(0)
+	}
+	// Update the inventory host file
+	exec.Command("cp", "-rfp", "./kubespray/inventory/sample/", "./kubespray/inventory/awscluster/").Run()
+	exec.Command("cp", "./kubespray/inventory/hosts", "./kubespray/inventory/awscluster/hosts").Run()
+
+	sshUser, osLabel := distSelect()
+	fmt.Printf("\n\nStarting Scaling playbook for user %s with os %s\n", sshUser, osLabel)
+	scale := exec.Command("ansible-playbook", "-i", "./inventory/awscluster/hosts", "./scale.yml", "-e ansible_user="+sshUser, "-v", "-b", "--timeout=60")
+	scale.Dir = "./kubespray/"
+	scale.Stdout = os.Stdout
+	scale.Stderr = os.Stderr
+
+	scale.Start()
+	scale.Wait()
 
 	return
+}
+
+// AWSReset is used to reset the AWS infrastructure and removing Kubernetes from it.
+func AWSReset() {
+	DependencyCheck("ansible")
+	sshUser, osLabel := distSelect()
+	fmt.Printf("\nStarting playbook for user %s with os %s\n", sshUser, osLabel)
+	reset := exec.Command("ansible-playbook", "-i", "./inventory/awscluster/hosts", "./reset.yml", "--timeout=60", "-e ansible_user="+sshUser, "-e delete_nodes_confirmation=yes", "-v", "-b", "--become-user=root", "--flush-cache")
+	reset.Dir = "./kubespray/"
+	reset.Stdout = os.Stdout
+	reset.Stdin = os.Stdin
+	reset.Stderr = os.Stderr
+
+	reset.Start()
+	reset.Wait()
+
+	return
+}
+
+func AWSRemove() {
+
 }
