@@ -6,7 +6,6 @@ type AWS struct {
 }
 
 func (p AWS) Init(args []string) {
-	cluster.KubesprayInit()
 	cluster.AWSCreate()
 }
 
