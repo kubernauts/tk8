@@ -13,6 +13,21 @@ func (p Azure) Setup(args []string) {
 	cluster.NotImplemented()
 }
 
+func (p Azure) Scale(args []string) {
+	cluster.NotImplemented()
+
+}
+
+func (p Azure) Reset(args []string) {
+	cluster.NotImplemented()
+
+}
+
+func (p Azure) Remove(args []string) {
+	cluster.NotImplemented()
+
+}
+
 func (p Azure) Upgrade(args []string) {
 	cluster.NotImplemented()
 }
