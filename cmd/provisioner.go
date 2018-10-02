@@ -34,6 +34,7 @@ var provisionerInstallCmd = &cobra.Command{
 	Args:  ArgsValidation,
 	Run: func(cmd *cobra.Command, args []string) {
 		if val, ok := provisioners[args[0]]; ok {
+			cluster.KubesprayInit()
 			val.Init(args[1:])
 			val.Setup(args[1:])
 

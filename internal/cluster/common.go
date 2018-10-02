@@ -1,9 +1,11 @@
 package cluster
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 
 	"github.com/alecthomas/template"
 	"github.com/spf13/viper"
@@ -210,13 +212,11 @@ func ErrorCheck(msg string, err error) {
 
 // DependencyCheck check if the binary is installed
 func DependencyCheck(bin string) {
-	path, err := exec.LookPath(bin)
+	_, err := exec.LookPath(bin)
 	ErrorCheck(bin+" not found.", err)
-	fmt.Printf("Found %s at %s\n", bin, path)
 
-	version, err := exec.Command(bin, "--version").Output()
+	_, err = exec.Command(bin, "--version").Output()
 	ErrorCheck("Error executing "+bin, err)
-	fmt.Printf(string(version))
 }
 
 // ExitErrorf exits the program with an error code of '1' and an error message.
@@ -245,4 +245,51 @@ func SetClusterName() {
 		config := GetClusterConfig()
 		Name = config.AwsClusterName
 	}
+}
+
+func RunPlaybook(path string, file string) {
+	DependencyCheck("ansible")
+	sshUser, osLabel := distSelect()
+	fmt.Printf("\nStarting playbook for user %s with os %s\n", sshUser, osLabel)
+	reset := exec.Command("ansible-playbook", "-i", "hosts", file, "--timeout=60", "-e ansible_user="+sshUser, "-e delete_nodes_confirmation=yes", "-v", "-b", "--become-user=root", "--flush-cache")
+	reset.Dir = path
+	reset.Stdout = os.Stdout
+	reset.Stdin = os.Stdin
+	reset.Stderr = os.Stderr
+
+	reset.Start()
+	reset.Wait()
+}
+
+func ExecuteTerraform(command string, path string) {
+
+	DependencyCheck("terraform")
+	var terrSet *exec.Cmd
+
+	if strings.Compare(strings.TrimRight(command, "\n"), "init") == 0 {
+		terrSet = exec.Command("terraform", command, "-var-file=credentials.tfvars")
+	} else if strings.Compare(command, "apply") == 0 {
+		terrSet = exec.Command("terraform", command, "-var-file=credentials.tfvars", "-auto-approve")
+	} else {
+		terrSet = exec.Command("terraform", command, "-var-file=credentials.tfvars", "-force")
+	}
+
+	terrSet.Dir = path
+	stdout, _ := terrSet.StdoutPipe()
+	terrSet.Stderr = terrSet.Stdout
+	error := terrSet.Start()
+	if error != nil {
+		fmt.Println(error)
+	}
+	scanner := bufio.NewScanner(stdout)
+	for scanner.Scan() {
+		m := scanner.Text()
+		fmt.Println(m)
+		if strings.Contains(m, "Error: Error applying plan") {
+			fmt.Println("Terraform could not setup the infrastructure")
+			os.Exit(1)
+		}
+	}
+
+	terrSet.Wait()
 }
