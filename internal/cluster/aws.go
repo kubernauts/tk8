@@ -128,9 +128,12 @@ func AWSInstall() {
 		cpKube.Run()
 		cpKube.Wait()
 
-		mvInstallerHost := exec.Command("cp", "./inventory/"+Name+"/hosts", "./inventory/"+Name+"/installer/hosts")
-		mvInstallerHost.Run()
-		mvInstallerHost.Wait()
+		mvInstallerHosts := exec.Command("cp", "./inventory/"+Name+"/hosts", "./inventory/"+Name+"/installer/hosts")
+		mvInstallerHosts.Run()
+		mvInstallerHosts.Wait()
+		mvProvisionerHosts := exec.Command("cp", "./inventory/"+Name+"/hosts", "./inventory/"+Name+"/installer/hosts")
+		mvProvisionerHosts.Run()
+		mvProvisionerHosts.Wait()
 
 		// Check if Kubeadm is enabled
 		EnableKubeadm()
@@ -214,8 +217,6 @@ func AWSScale() {
 	// Scale the AWS infrastructure
 	fmt.Printf("\t\t===============Starting AWS Scaling====================\n\n")
 
-	ExecuteTerraform("apply", "./inventory/"+Name+"/provisioner/")
-
 	// Scale the Kubernetes cluster
 	fmt.Printf("\n\n\t\t===============Starting Kubernetes Scaling====================\n\n")
 	_, err := os.Stat("./inventory/" + Name + "/provisioner/hosts")
@@ -226,7 +227,10 @@ func AWSScale() {
 		fmt.Printf("Confirmation denied. Exiting...")
 		os.Exit(0)
 	}
-
+	ExecuteTerraform("apply", "./inventory/"+Name+"/provisioner/")
+	mvHost := exec.Command("mv", "./inventory/hosts", "./inventory/"+Name+"/hosts")
+	mvHost.Run()
+	mvHost.Wait()
 	RunPlaybook("./inventory/"+Name+"/installer/", "scale.yml")
 
 	return
