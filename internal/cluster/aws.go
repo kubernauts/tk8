@@ -80,11 +80,7 @@ func AWSCreate() {
 	// check if terraform is available
 	DependencyCheck("terraform")
 
-<<<<<<< HEAD
-	if _, err = os.Stat("./inventory/" + Name + "/provisioner/.terraform"); err == nil {
-=======
-	if _, err := os.Stat("./inventory/" + Name + "/installer"); err == nil {
->>>>>>> Add lifecycle functionality for scale and reset
+	if _, err := os.Stat("./inventory/" + Name + "/provisioner/.terraform"); err == nil {
 		fmt.Println("Configuration folder already exists")
 	} else {
 		os.MkdirAll("./inventory/"+Name+"/provisioner", 0755)
