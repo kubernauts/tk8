@@ -216,6 +216,21 @@ func (p Baremetal) Remove(args []string) {
 
 }
 
+func (p Baremetal) Scale(args []string) {
+	cluster.NotImplemented()
+
+}
+
+func (p Baremetal) Reset(args []string) {
+	cluster.NotImplemented()
+
+}
+
+func (p Baremetal) Remove(args []string) {
+	cluster.NotImplemented()
+
+}
+
 func (p Baremetal) Upgrade(args []string) {
 	cluster.NotImplemented()
 }

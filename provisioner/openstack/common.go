@@ -298,6 +298,21 @@ func (p Openstack) Remove(args []string) {
 
 }
 
+func (p Openstack) Scale(args []string) {
+	cluster.NotImplemented()
+
+}
+
+func (p Openstack) Reset(args []string) {
+	cluster.NotImplemented()
+
+}
+
+func (p Openstack) Remove(args []string) {
+	cluster.NotImplemented()
+
+}
+
 func (p Openstack) Upgrade(args []string) {
 	cluster.NotImplemented()
 }
