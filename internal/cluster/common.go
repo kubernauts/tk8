@@ -251,14 +251,14 @@ func RunPlaybook(path string, file string) {
 	DependencyCheck("ansible")
 	sshUser, osLabel := distSelect()
 	fmt.Printf("\nStarting playbook for user %s with os %s\n", sshUser, osLabel)
-	reset := exec.Command("ansible-playbook", "-i", "hosts", file, "--timeout=60", "-e ansible_user="+sshUser, "-e delete_nodes_confirmation=yes", "-v", "-b", "--become-user=root", "--flush-cache")
-	reset.Dir = path
-	reset.Stdout = os.Stdout
-	reset.Stdin = os.Stdin
-	reset.Stderr = os.Stderr
+	ansiblePlaybook := exec.Command("ansible-playbook", "-i", "hosts", file, "--timeout=60", "-e ansible_user="+sshUser, "-e ansible_user="+sshUser, "-e bootstrap_os="+osLabel, "-b", "--become-user=root", "--flush-cache")
+	ansiblePlaybook.Dir = path
+	ansiblePlaybook.Stdout = os.Stdout
+	ansiblePlaybook.Stdin = os.Stdin
+	ansiblePlaybook.Stderr = os.Stderr
 
-	reset.Start()
-	reset.Wait()
+	ansiblePlaybook.Start()
+	ansiblePlaybook.Wait()
 }
 
 func ExecuteTerraform(command string, path string) {
