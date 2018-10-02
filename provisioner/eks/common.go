@@ -180,6 +180,21 @@ func (p EKS) Setup(args []string) {
 	os.Exit(0)
 }
 
+func (p EKS) Scale(args []string) {
+	cluster.NotImplemented()
+
+}
+
+func (p EKS) Reset(args []string) {
+	cluster.NotImplemented()
+
+}
+
+func (p EKS) Remove(args []string) {
+	cluster.NotImplemented()
+
+}
+
 func (p EKS) Upgrade(args []string) {
 	cluster.NotImplemented()
 }
@@ -194,7 +209,7 @@ func (p EKS) Destroy(args []string) {
 		os.Exit(0)
 	}
 
-	cluster.SetClusteName()
+	cluster.SetClusterName()
 	p.Init(nil)
 
 	banner.Print("kubernauts eks cli")
