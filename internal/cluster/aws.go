@@ -72,12 +72,13 @@ func AWSCreate() {
 	ErrorCheck("Error executing Terraform: %v", err)
 	fmt.Printf(string(terrVersion))
 
-	if _, err = os.Stat("./inventory/" + Name + "/installer"); err == nil {
+	if _, err = os.Stat("./inventory/" + Name + "/provisioner/.terraform"); err == nil {
 		fmt.Println("Configuration folder already exists")
 	} else {
 		os.MkdirAll("./inventory/"+Name+"/provisioner", 0755)
-		exec.Command("cp", "-rfp", "./kubespray/contrib/terraform/aws/", "./inventory/"+Name+"/provisioner").Run()
-		distSelect()
+		exec.Command("cp", "-rfp", "./kubespray/contrib/terraform/aws/.", "./inventory/"+Name+"/provisioner").Run()
+		user, os := distSelect()
+		fmt.Printf("Prepairing Setup for user %s on %s\n", user, os)
 		terrInit := exec.Command("terraform", "init")
 		terrInit.Dir = "./inventory/" + Name + "/provisioner/"
 		out, _ := terrInit.StdoutPipe()
@@ -132,11 +133,11 @@ func AWSInstall() {
 		mvShhBastion.Run()
 		mvShhBastion.Wait()
 		//os.MkdirAll("./inventory/"+Name+"/installer/group_vars", 0755)
-		cpSample := exec.Command("cp", "-rfp", "./kubespray/inventory/sample/", "./inventory/"+Name+"/installer/")
+		cpSample := exec.Command("cp", "-rfp", "./kubespray/inventory/sample/.", "./inventory/"+Name+"/installer/")
 		cpSample.Run()
 		cpSample.Wait()
 
-		cpKube := exec.Command("cp", "-rfp", "./kubespray/", "./inventory/"+Name+"/installer/")
+		cpKube := exec.Command("cp", "-rfp", "./kubespray/.", "./inventory/"+Name+"/installer/")
 		cpKube.Run()
 		cpKube.Wait()
 
@@ -271,10 +272,8 @@ func AWSDestroy() {
 
 	terrSet.Wait()
 
-
 	exec.Command("rm", "./inventory/hosts").Run()
 	exec.Command("rm", "-rf", "./inventory/"+Name).Run()
-
 
 	return
 }
