@@ -4,7 +4,7 @@ FROM golang:alpine as builder
 RUN apk --update add make git
 COPY ./ /go/src/github.com/kubernauts/tk8
 WORKDIR /go/src/github.com/kubernauts/tk8
-RUN make bin
+RUN go get -u ... && make bin
 
 ## os stage
 FROM alpine
@@ -29,27 +29,43 @@ LABEL  org.label-schema.description="CLI to deploy kubernetes using kubespray an
 
 COPY --from=builder /go/src/github.com/kubernauts/tk8/tk8 /usr/local/bin/tk8
 
+RUN apk --update add \
+    python \
+    py-pip \
+    git \
+    gcc \
+    ca-certificates \
+    py-netaddr \
+    python-dev \
+    libffi-dev \
+    openssl-dev \
+    build-base \
+    openssh \
+    curl \
+    tar \
+    gzip \
+    --virtual build-dependencies \
+    --no-cache openssh 
+
+RUN pip install --upgrade pip
+RUN pip install --upgrade cffi
+RUN pip install --upgrade ansible
+RUN pip install --upgrade ansible-modules-hashivault
+
+RUN chmod +x /usr/local/bin/tk8
+
+## Install terraform
+
 RUN wget https://releases.hashicorp.com/terraform/${TERRVERSION}/terraform_${TERRVERSION}_linux_amd64.zip \
     && unzip terraform_${TERRVERSION}_linux_amd64.zip -d /usr/local/bin/ \
     && rm terraform_${TERRVERSION}_linux_amd64.zip 
-#Need git to clone kubespray
-#Need '--virtual' packages for proper package import through pip
-
-RUN apk --update add python py-pip openssl ca-certificates py-netaddr git \
-    && apk add --virtual build-dependencies \
-            python-dev libffi-dev openssl-dev build-base \
-    && pip install --upgrade pip cffi ansible ansible-modules-hashivault \
-    && apk add --no-cache openssh \
-    && apk del build-dependencies \
-    && rm -rf /var/cache/apk/* \
-    && chmod +x /usr/local/bin/tk8
-
-# Install requirements for kubectl
-RUN apk add -U curl tar gzip
 
 # Install kubectl
 RUN curl -L -o /usr/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/${KUBECTLVERSION}/bin/linux/amd64/kubectl && \
   chmod +x /usr/bin/kubectl
+
 RUN mkdir /tk8
+
 WORKDIR /tk8
+
 ENTRYPOINT [ "/usr/local/bin/tk8" ]

@@ -87,3 +87,4 @@ Ein großer Dank geht an die Mitwirkenden von [Kubespray](https://github.com/kub
 Darüber hinaus möchten wir uns bei den Mitwirkenden von [kubeadm](https://github.com/kubernetes/kubernetes/tree/master/cmd/kubeadm) bedanken, das derzeit nicht nur Teil des Kubespray-Projekts, sondern auch des TK8 ist.
 
 Ebenfalls ein großes Dankeschön an [Wesley Charles Blake](https://github.com/WesleyCharlesBlake), auf dessen Grundlage wir unsere EKS-Integration anbieten konnten.
+
