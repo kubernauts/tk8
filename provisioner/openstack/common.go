@@ -295,7 +295,6 @@ func (p Openstack) Reset(args []string) {
 
 func (p Openstack) Remove(args []string) {
 	cluster.NotImplemented()
-
 }
 
 func (p Openstack) Upgrade(args []string) {

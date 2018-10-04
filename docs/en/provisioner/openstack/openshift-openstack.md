@@ -217,6 +217,3 @@ Adding password for user admin
 ```
 
 > Note: The tk8 cli doesn't support openshift yet due to some shortcomings by terraform to create the inventory file.
-
-
-

@@ -86,10 +86,11 @@ A big thanks goes to the contributors of [Kubespray](https://github.com/kubernet
 
 Furthermore we would like to thank the contributors of [kubeadm](https://github.com/kubernetes/kubernetes/tree/master/cmd/kubeadm) which is currently not only part of the Kubespray project, but also of the TK8.
 
-Ebenfalls ein großes Dankeschön an [Wesley Charles Blake] (https://github.com/WesleyCharlesBlake), auf dessen Grundlage wir unsere EKS-Integration anbieten konnten.
+Also a big thank you to [Wesley Charles Blake](https://github.com/WesleyCharlesBlake), on the basis of which we were able to offer our EKS integration.
 
-## Lizenz
+## License
 
-[Tk8 Apache Lizenz](LIZENZ)
-[MIT Lizenz EKS](https://github.com/kubernauts/tk8eks/blob/master/LICENSE-Wesley-Charles-Blake)
-[MIT Lizenz EKS](https://github.com/kubernauts/tk8eks/blob/master/LICENSE)
+[Tk8 Apache License](LICENSE)
+[MIT License EKS](https://github.com/kubernauts/tk8eks/blob/master/LICENSE-Wesley-Charles-Blake)
+[MIT License EKS](https://github.com/kubernauts/tk8eks/blob/master/LICENSE)
+

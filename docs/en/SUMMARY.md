@@ -4,11 +4,22 @@
 
 ## Provisioning and Bootstrapping clusters
 
-* [Create an AWS Kubernetes cluster](docs/aws.md)
-* [Create an OpenStack Kubernetes cluster](docs/openstack.md)
-* [Create an OpenShift Origin Cluster On OpenStack](docs/openshift-openstack.md)
-* [Create a Baremetal Kubernetes cluster](docs/baremetal.md)
+* [Create an AWS Kubernetes cluster](provisioner/aws/introduction.md)
+* [Create an OpenStack Kubernetes cluster](provisioner/openstack/introduction.md)
+* [Create an OpenShift Origin Cluster On OpenStack](provisioner/openstack/introduction.md)
+* [Create a Baremetal Kubernetes cluster](provisioner/baremetal/introduction.md)
+* [Create a Nutanix Kubernetes cluster](provisioner/nutanix/introduction.md)
 
-## Add-ons
+## General Documentation and Development
 
-* [Install an add-on ](docs/add-on.md)
+### Add-ons
+
+* [Add-on Documentation](add-on/introduction.md)
+
+### Docker
+
+* [Docker Documentation](docker/introduction.md)
+
+### Provisioner
+
+* [Provisioner Documentation](provisioner/introduction.md)
