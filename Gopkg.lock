@@ -3,14 +3,28 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:25e81aad6d05ffb0627ca243d2aa6a850ac81f04a920a39c12e58f5abae790de"
+  name = "github.com/CrowdSurge/banner"
+  packages = [
+    ".",
+    "fonts",
+  ]
+  pruneopts = "UT"
+  revision = "8c0e79dc5ff70fb2919f0d662f44fd72ccdf9be2"
+
+[[projects]]
+  branch = "master"
+  digest = "1:315c5f2f60c76d89b871c73f9bd5fe689cad96597afd50fb9992228ef80bdd34"
   name = "github.com/alecthomas/template"
   packages = [
     ".",
-    "parse"
+    "parse",
   ]
+  pruneopts = "UT"
   revision = "a0175ee3bccc567396460bf5acd36800cb10c49c"
 
 [[projects]]
+  digest = "1:7f93d2813efdc7396f4fc488e7f2f93ceb666974e36718e0f16a0f63e0f8228b"
   name = "github.com/aws/aws-sdk-go"
   packages = [
     "aws",
@@ -41,31 +55,46 @@
     "private/protocol/rest",
     "private/protocol/xml/xmlutil",
     "service/ec2",
-    "service/sts"
+    "service/sts",
   ]
-  revision = "7715ed93fca215da2c707088a0cca5646ad91543"
-  version = "v1.15.24"
+  pruneopts = "UT"
+  revision = "cfcda8304585604aabf1f7f8f7ce67b55029d0ca"
+  version = "v1.15.47"
+
+[[projects]]
+  digest = "1:705c40022f5c03bf96ffeb6477858d88565064485a513abcd0f11a0911546cb6"
+  name = "github.com/blang/semver"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "2ee87856327ba09384cabd113bc6b5d174e9ec0f"
+  version = "v3.5.1"
 
 [[projects]]
   branch = "master"
+  digest = "1:e2655cbc97a3a48d0efedf27fe75191b4946aa92ce03acd37e76458b218f9df1"
   name = "github.com/dustinkirkland/golang-petname"
   packages = ["."]
+  pruneopts = "UT"
   revision = "d3c2ba80e75eeef10c5cf2fc76d2c809637376b3"
 
 [[projects]]
+  digest = "1:abeb38ade3f32a92943e5be54f55ed6d6e3b6602761d74b4aab4c9dd45c18abd"
   name = "github.com/fsnotify/fsnotify"
   packages = ["."]
+  pruneopts = "UT"
   revision = "c2828203cd70a50dcccfb2761f8b1f8ceef9a8e9"
   version = "v1.4.7"
 
 [[projects]]
+  digest = "1:b98e7574fc27ec166fb31195ec72c3bd0bffd73926d3612eb4c929bc5236f75b"
   name = "github.com/go-ini/ini"
   packages = ["."]
-  revision = "5cf292cae48347c2490ac1a58fe36735fb78df7e"
-  version = "v1.38.2"
+  pruneopts = "UT"
+  revision = "7b294651033cd7d9e7f0d9ffa1b75ed1e198e737"
+  version = "v1.38.3"
 
 [[projects]]
-  branch = "master"
+  digest = "1:c0d19ab64b32ce9fe5cf4ddceba78d5bc9807f0016db6b1183599da3dcc24d10"
   name = "github.com/hashicorp/hcl"
   packages = [
     ".",
@@ -77,91 +106,188 @@
     "hcl/token",
     "json/parser",
     "json/scanner",
-    "json/token"
+    "json/token",
   ]
-  revision = "ef8a98b0bbce4a65b5aa4c368430a80ddc533168"
+  pruneopts = "UT"
+  revision = "8cb6e5b959231cc1119e43259c4a608f9c51a241"
+  version = "v1.0.0"
 
 [[projects]]
+  digest = "1:870d441fe217b8e689d7949fef6e43efbc787e50f200cb1e70dbca9204a1d6be"
   name = "github.com/inconshreveable/mousetrap"
   packages = ["."]
+  pruneopts = "UT"
   revision = "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75"
   version = "v1.0"
 
 [[projects]]
+  digest = "1:e22af8c7518e1eab6f2eab2b7d7558927f816262586cd6ed9f349c97a6c285c4"
   name = "github.com/jmespath/go-jmespath"
   packages = ["."]
+  pruneopts = "UT"
   revision = "0b12d6b5"
 
 [[projects]]
+  branch = "master"
+  digest = "1:99cc4de3311304019e47705d009fffd6d467320adedb7f1de47b64b10314ada7"
+  name = "github.com/kubernauts/tk8-provisioner-aws"
+  packages = [
+    ".",
+    "internal/cluster",
+    "internal/templates",
+  ]
+  pruneopts = "UT"
+  revision = "f9fcc3b18da8a563ff742d48e903d5eba17e1164"
+
+[[projects]]
+  branch = "master"
+  digest = "1:1b5cd2f3e36ecea056804cb52ca206a7050a21d82678c2b0b08050c7e9aaddf8"
+  name = "github.com/kubernauts/tk8-provisioner-azure"
+  packages = [
+    ".",
+    "internal/cluster",
+  ]
+  pruneopts = "UT"
+  revision = "4fb96de260bc5dd2ca78f880e708164d73cbd218"
+
+[[projects]]
+  branch = "master"
+  digest = "1:914a4b9a391eecd45e5289b7c4505ae097780bcc3b4622dc7646e41c4ecba843"
+  name = "github.com/kubernauts/tk8-provisioner-baremetal"
+  packages = [
+    ".",
+    "internal/cluster",
+  ]
+  pruneopts = "UT"
+  revision = "fe44a20e6eaafce8ee5c026cd8b3e9be4c25cc59"
+
+[[projects]]
+  branch = "master"
+  digest = "1:d37390e6a304c4be387e10885d78d6ac5be8a6b91bda7b5f454fec4c0fb041ed"
+  name = "github.com/kubernauts/tk8-provisioner-eks"
+  packages = [
+    ".",
+    "internal/cluster",
+    "internal/templates",
+  ]
+  pruneopts = "UT"
+  revision = "31b8d7567de845d97dd121742463acf53be25d25"
+
+[[projects]]
+  branch = "master"
+  digest = "1:247545aa045224ea509f84fd907e6247159bee97e13de6a89aa4487557177d2e"
+  name = "github.com/kubernauts/tk8-provisioner-nutanix"
+  packages = [
+    ".",
+    "internal/cluster",
+  ]
+  pruneopts = "UT"
+  revision = "ee759e7c0830ca488178aea836698e931bdacf92"
+
+[[projects]]
+  branch = "master"
+  digest = "1:60d92a15e4b59b6d2d842de07327643008fe7a5e32d66c9820c7fcea73597e79"
+  name = "github.com/kubernauts/tk8-provisioner-openstack"
+  packages = [
+    ".",
+    "internal/cluster",
+  ]
+  pruneopts = "UT"
+  revision = "f29d34a5a87c0347618f17dfef609ad01486e759"
+
+[[projects]]
+  digest = "1:c568d7727aa262c32bdf8a3f7db83614f7af0ed661474b24588de635c20024c7"
   name = "github.com/magiconair/properties"
   packages = ["."]
+  pruneopts = "UT"
   revision = "c2353362d570a7bfa228149c62842019201cfb71"
   version = "v1.8.0"
 
 [[projects]]
   branch = "master"
+  digest = "1:78bbb1ba5b7c3f2ed0ea1eab57bdd3859aec7e177811563edc41198a760b06af"
   name = "github.com/mitchellh/go-homedir"
   packages = ["."]
-  revision = "58046073cbffe2f25d425fe1331102f55cf719de"
+  pruneopts = "UT"
+  revision = "ae18d6b8b3205b561c79e8e5f69bff09736185f4"
 
 [[projects]]
-  branch = "master"
+  digest = "1:e32dfc6abff6a3633ef4d9a1022fd707c8ef26f1e1e8f855dc58dc415ce7c8f3"
   name = "github.com/mitchellh/mapstructure"
   packages = ["."]
-  revision = "f15292f7a699fcc1a38a80977f80a046874ba8ac"
+  pruneopts = "UT"
+  revision = "fe40af7a9c397fa3ddba203c38a5042c5d0475ad"
+  version = "v1.1.1"
 
 [[projects]]
+  digest = "1:95741de3af260a92cc5c7f3f3061e85273f5a81b5db20d4bd68da74bd521675e"
   name = "github.com/pelletier/go-toml"
   packages = ["."]
+  pruneopts = "UT"
   revision = "c01d1270ff3e442a8a57cddc1c92dc1138598194"
   version = "v1.2.0"
 
 [[projects]]
+  digest = "1:6a4a11ba764a56d2758899ec6f3848d24698d48442ebce85ee7a3f63284526cd"
   name = "github.com/spf13/afero"
   packages = [
     ".",
-    "mem"
+    "mem",
   ]
-  revision = "787d034dfe70e44075ccc060d346146ef53270ad"
-  version = "v1.1.1"
+  pruneopts = "UT"
+  revision = "d40851caa0d747393da1ffb28f7f9d8b4eeffebd"
+  version = "v1.1.2"
 
 [[projects]]
+  digest = "1:516e71bed754268937f57d4ecb190e01958452336fa73dbac880894164e91c1f"
   name = "github.com/spf13/cast"
   packages = ["."]
+  pruneopts = "UT"
   revision = "8965335b8c7107321228e3e3702cab9832751bac"
   version = "v1.2.0"
 
 [[projects]]
+  digest = "1:645cabccbb4fa8aab25a956cbcbdf6a6845ca736b2c64e197ca7cbb9d210b939"
   name = "github.com/spf13/cobra"
   packages = ["."]
+  pruneopts = "UT"
   revision = "ef82de70bb3f60c65fb8eebacbb2d122ef517385"
   version = "v0.0.3"
 
 [[projects]]
-  branch = "master"
+  digest = "1:68ea4e23713989dc20b1bded5d9da2c5f9be14ff9885beef481848edd18c26cb"
   name = "github.com/spf13/jwalterweatherman"
   packages = ["."]
-  revision = "7c0cea34c8ece3fbeb2b27ab9b59511d360fb394"
+  pruneopts = "UT"
+  revision = "4a4406e478ca629068e7768fc33f3f044173c0a6"
+  version = "v1.0.0"
 
 [[projects]]
+  digest = "1:c1b1102241e7f645bc8e0c22ae352e8f0dc6484b6cb4d132fa9f24174e0119e2"
   name = "github.com/spf13/pflag"
   packages = ["."]
-  revision = "9a97c102cda95a86cec2345a6f09f55a939babf5"
-  version = "v1.0.2"
+  pruneopts = "UT"
+  revision = "298182f68c66c05229eb03ac171abe6e309ee79a"
+  version = "v1.0.3"
 
 [[projects]]
+  digest = "1:214775c11fd26da94a100111a62daa25339198a4f9c57cb4aab352da889f5b93"
   name = "github.com/spf13/viper"
   packages = ["."]
-  revision = "907c19d40d9a6c9bb55f040ff4ae45271a4754b9"
-  version = "v1.1.0"
+  pruneopts = "UT"
+  revision = "2c12c60302a5a0e62ee102ca9bc996277c2f64f5"
+  version = "v1.2.1"
 
 [[projects]]
   branch = "master"
+  digest = "1:f7e5d74f094d44e931785fc1ebc887704953b6689c7d47fce9ff1a8647b83eb6"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "f0d5e33068cb57c22a181f5df0ffda885309eb5a"
+  pruneopts = "UT"
+  revision = "8469e314837c2e2471561de5c47bbf8bfd0d9099"
 
 [[projects]]
+  digest = "1:8029e9743749d4be5bc9f7d42ea1659471767860f0cdc34d37c3111bd308a295"
   name = "golang.org/x/text"
   packages = [
     "internal/gen",
@@ -169,20 +295,42 @@
     "internal/ucd",
     "transform",
     "unicode/cldr",
-    "unicode/norm"
+    "unicode/norm",
   ]
+  pruneopts = "UT"
   revision = "f21a4dfb5e38f5895301dc265a8def02365cc3d0"
   version = "v0.3.0"
 
 [[projects]]
+  digest = "1:342378ac4dcb378a5448dd723f0784ae519383532f5e70ade24132c4c8693202"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
+  pruneopts = "UT"
   revision = "5420a8b6744d3b0345ab293f6fcba19c978f1183"
   version = "v2.2.1"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "8a12ec87aa3ee33f3befdbe202822a4be31871fc2bf11f9ef61f56d11b51b0f9"
+  input-imports = [
+    "github.com/alecthomas/template",
+    "github.com/aws/aws-sdk-go/aws",
+    "github.com/aws/aws-sdk-go/aws/awserr",
+    "github.com/aws/aws-sdk-go/aws/credentials",
+    "github.com/aws/aws-sdk-go/aws/credentials/ec2rolecreds",
+    "github.com/aws/aws-sdk-go/aws/ec2metadata",
+    "github.com/aws/aws-sdk-go/aws/session",
+    "github.com/aws/aws-sdk-go/service/ec2",
+    "github.com/dustinkirkland/golang-petname",
+    "github.com/kubernauts/tk8-provisioner-aws",
+    "github.com/kubernauts/tk8-provisioner-azure",
+    "github.com/kubernauts/tk8-provisioner-baremetal",
+    "github.com/kubernauts/tk8-provisioner-eks",
+    "github.com/kubernauts/tk8-provisioner-nutanix",
+    "github.com/kubernauts/tk8-provisioner-openstack",
+    "github.com/mitchellh/go-homedir",
+    "github.com/spf13/cobra",
+    "github.com/spf13/viper",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1
