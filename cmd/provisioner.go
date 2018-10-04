@@ -1,3 +1,17 @@
+// Copyright © 2018 The TK8 Authors.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package cmd
 
 import (
@@ -145,19 +159,7 @@ func init() {
 	clusterCmd.AddCommand(provisionerRemoveCmd)
 	clusterCmd.AddCommand(provisionerUpgradeCmd)
 	clusterCmd.AddCommand(provisionerDestroyCmd)
-	// Here you will define your flags and configuration settings.
 
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// awsCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// awsCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	// awsCmd.Flags().BoolVarP(&install, "install", "i", false, "Install Kubernetes on the AWS infrastructure")
-	// Flags to initiate the terraform installation
-	// awsCmd.Flags().BoolVarP(&create, "create", "c", false, "Deploy the AWS infrastructure using terraform")
-	// Flag to destroy the AWS infrastructure using terraform
 	provisionerInstallCmd.Flags().StringVar(&cluster.Name, "name", cluster.Name, "name of the cluster workspace")
 	provisionerScaleCmd.Flags().StringVar(&cluster.Name, "name", cluster.Name, "name of the cluster workspace")
 	provisionerResetCmd.Flags().StringVar(&cluster.Name, "name", cluster.Name, "name of the cluster workspace")
