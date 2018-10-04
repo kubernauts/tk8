@@ -15,6 +15,9 @@ _book
 *.mobi
 *.pdf
 
+.vscode
+.wakatime*
+
 #Ignore compiled files
 tk8
 dist

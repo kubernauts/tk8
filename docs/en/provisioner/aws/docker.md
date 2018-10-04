@@ -56,5 +56,3 @@ To delete the provisioned cluster run:
 ```shell
 docker run -v ~/.ssh/:/root/.ssh/ -v "$(pwd)":/tk8 kubernautslabs/tk8 cluster destroy aws
 ```
-
----
