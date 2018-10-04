@@ -16,15 +16,18 @@ package cmd
 
 import (
 	"errors"
+	"os"
 	"strings"
 
+	"github.com/kubernauts/tk8/internal"
+
+	aws "github.com/kubernauts/tk8-provisioner-aws"
+	azure "github.com/kubernauts/tk8-provisioner-azure"
+	baremetal "github.com/kubernauts/tk8-provisioner-baremetal"
+	eks "github.com/kubernauts/tk8-provisioner-eks"
+	nutanix "github.com/kubernauts/tk8-provisioner-nutanix"
+	openstack "github.com/kubernauts/tk8-provisioner-openstack"
 	"github.com/kubernauts/tk8/internal/cluster"
-	aws "github.com/kubernauts/tk8/provisioner/aws"
-	azure "github.com/kubernauts/tk8/provisioner/azure"
-	baremetal "github.com/kubernauts/tk8/provisioner/baremetal"
-	eks "github.com/kubernauts/tk8/provisioner/eks"
-	nutanix "github.com/kubernauts/tk8/provisioner/nutanix"
-	openstack "github.com/kubernauts/tk8/provisioner/openstack"
 
 	"github.com/spf13/cobra"
 )
@@ -48,10 +51,8 @@ var provisionerInstallCmd = &cobra.Command{
 	Args:  ArgsValidation,
 	Run: func(cmd *cobra.Command, args []string) {
 		if val, ok := provisioners[args[0]]; ok {
-			cluster.KubesprayInit()
 			val.Init(args[1:])
 			val.Setup(args[1:])
-
 		}
 	},
 }
@@ -131,7 +132,14 @@ func ArgsValidation(cmd *cobra.Command, args []string) error {
 		return errors.New("requires at least one arg")
 	}
 	if _, ok := provisioners[args[0]]; ok {
+		if _, err := os.Stat("./provisioner/" + args[0]); err == nil {
+			return nil
+		}
+		os.Mkdir("./provisioner", 0755)
+		common.CloneGit("./provisioner", "https://github.com/kubernauts/tk8-provisioner-"+args[0], args[0])
+		common.ReplaceGit("./provisioner/" + args[0])
 		return nil
+
 	}
 	return errors.New("provisioner not supported")
 
