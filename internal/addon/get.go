@@ -3,6 +3,8 @@ package addon
 import (
 	"fmt"
 	"strings"
+
+	"github.com/kubernauts/tk8/internal"
 )
 
 func GetAddon(addonNameOrGitPath string) string {
@@ -13,23 +15,23 @@ func GetAddon(addonNameOrGitPath string) string {
 		fmt.Println("Found", addonName, "local.")
 		return addonName
 	}
-	if checkLocalPath("tk-addon-" + addonName) {
+	if checkLocalPath("tk8-addon-" + addonName) {
 		fmt.Println("Found", addonName, "local.")
-		return "tk-addon-" + addonName
+		return "tk8-addon-" + addonName
 	}
 	if !checkLocalPath(addonName) {
 		fmt.Println("check if provided a url")
 		if strings.Contains(addonNameOrGitPath, "http://") || strings.Contains(addonNameOrGitPath, "https://") {
 			fmt.Println("Load Addon from external path", addonNameOrGitPath)
-			cloneGit(addonNameOrGitPath)
+			common.CloneGit("./addons", addonNameOrGitPath, addonName)
 			return addonName
 		}
 
 		fmt.Println("Search addon on kubernauts space.")
-		cloneGit("https://github.com/kubernauts/tk-addon-" + addonName)
-		return "tk-addon-" + addonName
+		common.CloneGit("./addons", "https://github.com/kubernauts/tk8-addon-"+addonName, addonName)
+		return "tk8-addon-" + addonName
 
 	}
-	return "tk-addon-" + addonName
+	return "tk8-addon-" + addonName
 
 }
