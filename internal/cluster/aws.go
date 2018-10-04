@@ -1,4 +1,4 @@
-// Copyright © 2018 NAME HERE <EMAIL ADDRESS>
+// Copyright © 2018 The TK8 Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -119,7 +119,6 @@ func AWSInstall() {
 		mvShhBastion := exec.Command("cp", "./kubespray/ssh-bastion.conf", "./inventory/"+Name+"/ssh-bastion.conf")
 		mvShhBastion.Run()
 		mvShhBastion.Wait()
-		//os.MkdirAll("./inventory/"+Name+"/installer/group_vars", 0755)
 		cpSample := exec.Command("cp", "-rfp", "./kubespray/inventory/sample/.", "./inventory/"+Name+"/installer/")
 		cpSample.Run()
 		cpSample.Wait()
@@ -216,6 +215,10 @@ func AWSScale() {
 	var confirmation string
 	// Scale the AWS infrastructure
 	fmt.Printf("\t\t===============Starting AWS Scaling====================\n\n")
+	ExecuteTerraform("apply", "./inventory/"+Name+"/provisioner/")
+	mvHost := exec.Command("mv", "./inventory/hosts", "./inventory/"+Name+"/hosts")
+	mvHost.Run()
+	mvHost.Wait()
 
 	// Scale the Kubernetes cluster
 	fmt.Printf("\n\n\t\t===============Starting Kubernetes Scaling====================\n\n")
@@ -227,10 +230,6 @@ func AWSScale() {
 		fmt.Printf("Confirmation denied. Exiting...")
 		os.Exit(0)
 	}
-	ExecuteTerraform("apply", "./inventory/"+Name+"/provisioner/")
-	mvHost := exec.Command("mv", "./inventory/hosts", "./inventory/"+Name+"/hosts")
-	mvHost.Run()
-	mvHost.Wait()
 	RunPlaybook("./inventory/"+Name+"/installer/", "scale.yml")
 
 	return

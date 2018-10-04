@@ -1,4 +1,4 @@
-// Copyright © 2018 NAME HERE <EMAIL ADDRESS>
+// Copyright © 2018 The TK8 Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -134,22 +134,12 @@ func checkKubectl(kubeConfig string) {
 }
 
 func init() {
+	rootCmd.AddCommand(addonCmd)
+
 	addonCmd.AddCommand(addonInstallCmd)
 	addonCmd.AddCommand(addonCreateCmd)
 	addonCmd.AddCommand(addonGetCmd)
 	addonCmd.AddCommand(addonDestroyCmd)
-	rootCmd.AddCommand(addonCmd)
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// addonCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// addonCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-
-	// addonCmd.Flags().BoolVarP(&monitor, "monitor", "m", false, "Deploy Monitoring and Alerting")
 	addonCmd.PersistentFlags().StringVar(&addon.KubeConfig, "kubeconfig", "", "kubeconfig path")
 }
