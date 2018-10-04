@@ -1,8 +1,9 @@
 package test
 
 import (
-	"github.com/kubernauts/tk8/cmd"
 	"testing"
+
+	"github.com/kubernauts/tk8/cmd"
 )
 
 func TestVersion(t *testing.T) {

@@ -213,7 +213,6 @@ func (p Baremetal) Reset(args []string) {
 
 func (p Baremetal) Remove(args []string) {
 	cluster.NotImplemented()
-
 }
 
 func (p Baremetal) Upgrade(args []string) {
