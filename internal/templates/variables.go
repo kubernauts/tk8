@@ -1,5 +1,78 @@
+// Copyright © 2018 The TK8 Authors.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package templates
 
+var VariablesEKS = `
+# Variables Configuration
+variable "cluster-name" {
+  default     = "{{.ClusterName}}"
+  type        = "string"
+  description = "The name of your EKS Cluster"
+}
+
+variable "aws-region" {
+  default     = "{{.AWSRegion}}"
+  # availabe regions are:
+  # us-east-1 (Virginia)
+  # us-west-2 (Oregon)
+  # eu-west-1 (Irland)
+  type        = "string"
+  description = "The AWS Region to deploy EKS"
+}
+
+variable "node-instance-type" {
+  default     = "{{.NodeInstanceType}}"
+  type        = "string"
+  description = "Worker Node EC2 instance type"
+}
+
+variable "desired-capacity" {
+  default     = {{.DesiredCapacity}}
+  type        = "string"
+  description = "Autoscaling Desired node capacity"
+}
+
+variable "max-size" {
+  default     = {{.AutoScallingMaxSize}}
+  type        = "string"
+  description = "Autoscaling maximum node capacity"
+}
+
+variable "min-size" {
+  default     = {{.AutoScallingMinSize}}
+  type        = "string"
+  description = "Autoscaling Minimum node capacity"
+}
+variable "public_key_path" {
+  default = "{{.KeyPath}}"
+  type    = "string"
+  description = "path to your eks public key"
+}
+
+variable "AWS_ACCESS_KEY_ID" {
+  description = "AWS Access Key"
+}
+
+variable "AWS_SECRET_ACCESS_KEY" {
+  description = "AWS Secret Key"
+}
+
+variable "AWS_DEFAULT_REGION" {
+  description = "AWS Region"
+}
+`
 var Variables = `
 variable "AWS_ACCESS_KEY_ID" {
   description = "AWS Access Key"

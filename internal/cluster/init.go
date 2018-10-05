@@ -1,4 +1,4 @@
-// Copyright © 2018 NAME HERE <EMAIL ADDRESS>
+// Copyright © 2018 The TK8 Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 package cluster
 
 import (
+	"bufio"
 	"fmt"
 	"log"
 	"os"
@@ -23,18 +24,27 @@ import (
 
 // KubesprayInit is responsible for cloning the kubespray diretory in CWD.
 func KubesprayInit() {
-	fmt.Println("Initialising kubespray git repo")
 	if _, err := os.Stat("./kubespray"); err == nil {
 		fmt.Println("Kubespray clone on this system already exists")
-		os.Exit(1)
+		return
 	}
-
+	fmt.Println("Initialising kubespray git repo")
 	if _, err := exec.LookPath("git"); err != nil {
 		log.Fatal("either 'git' is not installed or not found in $PATH, kindly check and fix")
 		os.Exit(1)
 	} else {
 		// issue-23 kubespray upstream
-		err := exec.Command("git", "clone", "-b", kubesprayVersion, "--single-branch", "https://github.com/kubernauts/kubespray").Run()
+		gitClone := exec.Command("git", "clone", "-b", kubesprayVersion, "--single-branch", "https://github.com/kubernauts/kubespray")
+		stdout, err := gitClone.StdoutPipe()
+		gitClone.Stderr = gitClone.Stdout
+		gitClone.Start()
+
+		scanner := bufio.NewScanner(stdout)
+		for scanner.Scan() {
+			m := scanner.Text()
+			fmt.Println(m)
+		}
+		gitClone.Wait()
 		if err != nil {
 			log.Fatalf("Seems there is a problem cloning the kubespray repo, %v", err)
 			os.Exit(1)
