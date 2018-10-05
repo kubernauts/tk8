@@ -10,12 +10,12 @@ We make a switch with install tk8 add-ons and provide a shortcut. A shortcut cou
 ### Use the complete Path
 
 ```shell
-tk8 addon install https://github.com/kubernauts/tk-addon-rancher
-tk8 addon install https://github.com/kubernauts/tk-addon-prometheus
-tk8 addon install https://github.com/kubernauts/tk-addon-grafana
-tk8 addon install https://github.com/kubernauts/tk-addon-monitoring-stack
-tk8 addon install https://github.com/kubernauts/tk-addon-elk
-tk8 addon install https://github.com/kubernauts/tk-addon-...
+tk8 addon install https://github.com/kubernauts/tk8-addon-rancher
+tk8 addon install https://github.com/kubernauts/tk8-addon-prometheus
+tk8 addon install https://github.com/kubernauts/tk8-addon-grafana
+tk8 addon install https://github.com/kubernauts/tk8-addon-monitoring-stack
+tk8 addon install https://github.com/kubernauts/tk8-addon-elk
+tk8 addon install https://github.com/kubernauts/tk8-addon-...
 tk8 addon install https://github.com/USERNAME/ADDON-REPO
 ```
 

@@ -24,7 +24,7 @@ import (
 
 func InstallAddon(addonNameOrGitPath string) {
 	addonName := GetAddon(addonNameOrGitPath)
-	fmt.Println("Install", strings.Replace(addonName, "tk-addon-", "", 1), addonName)
+	fmt.Println("Install", strings.Replace(addonName, "tk8-addon-", "", 1), addonName)
 
 	executeMainSh(addonName)
 	applyMainYml(addonName, "yml")
