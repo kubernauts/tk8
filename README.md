@@ -53,15 +53,8 @@ Create a separate folder and store the executable file there, a configuration fi
 `export AWS_SECRET_ACCESS_KEY=xxx`
 `export AWS_ACCESS_KEY_ID=xxx`
 
-<<<<<<< HEAD
-Flags:
-  -h, --help      help for addon
-  -m, --monitor   Deploy Monitoring and Alerting
-  -r, --rancher   Deploy Rancher
-=======
 They then execute the CLI with the command:
 `tk8 cluster install aws`
->>>>>>> 90f0c507caab8f322daa3722fa625c8860a0a29f
 
 With this command the TK8 CLI creates all required resources in AWS and installs a Kubernet cluster for it.
 
