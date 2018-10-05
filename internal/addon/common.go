@@ -29,5 +29,5 @@ func cloneExample(addonName string) {
 		fmt.Println("Addon", addonName, "already exist")
 		os.Exit(0)
 	}
-	common.CloneGit("./addons", "https://github.com/kubernauts/tk-addon-develop", addonName)
+	common.CloneGit("./addons", "https://github.com/kubernauts/tk8-addon-develop", addonName)
 }

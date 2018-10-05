@@ -24,6 +24,7 @@ dist
 bin
 inventory
 addons
+tk8-*
 
 # Ignore kubespray
 kubespray
