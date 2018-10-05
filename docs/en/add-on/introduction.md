@@ -1,25 +1,25 @@
 # TK8 Add-On
 
-## Verwendung
+## Using
 
-Wie man ein Add-on mit tk8 installiert
-Wir müssen jedes Add-On in einem einzigen Repository auf Github für öffentliche Add-Ons und auf gitlab für interne Add-Ons speichern.
+How to install a add-on with tk8
+We need to store every Add-On in a single repository on Github for public add-ons and on gitlab for internal add-ons.
 
-Wir machen einen Switch mit installierten tk8 Add-ons und stellen eine Verknüpfung zur Verfügung. Eine Verknüpfung könnte auch ein lokales Add-on sein, daher müssen wir zuerst prüfen, ob es im Ordner eines gibt. Wenn nicht, überprüfen Sie, ob es ein tk8-addon- auf GitHub gibt.
+We make a switch with install tk8 add-ons and provide a shortcut. A shortcut could also be a local add-on so we need to check first if there one on in the folder. if not, check if there a tk8-addon- on GitHub.
 
-#### Den kompletten Pfad verwenden
+### Use the complete Path
 
 ```shell
-tk8 addon install https://github.com/kubernauts/tk8-addon-rancher
-tk8 addon install https://github.com/kubernauts/tk8-addon-prometheus
-tk8 addon install https://github.com/kubernauts/tk8-addon-grafana
-tk8 addon install https://github.com/kubernauts/tk8-addon-monitoring-stack
-tk8 addon install https://github.com/kubernauts/tk8-addon-elk
-tk8 addon install https://github.com/kubernauts/tk8-addon-...
+tk8 addon install https://github.com/kubernauts/tk-addon-rancher
+tk8 addon install https://github.com/kubernauts/tk-addon-prometheus
+tk8 addon install https://github.com/kubernauts/tk-addon-grafana
+tk8 addon install https://github.com/kubernauts/tk-addon-monitoring-stack
+tk8 addon install https://github.com/kubernauts/tk-addon-elk
+tk8 addon install https://github.com/kubernauts/tk-addon-...
 tk8 addon install https://github.com/USERNAME/ADDON-REPO
 ```
 
-#### Verwenden Sie die Shortcuts
+### Use the shortcut
 
 ```shell
 tk8 addon install rancher
@@ -29,24 +29,23 @@ tk8 addon install monitoring-stack
 tk8 addon install elk
 ```
 
-### Add-on entfernen
+### Destroy a add-on
 
 ```shell
 tk8 addon destroy rancher
 tk8 addon destroy prometheus
-tk8 addon destroye grafana
+tk8 addon destroy grafana
 tk8 addon destroy monitoring-stack
 tk8 addon destroy elk
 ```
 
-## Entwicklung
+## Development
 
-### Erstellen eines Add-ons
+Create a add-on
+The create method of tk8 create a new add-on in the local folder. This add-on is a simple example and provide all we need to work with this add-on.
 
-Die create-Methode von tk8 erstellt ein neues Add-on im lokalen Ordner. Dieses Add-on ist ein einfaches Beispiel und bietet alles, was wir brauchen, um mit diesem Add-on zu arbeiten.
-
-[Weitere Informationen hier](development.md)
+[More information here](development.md)
 
 ```shell
-tk8 addon erstellen my-addon erstellen
+tk8 addon create my-addon
 ```
