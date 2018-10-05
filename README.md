@@ -1,3 +1,5 @@
+![Logo](docs/images/tk8.png)
+
 # TK8: A multi-cloud, multi-cluster Kubernetes platform installation and integration tool
 
 TK8 is a command line tool written in Go and fully automatically installs Kubernet on any environment. With TK8 you are able to centrally manage different Kubernet clusters with different configurations. In addition, TK8 with its simple add-on integration offers the possibility to quickly, cleanly and easily distribute extensions to the different Kubernetes clusters.
