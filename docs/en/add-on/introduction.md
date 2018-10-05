@@ -1,13 +1,13 @@
 # TK8 Add-On
 
-## Using
+## Verwendung
 
-How to install a add-on with tk8
-We need to store every Add-On in a single repository on Github for public add-ons and on gitlab for internal add-ons.
+Wie man ein Add-on mit tk8 installiert
+Wir müssen jedes Add-On in einem einzigen Repository auf Github für öffentliche Add-Ons und auf gitlab für interne Add-Ons speichern.
 
-We make a switch with install tk8 add-ons and provide a shortcut. A shortcut could also be a local add-on so we need to check first if there one on in the folder. if not, check if there a tk8-addon- on GitHub.
+Wir machen einen Switch mit installierten tk8 Add-ons und stellen eine Verknüpfung zur Verfügung. Eine Verknüpfung könnte auch ein lokales Add-on sein, daher müssen wir zuerst prüfen, ob es im Ordner eines gibt. Wenn nicht, überprüfen Sie, ob es ein tk8-addon- auf GitHub gibt.
 
-### Use the complete Path
+#### Den kompletten Pfad verwenden
 
 ```shell
 tk8 addon install https://github.com/kubernauts/tk8-addon-rancher
@@ -19,7 +19,7 @@ tk8 addon install https://github.com/kubernauts/tk8-addon-...
 tk8 addon install https://github.com/USERNAME/ADDON-REPO
 ```
 
-### Use the shortcut
+#### Verwenden Sie die Shortcuts
 
 ```shell
 tk8 addon install rancher
@@ -29,23 +29,24 @@ tk8 addon install monitoring-stack
 tk8 addon install elk
 ```
 
-### Destroy a add-on
+### Add-on entfernen
 
 ```shell
 tk8 addon destroy rancher
 tk8 addon destroy prometheus
-tk8 addon destroy grafana
+tk8 addon destroye grafana
 tk8 addon destroy monitoring-stack
 tk8 addon destroy elk
 ```
 
-## Development
+## Entwicklung
 
-Create a add-on
-The create method of tk8 create a new add-on in the local folder. This add-on is a simple example and provide all we need to work with this add-on.
+### Erstellen eines Add-ons
 
-[More information here](development.md)
+Die create-Methode von tk8 erstellt ein neues Add-on im lokalen Ordner. Dieses Add-on ist ein einfaches Beispiel und bietet alles, was wir brauchen, um mit diesem Add-on zu arbeiten.
+
+[Weitere Informationen hier](development.md)
 
 ```shell
-tk8 addon create my-addon
+tk8 addon erstellen my-addon erstellen
 ```
