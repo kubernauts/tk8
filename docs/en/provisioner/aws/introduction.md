@@ -14,10 +14,8 @@ The use of the CLI gives you more freedom to individualize your workflows.
 * [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 * [Python](https://www.python.org/downloads/)
 * [pip](https://pip.pypa.io/en/stable/installing/)
-* [AWS IAM Authenticator](https://github.com/kubernetes-sigs/aws-iam-authenticator)
 * Existing SSH keypair in AWS
 * AWS access and secret keys
-* Exported AWS Credentials
 
 [Documentation](cli.md)
 
