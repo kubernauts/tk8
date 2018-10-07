@@ -1,6 +1,6 @@
 # Summary
 
-* [Getting Started](README.md)
+* [Getting Started](../../README.md#usage)
 
 ## Provisioning and Bootstrapping clusters
 
