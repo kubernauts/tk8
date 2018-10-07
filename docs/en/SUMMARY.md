@@ -1,6 +1,6 @@
 # Summary
 
-* [Getting Started](README.md)
+* [Getting Started](https://github.com/kubernauts/tk8/blob/master/README.md#usage)
 
 ## Provisioning and Bootstrapping clusters
 
