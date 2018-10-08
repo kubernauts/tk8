@@ -48,8 +48,8 @@ Post installation the **kubeconfig** will be available at: _$(pwd)/inventory/*yo
 
 ## Destroy the provisioned cluster
 
-Make sure you are in same directory where you executed `tk8 cluster install aws` with the inventory directory.
-If you use a different workspace name with the --name flag please provided it on destroying too.
+Make sure you are in the same directory where you executed `tk8 cluster install aws` with the inventory directory.
+If you use a different workspace name with the --name flag please provide it on destroying too.
 
 To delete the provisioned cluster run:
 

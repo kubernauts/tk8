@@ -40,7 +40,7 @@ tk8 cluster aws --destroy
 
 You can download the TK8 CLI for Linux and Mac OSX under releases [here](https://github.com/kubernauts/tk8/releases).
 
-Make sure you have the sufficient permissions to create following resources in AWS
+Make sure you have sufficient permissions to create following resources in AWS
 
 * VPC with Public/Private Subnets, and NAT Gateways in different Availability Zones
 * EC2 instances used for bastion host, masters, etcd, and worker nodes

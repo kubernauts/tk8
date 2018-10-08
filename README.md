@@ -2,11 +2,11 @@
 
 # TK8: A multi-cloud, multi-cluster Kubernetes platform installation and integration tool
 
-TK8 is a command line tool written in Go and fully automatically installs Kubernet on any environment. With TK8 you are able to centrally manage different Kubernet clusters with different configurations. In addition, TK8 with its simple add-on integration offers the possibility to quickly, cleanly and easily distribute extensions to the different Kubernetes clusters.
+TK8 is a command line tool written in Go. It fully automatates the installation of Kubernetes on any environment. With TK8, you are able to centrally manage different Kubernetes clusters with different configurations. In addition, TK8 with its simple add-on integration offers the possibility to quickly, cleanly and easily distribute extensions to the different Kubernetes clusters.
 
-These include a Jmeter cluster for load testing, Prometheus for monitoring, Jaeger, Linkerd or Zippkin for tracing, Ambassador API Gateway with Envoy for Ingress and Load Balancing, Istio as mesh support solution, Jenkins-X for CI/CD integration. In addition, the add-on system also supports the management of helm packages.
+These include a Jmeter cluster for load testing, Prometheus for monitoring, Jaeger, Linkerd or Zippkin for tracing, Ambassador API Gateway with Envoy for Ingress and Load Balancing, Istio as mesh support solution, Jenkins-X for CI/CD integration. In addition, the add-on system also supports the management of Helm packages.
 
-## Table of content
+## Table of contents
 
 The documentation as well as a detailed table of contents can be found here.
 
@@ -15,7 +15,7 @@ The documentation as well as a detailed table of contents can be found here.
 ## Installation
 
 The TK8 CLI requires some dependencies to perform its tasks.
-At the moment we still need your help here, but we are already working on a setup script that will do these tasks for you.
+At the moment we still need your help here, but we are working on a setup script that will do these tasks for you.
 
 ### Terraform
 
@@ -34,7 +34,7 @@ Kubectl is needed by the CLI to roll out the add-ons and by you to access your c
 
 ### Python and pip
 
-In the automated routines Python scripts are used, in addition with Pip dependencies are loaded for this.
+In the automated routines Python scripts are used in addition with Pip dependencies are loaded for this.
 [Python Installation](https://www.python.org/downloads/)
 [pip Installation](https://pip.pypa.io/en/stable/installing/)
 
@@ -44,11 +44,11 @@ If you want to install an EKS cluster with TK8, the [AWS IAM Authenticator](http
 
 ## Usage
 
-Since there are different target platforms with the TK8 CLI and we have described these separately in detail in the documentation, we would like to give you just one example using AWS.
+Since there are different target platforms with the TK8 CLI, we have described these separately in detail in the documentation. But we would like to give you just one example using AWS.
 
 Download the executable file for your operating system from the Release section or build your own version with the `go build` command.
 
-Create a separate folder and store the executable file there, a configuration file is also required. This file can be found under the name config.yaml.example. Enter here the necessary parameters for your cluster as well as the AWS CLI Key and the Secret. Additionally you should put your AWS credentials in the environment variables because parts of the CLI (EKS cluster) need them there.
+Create a separate folder and store the executable file there, a configuration file is also required. This file can be found under the name config.yaml.example. Enter here the necessary parameters for your cluster as well as the AWS CLI Key and the Secret. Additionally you should put your AWS credentials in the environment variables because parts of the CLI (EKS cluster) needs them there.
 
 `export AWS_SECRET_ACCESS_KEY=xxx`
 `export AWS_ACCESS_KEY_ID=xxx`
@@ -56,7 +56,7 @@ Create a separate folder and store the executable file there, a configuration fi
 They then execute the CLI with the command:
 `tk8 cluster install aws`
 
-With this command the TK8 CLI creates all required resources in AWS and installs a Kubernet cluster for it.
+With this command the TK8 CLI creates all required resources in AWS and installs a Kubernetes cluster for it.
 
 If you no longer need the cluster, you can use the command:
 `tk8 cluster destroy aws`
@@ -81,7 +81,7 @@ The project is supported by cloud computing experts from cloudssky GmbH and Kube
 [Christopher Adigun](https://github.com/infinitydon)
 [Arush Salil](https://github.com/arush-sal)
 [Manuel Müller](https://github.com/MuellerMH)
-[Niki](https://github.com/niki-1905)
+[Nikita](https://github.com/niki-1905)
 [Anoop](https://github.com/anoopl)
 
 A big thanks goes to the contributors of [Kubespray](https://github.com/kubernetes-incubator/kubespray) whose great work we use as a basis for the setup and installation of Kubernetes in the AWS Cloud.

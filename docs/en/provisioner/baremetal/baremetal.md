@@ -2,9 +2,9 @@
 
 The aim of this guide is to provide a reference for deploying kubernetes on a bare metal infrastructure with the option of a Load balancer service type.
 
-This guide will make use of the kubernetes agnostic tool TK8.
+This guide will make use of the kubernetes agnostic tool, TK8.
 
-TK8 is a tool that is able to install vanilla kubernetes on cloud platforms and bare metal infrastructures, it is currently based on the kubespray project.
+TK8 is a tool that is able to install vanilla kubernetes on cloud platforms and bare metal infrastructures. It is currently based on the kubespray project.
 
 ## Prerequisites
 
@@ -28,23 +28,23 @@ The following softwares are needed to have a successful deployment, these must b
 
 Description for some of the appliances is below:
 
-* Master Node: This is where the API, scheduler, controllers services is installed. An external or internal LB can be used for HA purposes, an external is recommended for optimum performance because the internal LB is deployed as a separate POD inside the kubernetes cluster, this means the LB is dependent on the kubernetes deployment and it is load balancing at the same time hence the reason to consider separation of concern. The external LB can be a seperate haproxy, nginx or hardware based like F5.
+* Master Node: This is where the API, scheduler, controllers services are installed. An external or internal LB can be used for HA purposes, an external is recommended for optimum performance because the internal LB is deployed as a separate POD inside the kubernetes cluster. This means the LB is dependent on the kubernetes deployment and it is load balancing at the same time hence the reason to consider separation of concern. The external LB can be a seperate haproxy, nginx or hardware based like F5.
 
-* ETCD: This is the key/value store service for the kubernetes deployment, it is strongly recommended for this to be HA with a odd number so as to achieve quorum.
+* ETCD: This is the key/value store service for the kubernetes deployment. It is strongly recommended for this to be HA with an odd number so as to achieve quorum.
 
-* Worker Node:  This is where actual application containers are deployed, kubernetes services like the kubelet and kubeproxy resides on this node. The number of nodes is actually dependent on how much application workload will be deployed, additional nodes can be added to increase capacity.
+* Worker Node:  This is where the actual application containers are deployed. Kubernetes services like the kubelet and kubeproxy reside on this node. The number of nodes is actually dependent on how much application workload will be deployed. Additional nodes can be added to increase the capacity.
 
-* Storage: This is optional, that is why a dotted line is used because sometimes worker nodes utilize local storages attached to them to create the needed persistent disks for the application containers. The recommended solution is to use centralized storage solution like NFS, Ceph, Glusterfs etc. This kind of abstracted storage can be independently optimized and expanded without affecting the running application containers, also if PODs with persistent disks are to redeployed on another node, the information persists because it is not local to the worker node. Host paths should only be used to testing or development purposes.
+* Storage: This is optional, that is why a dotted line is used. Because sometimes worker nodes utilize local storages attached to them to create the needed persistent disks for the application containers. The recommended solution is to use centralized storage solution like NFS, Ceph, Glusterfs etc. This kind of abstracted storage can be independently optimized and expanded without affecting the running application containers, also if PODs with persistent disks are to be redeployed on another node, the information persists because it is not local to the worker node. Host paths should only be used for testing or development purposes.
 
 * Deployment Node: This is where the installation will be initiated from. Ansible and it’s required modules (python-netaddr, Jinja2) will have to be installed on this node.
 
-* Public IP Address Range: This is the range of public IPs that will be configured for use with MetalLB, it is important to note that each worker node should have a network card that is configured with an IP address from this range also because this is where the gateway settings will be reside and the LB service type will required the worker node’s routing table to properly send traffic to Edge router or Firewall.
+* Public IP Address Range: This is the range of public IPs that will be configured for use with MetalLB. It is important to note that each worker node should have a network card that is configured with an IP address from this range also because this is where the gateway settings will be reside and the LB service type will require the worker node’s routing table to properly send traffic to Edge router or Firewall.
 
 ## Getting the infrastructre ready for provisioning
 
 * Install and prepare the servers for master, etcd, worker
 * Configure key based SSH access from the Ansible host to the servers
-* Create a `hosts.ini` file to be used. This is will consist details like IP address to hostname mappings, specifying the groups with the respective nodes that will be used, bastion host (if specified) etc. A sample `hosts.ini` is given below:
+* Create a `hosts.ini` file to be used. This will consist details like IP address to hostname mappings, specifying the groups with the respective nodes that will be used, bastion host (if specified) etc. A sample `hosts.ini` is given below:
 
 ```ini
 # ## Configure 'ip' variable to bind kubernetes services on a
@@ -117,7 +117,7 @@ tk8 cluster baremetal --install
 
 ## Configure and Deploy MetalLB
 
-The MetalLB configmap file is also located at `tk8/baremetal/lb-config.yml`, kindly edit this file with the `public/routable IPs` that will be used for the LB service type in the kubernetes deployment. Example:
+The MetalLB configmap file is also located at `tk8/baremetal/lb-config.yml`. Kindly edit this file with the `public/routable IPs` that will be used for the LB service type in the kubernetes deployment. Example:
 
 ```yaml
 apiVersion: v1
@@ -134,7 +134,7 @@ data:
      - 192.168.200.20-192.168.200.30
 ```
 
-The address field above is the IP address range that will be used for the LB service type, the MetalLB controller POD will listen to the LB service type calls from API.
+The address field above is the IP address range that will be used for the LB service type. Ihe MetalLB controller POD will listen to the LB service type calls from API.
 
 To deploy MetalLB run:
 
