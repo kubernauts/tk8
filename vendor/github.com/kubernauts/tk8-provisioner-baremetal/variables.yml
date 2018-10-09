@@ -1,3 +1,0 @@
-os:
-  username: root
-  become: "no"
