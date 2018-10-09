@@ -4,7 +4,7 @@ FROM golang:alpine as builder
 RUN apk --update add make git
 COPY ./ /go/src/github.com/kubernauts/tk8
 WORKDIR /go/src/github.com/kubernauts/tk8
-RUN go get -u ... && make bin
+RUN go get -u . && make bin
 
 ## os stage
 FROM alpine
