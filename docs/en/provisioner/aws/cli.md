@@ -18,7 +18,7 @@ Provide the AWS credentials in either of the following ways:
 
 ## Create a cluster
 
-Adapt the `config.yaml` file to specify the cluster details. [Example config](https://raw.githubusercontent.com/kubernauts/tk8/master/config.yaml.example):
+Adapt the `config.yaml` file to specify the cluster details. [Example config](../../../../config.yaml.example):
 
 ```yaml
 aws:

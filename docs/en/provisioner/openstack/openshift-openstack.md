@@ -4,13 +4,13 @@
 
 The purpose of this documentation is to provide a reference guide for installing an HA’ed OpenShift Origin deployment on an OpenStack cloud infrastructure using the Openshift-Ansible deployment method, which is the basis for our TK8 installer for the OpenShift version.
 
-This is aimed at enterprise environment, hence the need to include necessary components that meets this standard. If the interest is on stand-alone deployment there are several ways to do this, we implore the reader to check resources like mini-shift which can satisfy stand-alone deployments which are to used for testing or learning purposes.
+This is aimed at enterprise environment, hence the need to include necessary components that meet this standard. If the interest is on stand-alone deployment there are several ways to do this. We implore the reader to check resources like mini-shift which can satisfy stand-alone deployments which are to be used for testing or learning purposes.
 
 ## Prerequisite
 
-A working OpenStack environment is needed with support for LBaaS feature, any recent OpenStack version supports this, you should be fine with Mitaka and later versions.
+A working OpenStack environment is needed with support for LBaaS feature. Any recent OpenStack version supports this, you should be fine with Mitaka and later versions.
 
-The following softwares are needed to have a successful deployment, these must be installed on the Deployment host:
+The following softwares are needed to have a successful deployment. These must be installed on the Deployment host:
 
 * Ansible
 * Terraform
@@ -31,7 +31,7 @@ If name resolution fails, the installation will fail along the way.
 
 Below gives a brief description about the components:
 
-* Master Nova Hosts:  These are the master virtual machines that are dedicated for the control aspects, this is where the controllers, APIs etc will reside, having more than one is highly encouraged for HA \(even though they will not processing any payload services\).
+* Master Nova Hosts:  These are the master virtual machines that are dedicated for the control aspects. This is where the controllers, APIs etc will reside. Having more than one is highly encouraged for HA \(even though they will not be processing any payload services\).
 
 * ETCD Nova Hosts: These are the virtual machines that will be dedicated to the key/value store, an odd number is required for quorum to be established.
 
@@ -41,13 +41,13 @@ Below gives a brief description about the components:
 
 * LB: These are the load balancers that will be based on the LBaaS functionality of OpenStack. One LB is dedicated for the Master nodes \(to access the GUI\) while another is dedicated to the infrastructure nodes.
 
-**N.B**: The Load Balancer for the infrastructure nodes only exposes HTTPS port, put this in mind when creating routers for your application endpoints.
+**N.B**: The Load Balancer for the infrastructure nodes only exposes HTTPS port. Put this in mind when creating routers for your application endpoints.
 
-* Bastion Nova Host: This will be used as a jump host to the Openshift VMs, this is aligning with best security practices so that the VMs are not exposed directly to the internet. Also the actual installation will be initiated from here \(i.e. it will be used as the deployment host\).
+* Bastion Nova Host: This will be used as a jump host to the Openshift VMs. This is aligning with best security practices so that the VMs are not exposed directly to the internet. Also the actual installation will be initiated from here \(i.e. it will be used as the deployment host\).
 
 ## Infrastructure Deployment
 
-The infrastructure will be created using terraform, the following terraform modules are available:
+The infrastructure will be created using terraform. The following terraform modules are available:
 
 * Compute: Used to create the Nova compute VMs
 
@@ -89,7 +89,7 @@ terraform plan -var-file=cluster.tfvars
 terraform apply -var-file=cluster.tfvars
 ```
 
-Successful output should be similar to below snapshot:
+Successful output should be similar to snapshot below :
 
 ![output](images/openshift-output-snapsnot.png)
 
@@ -97,11 +97,11 @@ Successful output should be similar to below snapshot:
 
 ![loadbalancer](images/openshift-loadbalancer.png)
 
-7; Ensure you are able to resolve the all the node hostnames to their respective private IPs, the DNS solution is dependent on your specific environment.
+7; Ensure you are able to resolve all the node hostnames to their respective private IPs, the DNS solution is dependent on your specific environment.
 
 ![dns](images/openshift-dns.png)
 
-On your DNS configure the master FQDN to resolve to the public IP of the master LB. Sample resolution is given below:
+On your DNS, configure the master FQDN to resolve to the public IP of the master LB. Sample resolution is given below:
 
 ![masterfqdn](images/openshift-masterFQDN.png)
 
@@ -177,7 +177,7 @@ mercy-ops-compute-2 openshift_node_labels="{'region': 'primary', 'zone': 'east'}
 mercy-ops-etcd-1
 ```
 
-Make sure that your `host.ini` file is aligned with the above example, the only thing that will different will be actual hostnames for the nodes which will be according to what you have configured in the `clusters.tfvars` file.
+Make sure that your `host.ini` file is aligned with the above example. The only difference is actual hostnames for the nodes will be according to what you have configured in the `clusters.tfvars` file.
 
 If the node labels are not properly configured then you might end with a broken installation.
 
@@ -197,7 +197,7 @@ ansible-playbook -i ./openshift-ansible/inventory/hosts.ini ./openshift-ansible/
 ansible-playbook -i /openshift-ansible/inventory/hosts.ini ./openshift-ansible/playbooks/deploy_cluster.yml -e ansible_user=centos -b --become-user=root --flush-cache
 ```
 
-If everything goes on fine, you should an output like the one below:
+If everything goes fine, you should see an output like the one below:
 
 ![output](images/openshift-ansibleOutput.png)
 
