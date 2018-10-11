@@ -1,13 +1,13 @@
 # Provisioning with EKS
 
 
-Provide the AWS credentials in either of the following ways:
+Provide the AWS credentials in following ways:
 
 * [Environment Variables](https://docs.aws.amazon.com/cli/latest/userguide/cli-environment.html). You will need to specify `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`.
 
 ## Create a cluster
 
-Adapt the `config.yaml` file to specify the cluster details. [Example config](https://raw.githubusercontent.com/kubernauts/tk8/master/config.yaml.example):
+Adapt the `config.yaml` file to specify the cluster details. [Example config](../../../../config.yaml.example):
 
 ```yaml
 eks:
@@ -42,7 +42,7 @@ tk8 cluster install eks
 or with Docker
 
 ```shell
-docker run -v ~/.ssh/:/root/.ssh/ -v "$(pwd)":/tk8 -e AWS_ACCESS_KEY_ID=xxx -e AWS_SECRET_ACCESS_KEY=XXX kubernautslabs/tk8 cluster install eks
+docker run -v <path-to-the-AWS-SSH-key>:/root/.ssh/ -v "$(pwd)":/tk8 -e AWS_ACCESS_KEY_ID=xxx -e AWS_SECRET_ACCESS_KEY=XXX kubernautslabs/tk8 cluster install eks
 ```
 
 Post installation the **kubeconfig** will be available at: _$(pwd)/inventory/*yourWorkspaceOrClusterName*/provisioner/kubeconfig_
@@ -65,5 +65,5 @@ tk8 cluster destroy eks
 or with Docker
 
 ```shell
-docker run -v ~/.ssh/:/root/.ssh/ -v "$(pwd)":/tk8 -e AWS_ACCESS_KEY_ID=xxx -e AWS_SECRET_ACCESS_KEY=XXX kubernautslabs/tk8 cluster destroy eks
+docker run -v <path-to-the-AWS-SSH-key>:/root/.ssh/ -v "$(pwd)":/tk8 -e AWS_ACCESS_KEY_ID=xxx -e AWS_SECRET_ACCESS_KEY=XXX kubernautslabs/tk8 cluster destroy eks
 ```
