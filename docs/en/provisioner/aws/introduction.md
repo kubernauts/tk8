@@ -50,3 +50,20 @@ This is the easiest way to deploy an AWS EKS cluster using the [kubernautslabs/t
 * Exported AWS Credentials
 
 [Documentation](eks.md)
+
+## Managing Lifecylce of the Cluster
+
+This is the easiest way to manage lifecylce of the cluster using the [kubernautslabs/tk8](https://hub.docker.com/r/kubernautslabs/tk8) docker image.
+
+### Prerequisites managing lifecylce of the Cluster
+
+* [Git](https://git-scm.com/)
+* [Terraform](https://www.terraform.io/downloads.html)
+* [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
+* [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
+* [Python](https://www.python.org/downloads/)
+* [pip](https://pip.pypa.io/en/stable/installing/)
+* Existing SSH keypair in AWS
+* AWS access and secret keys
+
+[Documentation](lifecycle.md)
