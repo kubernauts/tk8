@@ -2,11 +2,11 @@
 
 ## Using Docker image
 
-Create a new Folder with a config file and the ssh keys and mount it to the docker container
+Create a new folder with a config file and the ssh keys and mount it to the docker container
 
 ## Create a cluster
 
-Adapt the `config.yaml` file to specify the cluster details. [Example config](https://raw.githubusercontent.com/kubernauts/tk8/master/config.yaml.example):
+Adapt the `config.yaml` file to specify the cluster details. [Example config](../../../../config.yaml.example):
 
 ```yaml
 aws:
@@ -36,8 +36,8 @@ aws:
 Once done run:
 
 ```shell
-vi config.yaml --> provide your AWS access and secret key and an exsiting SSH keypair in AWS
-docker run -v ~/.ssh/:/root/.ssh/ -v "$(pwd)":/tk8 kubernautslabs/tk8 cluster install aws
+vi config.yaml --> provide your AWS API credentials & an exsiting SSH keypair in AWS
+docker run -v <path-to-the-AWS-SSH-key>:/root/.ssh/ -v "$(pwd)":/tk8 kubernautslabs/tk8 cluster install aws
 ```
 
 Post installation the **kubeconfig** will be available at: _$(pwd)/inventory/*yourWorkspaceOrClusterName*/artifacts/admin.conf_
@@ -48,11 +48,11 @@ Post installation the **kubeconfig** will be available at: _$(pwd)/inventory/*yo
 
 ## Destroy the provisioned cluster
 
-Make sure you are in same directory where you executed `tk8 cluster install aws` with the inventory directory.
-If you use a different workspace name with the --name flag please provided it on destroying too.
+Make sure you are in the same directory where you executed `tk8 cluster install aws` with the inventory directory.
+If you use a different workspace name with the --name flag please provide it on destroying too.
 
 To delete the provisioned cluster run:
 
 ```shell
-docker run -v ~/.ssh/:/root/.ssh/ -v "$(pwd)":/tk8 kubernautslabs/tk8 cluster destroy aws
+docker run -v <path-to-the-AWS-SSH-key>:/root/.ssh/ -v "$(pwd)":/tk8 kubernautslabs/tk8 cluster destroy aws
 ```
