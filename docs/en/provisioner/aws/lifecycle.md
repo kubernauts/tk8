@@ -27,7 +27,7 @@ Once executed a confirmation would be needed to overwrite the existing inventory
 Make sure you are in the same directory where you executed `tk8 cluster install aws` with the inventory directory.
 If you use a different workspace name with the --name flag please provide it on resetting too.
 
-To scale the provisioned cluster run:
+To reset the provisioned cluster run:
 
 ```shell
 tk8 cluster reset aws
