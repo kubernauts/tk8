@@ -19,21 +19,20 @@ import (
 	"os"
 	"strings"
 
-	"github.com/kubernauts/tk8/internal"
-
 	aws "github.com/kubernauts/tk8-provisioner-aws"
 	azure "github.com/kubernauts/tk8-provisioner-azure"
 	baremetal "github.com/kubernauts/tk8-provisioner-baremetal"
 	eks "github.com/kubernauts/tk8-provisioner-eks"
 	nutanix "github.com/kubernauts/tk8-provisioner-nutanix"
 	openstack "github.com/kubernauts/tk8-provisioner-openstack"
-	"github.com/kubernauts/tk8/internal/cluster"
+	"github.com/kubernauts/tk8/pkg/common"
+	"github.com/kubernauts/tk8/pkg/provisioner"
 
 	"github.com/spf13/cobra"
 )
 
 var name string
-var provisioners = map[string]cluster.Provisioner{
+var provisioners = map[string]provisioner.Provisioner{
 	"aws":       aws.NewAWS(),
 	"azure":     azure.NewAzure(),
 	"baremetal": baremetal.NewBaremetal(),
@@ -160,10 +159,10 @@ func init() {
 	clusterCmd.AddCommand(provisionerUpgradeCmd)
 	clusterCmd.AddCommand(provisionerDestroyCmd)
 
-	provisionerInstallCmd.Flags().StringVar(&cluster.Name, "name", cluster.Name, "name of the cluster workspace")
-	provisionerScaleCmd.Flags().StringVar(&cluster.Name, "name", cluster.Name, "name of the cluster workspace")
-	provisionerResetCmd.Flags().StringVar(&cluster.Name, "name", cluster.Name, "name of the cluster workspace")
-	provisionerRemoveCmd.Flags().StringVar(&cluster.Name, "name", cluster.Name, "name of the cluster workspace")
-	provisionerUpgradeCmd.Flags().StringVar(&cluster.Name, "name", cluster.Name, "name of the cluster workspace")
-	provisionerDestroyCmd.Flags().StringVar(&cluster.Name, "name", cluster.Name, "name of the cluster workspace")
+	provisionerInstallCmd.Flags().StringVar(&common.Name, "name", common.Name, "name of the cluster workspace")
+	provisionerScaleCmd.Flags().StringVar(&common.Name, "name", common.Name, "name of the cluster workspace")
+	provisionerResetCmd.Flags().StringVar(&common.Name, "name", common.Name, "name of the cluster workspace")
+	provisionerRemoveCmd.Flags().StringVar(&common.Name, "name", common.Name, "name of the cluster workspace")
+	provisionerUpgradeCmd.Flags().StringVar(&common.Name, "name", common.Name, "name of the cluster workspace")
+	provisionerDestroyCmd.Flags().StringVar(&common.Name, "name", common.Name, "name of the cluster workspace")
 }
