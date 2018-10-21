@@ -7,6 +7,7 @@ default: bin
 
 .PHONY: bin
 bin:
+	go get -u ./...
 	go build ${BUILD_FLAGS} -o tk8 main.go
 
 .PHONY: install
@@ -28,10 +29,21 @@ lint:
 vet:
 	go vet $(PKGS)
 
+.PHONY: test
+test:
+	gocov test ./... | gocov-xml > coverage.xml
+	gometalinter.v1 --checkstyle > report.xml
+	sonar-scanner \
+  -Dsonar.projectKey=mmmac \
+  -Dsonar.host.url=http://localhost:9000 \
+  -Dsonar.login=616782f26ee441b650bd709eff9f8acee0a0fd75 \
+	-X
+
+.PHONY: release
 release:
+	go get -u ./...
 	./scripts/check-gofmt.sh
-	go build -o golint github.com/golang/lint/golint
-	./golint $(PKGS)
+	golint $(PKGS)
 	go vet $(PKGS)
 	go build ${BUILD_FLAGS} -o tk8 main.go
 	GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build ${BUILD_FLAGS} -o tk8-darwin-amd64 main.go

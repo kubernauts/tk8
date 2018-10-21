@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/kubernauts/tk8/internal/cluster"
+	"github.com/kubernauts/tk8/pkg/common"
 	"github.com/spf13/cobra"
 )
 
@@ -47,11 +47,11 @@ var bashCompletion = &cobra.Command{
 	Long:  `It will produce the bash completion script which can later be used for the autocompletion of commands in Bash.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		script, err := os.OpenFile("tk8.sh", os.O_CREATE|os.O_WRONLY, 0600)
-		cluster.ErrorCheck("Error creating autocompletion script file.", err)
+		common.ErrorCheck("Error creating autocompletion script file.", err)
 		defer script.Close()
 
 		err = rootCmd.GenBashCompletion(script)
-		cluster.ErrorCheck("Error writing to Bash script file", err)
+		common.ErrorCheck("Error writing to Bash script file", err)
 		fmt.Printf("Successfully created the Bash completion script. Move the 'tk8.sh' file under /etc/bash_completion.d/ folder and login again.")
 	},
 }
@@ -63,12 +63,12 @@ var zshCompletion = &cobra.Command{
 	Long:  `It will produce the bash completion script which can later be used for the autocompletion of commands in Zsh.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		script, err := os.OpenFile("tk8.plugin.zsh", os.O_CREATE|os.O_WRONLY, 0600)
-		cluster.ErrorCheck("Error creating autocompletion script file.", err)
+		common.ErrorCheck("Error creating autocompletion script file.", err)
 		defer script.Close()
 
 		fmt.Fprintf(script, "__tk8_tool_complete() {\n")
 		err = rootCmd.GenZshCompletion(script)
-		cluster.ErrorCheck("Error writing to Zsh plugin file", err)
+		common.ErrorCheck("Error writing to Zsh plugin file", err)
 		fmt.Fprintf(script, "}\ncompdef __tk8_tool_complete tk8")
 		fmt.Printf("Successfully created the Zsh plugin. Move the 'tk8.plugin.zsh' file under your plugins folder and login again.")
 	},
