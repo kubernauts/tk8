@@ -35,3 +35,5 @@ config.yml
 config.yaml
 .scannerwork
 provisioner
+report.xml
+coverage.xml
