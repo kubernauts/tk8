@@ -33,3 +33,6 @@ golint
 # Ignore personal configs
 config.yml
 config.yaml
+.scannerwork
+report.xml
+coverage.xml

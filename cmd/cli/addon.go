@@ -24,7 +24,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var monitor, rancher bool
+var Addon addon.Addon
 
 // addonCmd represents the addon command
 var addonCmd = &cobra.Command{
@@ -51,7 +51,7 @@ var addonInstallCmd = &cobra.Command{
 			cmd.Help()
 			os.Exit(1)
 		}
-		addon.InstallAddon(args[0])
+		Addon.Install(args[0])
 	},
 }
 
@@ -66,7 +66,7 @@ var addonDestroyCmd = &cobra.Command{
 			cmd.Help()
 			os.Exit(1)
 		}
-		addon.DestroyAddon(args[0])
+		Addon.Destroy(args[0])
 	},
 }
 
@@ -74,7 +74,7 @@ var addonDestroyCmd = &cobra.Command{
 var addonCreateCmd = &cobra.Command{
 	Use:   "create [addon name]",
 	Short: "create a new kubernetes addon packages on your local machine for development",
-	Long: `Create your own addons for your kubernetes cluster. 
+	Long: `Create your own addons for your kubernetes cluster.
 This command will prepare a example package in a folder with the addon name`,
 	Args: cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
@@ -82,7 +82,7 @@ This command will prepare a example package in a folder with the addon name`,
 			cmd.Help()
 			os.Exit(1)
 		}
-		addon.PrepareExample(args[0])
+		Addon.Create(args[0])
 	},
 }
 
@@ -97,15 +97,16 @@ var addonGetCmd = &cobra.Command{
 			cmd.Help()
 			os.Exit(1)
 		}
-		addon.GetAddon(args[0])
+		Addon.Get(args[0])
 	},
 }
 
+/*
+ * This function gets the path to the kubeconfig, cluster details and auth
+ * for using with the kubectl.
+ * Then use this to install the addon on this cluster
+ */
 func getKubeConfig() string {
-	/* This function gets the path to the kubeconfig, cluster details and auth
-	   for using with the kubectl.
-	   Then use this to install the addon on this cluster
-	*/
 	fmt.Println("Please enter the path to your kubeconfig:")
 	var kubeConfig string
 	fmt.Scanln(&kubeConfig)
@@ -117,10 +118,11 @@ func getKubeConfig() string {
 	return kubeConfig
 }
 
+/*
+ * This function is used to check the whether kubectl command is installed &
+ * it works with the kubeConfig provided
+ */
 func checkKubectl(kubeConfig string) {
-	/*This function is used to check the whether kubectl command is installed &
-	  it works with the kubeConfig provided
-	*/
 	kerr, err := exec.LookPath("kubectl")
 	if err != nil {
 		log.Fatal("kubectl command not found, kindly check")
