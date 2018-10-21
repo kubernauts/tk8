@@ -10,6 +10,8 @@ import (
 	"github.com/kubernauts/tk8/pkg/common"
 )
 
+var IOnly bool = false
+
 type Provisioner interface {
 	Init(args []string)
 	Setup(args []string)

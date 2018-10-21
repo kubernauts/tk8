@@ -51,7 +51,9 @@ var provisionerInstallCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		if val, ok := provisioners[args[0]]; ok {
 			val.Init(args[1:])
-			val.Setup(args[1:])
+			if !provisioner.IOnly {
+				val.Setup(args[1:])
+			}
 		}
 	},
 }
@@ -160,6 +162,7 @@ func init() {
 	clusterCmd.AddCommand(provisionerDestroyCmd)
 
 	provisionerInstallCmd.Flags().StringVar(&common.Name, "name", common.Name, "name of the cluster workspace")
+	provisionerInstallCmd.Flags().BoolVarP(&provisioner.IOnly, "ionly", "i", provisioner.IOnly, "setup only the infrastructure")
 	provisionerScaleCmd.Flags().StringVar(&common.Name, "name", common.Name, "name of the cluster workspace")
 	provisionerResetCmd.Flags().StringVar(&common.Name, "name", common.Name, "name of the cluster workspace")
 	provisionerRemoveCmd.Flags().StringVar(&common.Name, "name", common.Name, "name of the cluster workspace")

@@ -47,3 +47,4 @@ tk8 cluster remove aws
 ```
 
 Once executed the current kubernetes installation get removed from the infrastructure.
+
