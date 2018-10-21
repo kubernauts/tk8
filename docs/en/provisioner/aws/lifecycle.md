@@ -33,4 +33,17 @@ To reset the provisioned cluster run:
 tk8 cluster reset aws
 ```
 
-Once executed a confirmation would be needed to remove Kubernetes from your infrastructure..
+Once executed the current kubernetes installation get removed and a new setup will run.
+
+## Remove the cluster
+
+Make sure you are in the same directory where you executed `tk8 cluster install aws` with the inventory directory.
+If you use a different workspace name with the --name flag please provide it on resetting too.
+
+To reset the provisioned cluster run:
+
+```shell
+tk8 cluster remove aws
+```
+
+Once executed the current kubernetes installation get removed from the infrastructure.
