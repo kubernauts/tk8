@@ -43,8 +43,7 @@ test:
 release:
 	go get -u ./...
 	./scripts/check-gofmt.sh
-	go build -o golint github.com/golang/lint/golint
-	./golint $(PKGS)
+	golint $(PKGS)
 	go vet $(PKGS)
 	go build ${BUILD_FLAGS} -o tk8 main.go
 	GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build ${BUILD_FLAGS} -o tk8-darwin-amd64 main.go
