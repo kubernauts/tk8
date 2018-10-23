@@ -8,7 +8,13 @@ import (
 	"path/filepath"
 )
 
-var Name string
+var (
+	Name string
+	// GITCOMMIT will hold the commit SHA to be used in the version command.
+	GITCOMMIT = "0"
+	// VERSION will hold the version number to be used in the version command.
+	VERSION = "dev"
+)
 
 // ErrorCheck is responsbile to check if there is any error returned by a command.
 func ErrorCheck(msg string, err error) {
