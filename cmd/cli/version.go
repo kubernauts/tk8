@@ -21,6 +21,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var (
+	// GITCOMMIT will hold the commit SHA to be used in the version command.
+	GITCOMMIT string
+	// VERSION will hold the version number to be used in the version command.
+	VERSION = "dev-build"
+)
+
 var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Print the version of TK8",

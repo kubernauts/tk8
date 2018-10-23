@@ -9,7 +9,7 @@ default: bin
 
 .PHONY: bin
 bin:
-	# go get -u ./...
+	go get -u ./...
 	go build ${BUILD_FLAGS} -o tk8 main.go
 
 .PHONY: install
