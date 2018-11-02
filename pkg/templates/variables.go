@@ -21,6 +21,12 @@ variable "cluster_name" {
   description = "The name of your EKS Cluster"
 }
 
+variable "authorization" {
+  default     = "{{.Authorization}}"
+  type        = "string"
+  description = "Authorization mode for rke cluster"
+}
+
 variable "aws_region" {
   default     = "{{.AWSRegion}}"
   # availabe regions are:

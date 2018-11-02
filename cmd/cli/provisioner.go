@@ -25,6 +25,7 @@ import (
 	eks "github.com/kubernauts/tk8-provisioner-eks"
 	nutanix "github.com/kubernauts/tk8-provisioner-nutanix"
 	openstack "github.com/kubernauts/tk8-provisioner-openstack"
+	rke "github.com/kubernauts/tk8-provisioner-rke"
 	"github.com/kubernauts/tk8/pkg/common"
 	"github.com/kubernauts/tk8/pkg/provisioner"
 
@@ -39,6 +40,7 @@ var provisioners = map[string]provisioner.Provisioner{
 	"eks":       eks.NewEKS(),
 	"nutanix":   nutanix.NewNutanix(),
 	"openstack": openstack.NewOpenstack(),
+	"rke":       rke.NewRKE(),
 }
 
 var provisionerInstallCmd = &cobra.Command{
