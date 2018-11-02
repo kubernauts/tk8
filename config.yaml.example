@@ -27,5 +27,14 @@ eks:
   node-instance-type: "m4.large"
   desired-capacity: 1
   autoscalling-max-size: 2
-  autoscalling-min-size: 1  
+  autoscalling-min-size: 1
   key-file-path: "~/.ssh/id_rsa.pub"
+
+rke:
+  cluster_name: "rke-tk8"
+  node_os: "ubuntu"
+  rke_aws_region: "us-east-2"
+  authorization: "rbac"
+  rke_node_instance_type: "t2.medium"
+  node_count: 3
+  cloud_provider: "aws"
