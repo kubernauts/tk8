@@ -27,7 +27,7 @@ eks:
   node-instance-type: "m4.large"
   desired-capacity: 1
   autoscalling-max-size: 2
-  autoscalling-min-size: 1  
+  autoscalling-min-size: 1
   key-file-path: "~/.ssh/id_rsa.pub"
 
 rke:
