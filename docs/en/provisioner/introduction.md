@@ -8,7 +8,7 @@ Tk8 supports different platforms to provide a Kubernetes Cluster.
 * [EKS](aws/introduction.md)
 * [Baremetal](baremetal/introduction.md)
 * [Openstack](openstack/introduction.md)
-* [RKE](nutanix/usage.md)
+* [RKE](rke/usage.md)
 
 ## Add own Provisioner
 
