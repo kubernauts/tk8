@@ -27,7 +27,7 @@ variable "authorization" {
   description = "Authorization mode for rke cluster"
 }
 
-variable "aws_region" {
+variable "rke_aws_region" {
   default     = "{{.AWSRegion}}"
   # availabe regions are:
   # us-east-1 (Virginia)
