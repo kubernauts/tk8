@@ -14,6 +14,58 @@
 
 package templates
 
+var VariablesRKE = `
+variable "cluster_name" {
+  default     = "{{.ClusterName}}"
+  type        = "string"
+  description = "The name of your EKS Cluster"
+}
+
+variable "authorization" {
+  default     = "{{.Authorization}}"
+  type        = "string"
+  description = "Authorization mode for rke cluster"
+}
+
+variable "rke_aws_region" {
+  default     = "{{.AWSRegion}}"
+  # availabe regions are:
+  # us-east-1 (Virginia)
+  # us-west-2 (Oregon)
+  # eu-west-1 (Irland)
+  type        = "string"
+  description = "The AWS Region to deploy EKS"
+}
+
+variable "rke_node_instance_type" {
+  default     = "{{.RKENodeInstanceType}}"
+  type        = "string"
+  description = "Worker Node EC2 instance type"
+}
+
+variable "node_count" {
+  default     = {{.NodeCount}}
+  type        = "string"
+  description = "Autoscaling Desired node capacity"
+}
+variable "cloud_provider" {
+  default = "{{.CloudProvider}}"
+  type    = "string"
+  description = "cloud provider for rke cluster"
+}
+
+variable "AWS_ACCESS_KEY_ID" {
+  description = "AWS Access Key"
+}
+
+variable "AWS_SECRET_ACCESS_KEY" {
+  description = "AWS Secret Key"
+}
+
+variable "AWS_DEFAULT_REGION" {
+  description = "AWS Region"
+}
+`
 var VariablesEKS = `
 # Variables Configuration
 variable "cluster-name" {
