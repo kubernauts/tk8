@@ -2,7 +2,7 @@
 
 Tk8 unterstützt verschiedene Platformen zur Bereitstellung eines Kubernetes Clustes.
 
-## Avaible Provisioner
+## Available Provisioner
 
 * [AWS](aws/introduction.md)
 * [EKS](aws/introduction.md)
