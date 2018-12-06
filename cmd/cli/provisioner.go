@@ -44,7 +44,7 @@ var provisioners = map[string]provisioner.Provisioner{
 }
 
 var provisionerInstallCmd = &cobra.Command{
-	Use:              "install [" + GetAvaibleProvisioner() + "]",
+	Use:              "install [" + GetAvailableProvisioner() + "]",
 	TraverseChildren: true,
 
 	Short: "install the infrastructure",
@@ -61,7 +61,7 @@ var provisionerInstallCmd = &cobra.Command{
 }
 
 var provisionerScaleCmd = &cobra.Command{
-	Use:              "scale [" + GetAvaibleProvisioner() + "]",
+	Use:              "scale [" + GetAvailableProvisioner() + "]",
 	TraverseChildren: true,
 
 	Short: "scale up the infrastructure",
@@ -75,7 +75,7 @@ var provisionerScaleCmd = &cobra.Command{
 }
 
 var provisionerResetCmd = &cobra.Command{
-	Use:              "reset [" + GetAvaibleProvisioner() + "]",
+	Use:              "reset [" + GetAvailableProvisioner() + "]",
 	TraverseChildren: true,
 
 	Short: "reset the infrastructure",
@@ -89,7 +89,7 @@ var provisionerResetCmd = &cobra.Command{
 }
 
 var provisionerRemoveCmd = &cobra.Command{
-	Use:              "remove [" + GetAvaibleProvisioner() + "]",
+	Use:              "remove [" + GetAvailableProvisioner() + "]",
 	TraverseChildren: true,
 
 	Short: "scale down the infrastructure",
@@ -103,7 +103,7 @@ var provisionerRemoveCmd = &cobra.Command{
 }
 
 var provisionerDestroyCmd = &cobra.Command{
-	Use:              "destroy [" + GetAvaibleProvisioner() + "]",
+	Use:              "destroy [" + GetAvailableProvisioner() + "]",
 	TraverseChildren: true,
 	Short:            "destroy the infrastructure",
 	Long:             `This command will destroy the infrastructure which was created with the install command.`,
@@ -116,7 +116,7 @@ var provisionerDestroyCmd = &cobra.Command{
 }
 
 var provisionerUpgradeCmd = &cobra.Command{
-	Use:              "upgrade [" + GetAvaibleProvisioner() + "]",
+	Use:              "upgrade [" + GetAvailableProvisioner() + "]",
 	TraverseChildren: true,
 	Short:            "Manages the infrastructure on AWS",
 	Long: `
@@ -148,7 +148,7 @@ func ArgsValidation(cmd *cobra.Command, args []string) error {
 
 }
 
-func GetAvaibleProvisioner() string {
+func GetAvailableProvisioner() string {
 	keys := make([]string, 0, len(provisioners))
 	for k := range provisioners {
 		keys = append(keys, k)
