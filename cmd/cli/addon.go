@@ -52,8 +52,6 @@ var addonInstallCmd = &cobra.Command{
 			cmd.Help()
 			os.Exit(1)
 		}
-		fmt.Println("Args are --- ", args)
-		fmt.Println("Scope --- ", scope)
 		Addon.Install(args[0], scope)
 	},
 }

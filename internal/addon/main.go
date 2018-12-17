@@ -28,7 +28,11 @@ func (a *Addon) Destroy(addonNameOrGitPath, scope string) (error, string) {
 		return err, addonName
 	}
 	if os.IsNotExist(err) {
-		executeMainSh(addonName, scope)
+		err = executeMainSh(addonName, scope)
+		if err != nil {
+			fmt.Println("Error in executing main.sh , aborting addon removal.")
+			return err, addonName
+		}
 	}
 	deleteMainYml(addonName)
 	fmt.Println(strings.Replace(addonName, "tk8-addon-", "", 1), "destroy complete")
