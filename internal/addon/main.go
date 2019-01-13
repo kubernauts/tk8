@@ -19,14 +19,23 @@ func (a *Addon) Create(addonName string) (error, string) {
 	return nil, addonName
 }
 
-func (a *Addon) Destroy(addonNameOrGitPath string) (error, string) {
+func (a *Addon) Destroy(addonNameOrGitPath, scope string) (error, string) {
 	_, addonName := a.Get(addonNameOrGitPath)
 	fmt.Println("Destroying", strings.Replace(addonName, "tk8-addon-", "", 1))
-	executeMainSh(addonName)
-	deleteMainYml(addonName, "yml")
-	deleteMainYml(addonName, "yaml")
+	err := executeDestroySh(addonName, scope)
+	if err != nil && !os.IsNotExist(err) {
+		fmt.Println("Error in executing destroy.sh , aborting addon removal.")
+		return err, addonName
+	}
+	if os.IsNotExist(err) {
+		err = executeMainSh(addonName, scope)
+		if err != nil {
+			fmt.Println("Error in executing main.sh , aborting addon removal.")
+			return err, addonName
+		}
+	}
+	deleteMainYml(addonName)
 	fmt.Println(strings.Replace(addonName, "tk8-addon-", "", 1), "destroy complete")
-
 	return nil, addonName
 }
 
@@ -46,60 +55,89 @@ func (a *Addon) Get(addonNameOrGitPath string) (error, string) {
 		fmt.Println("check if provided a url")
 		if strings.Contains(addonNameOrGitPath, "http://") || strings.Contains(addonNameOrGitPath, "https://") {
 			fmt.Println("Load Addon from external path", addonNameOrGitPath)
-			common.CloneGit("./addons", addonNameOrGitPath, addonName)
-			return nil, addonName
+			err := common.CloneGit("./addons", addonNameOrGitPath, addonName)
+			return err, extractAddonName(addonName)
 		}
 
 		fmt.Println("Search addon on kubernauts space.")
-		common.CloneGit("./addons", "https://github.com/kubernauts/tk8-addon-"+addonName, addonName)
-		return nil, "tk8-addon-" + addonName
+		err := common.CloneGit("./addons", "https://github.com/kubernauts/tk8-addon-"+addonName, addonName)
+		return err, addonName
 
 	}
-	return nil, "tk8-addon-" + addonName
+	return nil, addonName
 
 }
 
-func (a *Addon) Install(addonNameOrGitPath string) {
+func (a *Addon) Install(addonNameOrGitPath string, scope string) {
 	_, addonName := a.Get(addonNameOrGitPath)
-	fmt.Println("Install", strings.Replace(addonName, "tk8-addon-", "", 1), addonName)
-
-	executeMainSh(addonName)
-	applyMainYml(addonName, "yml")
-	applyMainYml(addonName, "yaml")
-	fmt.Println(addonName, "installation complete")
-
+	fmt.Println("Install", addonName)
+	err := executeMainSh(addonName, scope)
+	if err != nil {
+		fmt.Println("Error in executing main.sh , aborting addon installation.")
+		return
+	}
+	err = applyMainYml(addonName)
+	if err == nil {
+		fmt.Println(addonName, "installation complete")
+	} else {
+		fmt.Println(err)
+	}
 }
 
 // KubeConfig provide the path to the local kube config
 var KubeConfig string
 
-func applyMainYml(addonName string, fileType string) {
+func applyMainYml(addonName string) error {
 
 	var cEx *exec.Cmd
-	_, err := os.Stat("./addons/" + addonName + "/main." + fileType)
+	fileName := "main.yml"
+	if _, err := os.Stat("./addons/" + addonName + "/" + fileName); err != nil {
+		fileName = "main.yaml"
+	}
+	_, err := os.Stat("./addons/" + addonName + "/" + fileName)
 	if err == nil {
-		fmt.Println("apply main." + fileType)
+		fmt.Println("apply " + addonName + "/" + fileName)
 		if len(KubeConfig) > 1 {
-			cEx = exec.Command("kubectl", "--kubeconfig", KubeConfig, "apply", "-f", "main."+fileType)
+			cEx = exec.Command("kubectl", "--kubeconfig", KubeConfig, "apply", "-f", fileName)
 		} else {
-			cEx = exec.Command("kubectl", "apply", "-f", "main."+fileType)
+			cEx = exec.Command("kubectl", "apply", "-f", fileName)
 		}
 		cEx.Dir = "./addons/" + addonName
 		printTerminalLog(cEx)
 		cEx.Wait()
-		return
+		return nil
 	}
+	return err
 }
 
-func executeMainSh(addonName string) {
+func executeMainSh(addonName, scope string) error {
 	if _, err := os.Stat("./addons/" + addonName + "/main.sh"); err == nil {
 		fmt.Println("execute main.sh")
-		cEx := exec.Command("/bin/sh", "./main.sh")
+		cEx := exec.Command("/bin/sh", "./main.sh", scope)
 		cEx.Dir = "./addons/" + addonName
 		printTerminalLog(cEx)
-		cEx.Wait()
-		return
+		err = cEx.Wait()
+		if err != nil {
+			return err
+		}
 	}
+	return nil
+}
+
+func executeDestroySh(addonName, scope string) error {
+	_, err := os.Stat("./addons/" + addonName + "/destroy.sh")
+	if err != nil {
+		return err
+	}
+	fmt.Println("execute destroy.sh")
+	cEx := exec.Command("/bin/sh", "./destroy.sh", scope)
+	cEx.Dir = "./addons/" + addonName
+	printTerminalLog(cEx)
+	err = cEx.Wait()
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func printTerminalLog(cEx *exec.Cmd) {
@@ -137,15 +175,19 @@ func cloneExample(addonName string) {
 	common.CloneGit("./addons", "https://github.com/kubernauts/tk8-addon-develop", addonName)
 }
 
-func deleteMainYml(addonName string, fileType string) {
+func deleteMainYml(addonName string) {
 
 	var cEx *exec.Cmd
-	if _, err := os.Stat("./addons/" + addonName + "/main." + fileType); err == nil {
+	fileName := "main.yml"
+	if _, err := os.Stat("./addons/" + addonName + "/" + fileName); err != nil {
+		fileName = "main.yaml"
+	}
+	if _, err := os.Stat("./addons/" + addonName + "/" + fileName); err == nil {
 		fmt.Println("delete", strings.Replace(addonName, "tk8-addon-", "", 1), "from cluster")
 		if len(KubeConfig) > 1 {
-			cEx = exec.Command("kubectl", "--kubeconfig="+KubeConfig, "delete", "-f", "main."+fileType)
+			cEx = exec.Command("kubectl", "--kubeconfig="+KubeConfig, "delete", "-f", fileName)
 		} else {
-			cEx = exec.Command("kubectl", "delete", "-f", "main."+fileType)
+			cEx = exec.Command("kubectl", "delete", "-f", fileName)
 		}
 		cEx.Dir = "./addons/" + addonName
 		printTerminalLog(cEx)
