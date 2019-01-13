@@ -19,13 +19,23 @@ func (a *Addon) Create(addonName string) (error, string) {
 	return nil, addonName
 }
 
-func (a *Addon) Destroy(addonNameOrGitPath string) (error, string) {
+func (a *Addon) Destroy(addonNameOrGitPath, scope string) (error, string) {
 	_, addonName := a.Get(addonNameOrGitPath)
 	fmt.Println("Destroying", strings.Replace(addonName, "tk8-addon-", "", 1))
-	executeMainSh(addonName)
+	err := executeDestroySh(addonName, scope)
+	if err != nil && !os.IsNotExist(err) {
+		fmt.Println("Error in executing destroy.sh , aborting addon removal.")
+		return err, addonName
+	}
+	if os.IsNotExist(err) {
+		err = executeMainSh(addonName, scope)
+		if err != nil {
+			fmt.Println("Error in executing main.sh , aborting addon removal.")
+			return err, addonName
+		}
+	}
 	deleteMainYml(addonName)
 	fmt.Println(strings.Replace(addonName, "tk8-addon-", "", 1), "destroy complete")
-
 	return nil, addonName
 }
 
@@ -58,17 +68,20 @@ func (a *Addon) Get(addonNameOrGitPath string) (error, string) {
 
 }
 
-func (a *Addon) Install(addonNameOrGitPath string) {
+func (a *Addon) Install(addonNameOrGitPath string, scope string) {
 	_, addonName := a.Get(addonNameOrGitPath)
 	fmt.Println("Install", addonName)
-	executeMainSh(addonName)
-	err := applyMainYml(addonName)
+	err := executeMainSh(addonName, scope)
+	if err != nil {
+		fmt.Println("Error in executing main.sh , aborting addon installation.")
+		return
+	}
+	err = applyMainYml(addonName)
 	if err == nil {
 		fmt.Println(addonName, "installation complete")
 	} else {
 		fmt.Println(err)
 	}
-
 }
 
 // KubeConfig provide the path to the local kube config
@@ -97,15 +110,34 @@ func applyMainYml(addonName string) error {
 	return err
 }
 
-func executeMainSh(addonName string) {
+func executeMainSh(addonName, scope string) error {
 	if _, err := os.Stat("./addons/" + addonName + "/main.sh"); err == nil {
 		fmt.Println("execute main.sh")
-		cEx := exec.Command("/bin/sh", "./main.sh")
+		cEx := exec.Command("/bin/sh", "./main.sh", scope)
 		cEx.Dir = "./addons/" + addonName
 		printTerminalLog(cEx)
-		cEx.Wait()
-		return
+		err = cEx.Wait()
+		if err != nil {
+			return err
+		}
 	}
+	return nil
+}
+
+func executeDestroySh(addonName, scope string) error {
+	_, err := os.Stat("./addons/" + addonName + "/destroy.sh")
+	if err != nil {
+		return err
+	}
+	fmt.Println("execute destroy.sh")
+	cEx := exec.Command("/bin/sh", "./destroy.sh", scope)
+	cEx.Dir = "./addons/" + addonName
+	printTerminalLog(cEx)
+	err = cEx.Wait()
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func printTerminalLog(cEx *exec.Cmd) {
@@ -146,9 +178,9 @@ func cloneExample(addonName string) {
 func deleteMainYml(addonName string) {
 
 	var cEx *exec.Cmd
-	fileName := addonName + ".yml"
+	fileName := "main.yml"
 	if _, err := os.Stat("./addons/" + addonName + "/" + fileName); err != nil {
-		fileName = addonName + ".yaml"
+		fileName = "main.yaml"
 	}
 	if _, err := os.Stat("./addons/" + addonName + "/" + fileName); err == nil {
 		fmt.Println("delete", strings.Replace(addonName, "tk8-addon-", "", 1), "from cluster")

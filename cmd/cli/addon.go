@@ -25,6 +25,7 @@ import (
 )
 
 var Addon addon.Addon
+var scope string
 
 // addonCmd represents the addon command
 var addonCmd = &cobra.Command{
@@ -51,7 +52,7 @@ var addonInstallCmd = &cobra.Command{
 			cmd.Help()
 			os.Exit(1)
 		}
-		Addon.Install(args[0])
+		Addon.Install(args[0], scope)
 	},
 }
 
@@ -66,7 +67,7 @@ var addonDestroyCmd = &cobra.Command{
 			cmd.Help()
 			os.Exit(1)
 		}
-		Addon.Destroy(args[0])
+		Addon.Destroy(args[0], scope)
 	},
 }
 
@@ -144,4 +145,7 @@ func init() {
 	addonCmd.AddCommand(addonDestroyCmd)
 
 	addonCmd.PersistentFlags().StringVar(&addon.KubeConfig, "kubeconfig", "", "kubeconfig path")
+	addonInstallCmd.Flags().StringVarP(&scope, "scope", "s", "", "Namespace scope in which the addon is installed")
+	addonDestroyCmd.Flags().StringVarP(&scope, "scope", "s", "", "Namespace scope in which the installed addon is to be destroyed")
+
 }
