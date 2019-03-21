@@ -14,7 +14,9 @@
 
 package main
 
-import "github.com/kubernauts/tk8/cmd/cli"
+import (
+	cmd "github.com/kubernauts/tk8/cmd/cli"
+)
 
 func main() {
 	cmd.Execute()
