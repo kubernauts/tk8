@@ -65,9 +65,29 @@ If you no longer need the cluster, you can use the command:
 `tk8 cluster destroy aws`
 to automatically remove all of the resources.
 
+## Add-Ons
+
+You might want to check out our numerous add-ons for TK8: 
+
+- [Jenkins](https://github.com/kubernauts/tk8-addon-jenkins)
+- [Rancher](https://github.com/kubernauts/tk8-addon-rancher)
+- [SonarQube](https://github.com/kubernauts/tk8-addon-sonarqube)
+- [GoCD](https://github.com/kubernauts/tk8-addon-gocd)
+- [Elasticsearch-Fluentd-Kibana](https://github.com/kubernauts/tk8-addon-efk)
+- [Pumba](https://github.com/kubernauts/tk8-addon-pumba)
+- [Heptio Contour](https://github.com/kubernauts/tk8-addon-contour)
+- [Traefik](https://github.com/kubernauts/tk8-addon-traefik)
+- [Argo CD](https://github.com/kubernauts/tk8-addon-argocd)
+- [Ambassador](https://github.com/kubernauts/tk8-addon-ambassador)
+- [CoreOS-Kube-Prometheus Stack](https://github.com/kubernauts/tk8-addon-kube-prometheus)
+- [Velero Minio](https://github.com/kubernauts/tk8-addon-velero-minio)
+- [CoreOS Vault operator](https://github.com/kubernauts/tk8-addon-vault-operator)
+
+Stay tuned as there is more to come from our lovely community and ourselfs! You can also develop your own add-ons, just check the passage below
+
 ## Contributing
 
-For provisioning the add-ons we have a separate [documentation](docs/en/add-on/introduction.md) and examples how you can build your extensions and integrate them into the TK8 project. You can also reach us at Slack.
+For provisioning the add-ons we have a separate [documentation](docs/en/add-on/introduction.md) and [examples](https://github.com/kubernauts/tk8-addon-develop) how you can build your extensions and integrate them into the TK8 project. You can also reach us at Slack.
 
 For a platform provider we have a separate [documentation](docs/en/add-on/development.md) which is only about integrating a platform in TK8. Here you will find detailed instructions and examples on how TK8 will execute your integration or you can also reach us in slack.
 
