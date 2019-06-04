@@ -1,4 +1,5 @@
 cattle-aws:
+   root_disk_size: 20
    iam_instance_profile_name:
    rancher_cluster_name: "cattle-aws-cluster"
    rancher_api_url: "https://rancher.xyz.com/v3"

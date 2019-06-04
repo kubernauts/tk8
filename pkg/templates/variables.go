@@ -233,10 +233,16 @@ variable "default_tags" {
 }
 `
 var VariablesCattleAWS = `
+variable "root_disk_size" {
+  default     = "{{.RootDiskSize}}"
+  description = "Root disk size for instances in GB"
+  type        = "string"
+}
+
 variable "iam_instance_profile_name_worker" {
-  default = "{{.IAMInstanceProfileWorker}}"
+  default     = "{{.IAMInstanceProfileWorker}}"
   description = "IAM instance profile name for worker"
-  type = "string"
+  type        = "string"
 }
 
 variable "iam_instance_profile_name" {

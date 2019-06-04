@@ -1,4 +1,5 @@
 cattle-aws:
+   root_disk_size: 20
    iam_instance_profile_name: "rancher-controlplane-role"
    iam_instance_profile_worker: # specify if overlap_cp_etcd_worker is false and existing_vpc is true
    rancher_cluster_name: "cattle-aws-cluster"
