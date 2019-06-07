@@ -1,0 +1,27 @@
+cattle-aws:
+   root_disk_size: 20
+   iam_instance_profile_name:
+   rancher_cluster_name: "cattle-aws-cluster"
+   rancher_api_url: "https://rancher.xyz.com/v3"
+   rancher_access_key:
+   rancher_secret_key:
+   rke_network_plugin: "canal"
+   region: "eu-central-1"
+   existing_vpc: "false"
+   vpc_id:
+   subnet_id:
+   security_group_name:
+   os: "ubuntu"
+   instance_type: "t2.medium"
+   aws_secret_access_key:
+   aws_default_region: "eu-central-1"
+   overlap_cp_etcd_worker: "false"
+   overlap_node_pool:
+      hostname_prefix:
+      quantity:
+   master_node_pool:
+      hostname_prefix: "cattle-aws-master"
+      quantity: 1
+   worker_node_pool:
+      hostname_prefix: "cattle-aws-worker"
+      quantity: 1

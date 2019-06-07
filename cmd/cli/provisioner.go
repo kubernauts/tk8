@@ -22,6 +22,7 @@ import (
 	aws "github.com/kubernauts/tk8-provisioner-aws"
 	azure "github.com/kubernauts/tk8-provisioner-azure"
 	baremetal "github.com/kubernauts/tk8-provisioner-baremetal"
+	cattleaws "github.com/kubernauts/tk8-provisioner-cattle-aws"
 	eks "github.com/kubernauts/tk8-provisioner-eks"
 	nutanix "github.com/kubernauts/tk8-provisioner-nutanix"
 	openstack "github.com/kubernauts/tk8-provisioner-openstack"
@@ -34,13 +35,14 @@ import (
 
 var name string
 var provisioners = map[string]provisioner.Provisioner{
-	"aws":       aws.NewAWS(),
-	"azure":     azure.NewAzure(),
-	"baremetal": baremetal.NewBaremetal(),
-	"eks":       eks.NewEKS(),
-	"nutanix":   nutanix.NewNutanix(),
-	"openstack": openstack.NewOpenstack(),
-	"rke":       rke.NewRKE(),
+	"aws":        aws.NewAWS(),
+	"azure":      azure.NewAzure(),
+	"baremetal":  baremetal.NewBaremetal(),
+	"cattle-aws": cattleaws.NewCattleAWS(),
+	"eks":        eks.NewEKS(),
+	"nutanix":    nutanix.NewNutanix(),
+	"openstack":  openstack.NewOpenstack(),
+	"rke":        rke.NewRKE(),
 }
 
 var provisionerInstallCmd = &cobra.Command{
