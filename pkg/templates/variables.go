@@ -233,6 +233,18 @@ variable "default_tags" {
 }
 `
 var VariablesCattleAWS = `
+variable "request_spot_instances" {
+  default     = "{{.RequestSpotInstances}}"
+  description = "Request spot instances for the node template"
+  type        = "string"
+}
+
+variable "spot_price" {
+  default     = "{{.SpotPrice}}"
+  description = "Spot instances price for the node template"
+  type        = "string"
+}
+
 variable "root_disk_size" {
   default     = "{{.RootDiskSize}}"
   description = "Root disk size for instances in GB"
