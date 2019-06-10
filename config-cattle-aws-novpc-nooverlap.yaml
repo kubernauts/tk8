@@ -1,4 +1,6 @@
 cattle-aws:
+   request_spot_instances: # boolean value - set it as true/fase/empty
+   spot_price: # spot instance pricing. Ex. "0.75" 
    root_disk_size: 20
    iam_instance_profile_name:
    rancher_cluster_name: "cattle-aws-cluster"
