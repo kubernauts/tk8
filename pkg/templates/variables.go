@@ -233,6 +233,24 @@ variable "default_tags" {
 }
 `
 var VariablesCattleAWS = `
+variable "cloudwatch_monitoring" {
+  default     = "{{.CloudwatchMonitoring}}"
+  description = "Enable/Disable cloudwatch monitoring"
+  type        = "string"
+}
+
+variable "ami_id" {
+  default     = "{{.AmiID}}"
+  description = "AMI ID for instances"
+  type        = "string"
+}
+
+variable "controlplane_instance_type" {
+  default     = "{{.ControlPlaneInstanceType}}"
+  description = "Control plane instance type"
+  type        = "string"
+}
+
 variable "request_spot_instances" {
   default     = "{{.RequestSpotInstances}}"
   description = "Request spot instances for the node template"
@@ -325,8 +343,8 @@ variable "os" {
   type        = "string"
 }
 
-variable "instance_type" {
-  default     = "{{.InstanceType}}"
+variable "worker_instance_type" {
+  default     = "{{.WorkerInstanceType}}"
   description = "Instance type"
   type        = "string"
 }
