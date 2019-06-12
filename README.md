@@ -69,8 +69,6 @@ to automatically remove all of the resources.
 
 You might want to check out our numerous add-ons for TK8: 
 
-- [Jenkins](https://github.com/kubernauts/tk8-addon-jenkins)
-- [Rancher](https://github.com/kubernauts/tk8-addon-rancher)
 - [SonarQube](https://github.com/kubernauts/tk8-addon-sonarqube)
 - [GoCD](https://github.com/kubernauts/tk8-addon-gocd)
 - [Elasticsearch-Fluentd-Kibana](https://github.com/kubernauts/tk8-addon-efk)
@@ -82,6 +80,10 @@ You might want to check out our numerous add-ons for TK8:
 - [CoreOS-Kube-Prometheus Stack](https://github.com/kubernauts/tk8-addon-kube-prometheus)
 - [Velero Minio](https://github.com/kubernauts/tk8-addon-velero-minio)
 - [CoreOS Vault operator](https://github.com/kubernauts/tk8-addon-vault-operator)
+- [Jenkins](https://github.com/kubernauts/tk8-addon-jenkins)
+- [Rancher](https://github.com/kubernauts/tk8-addon-rancher)
+
+(Please note, that the ReadMe's for the bottom three (Vault Operator, Jenkins, Rancher) are not ready yet. We will provide them shortly so you can explore these addons too!)
 
 Stay tuned as there is more to come from our lovely community and ourselfs! You can also develop your own add-ons, just check the passage below
 
