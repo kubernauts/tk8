@@ -1,6 +1,10 @@
 cattle-aws:
+   request_spot_instances: false
+   spot_price: # spot instance pricing. Ex. "0.75"
+   cloudwatch_monitoring: false
    root_disk_size: 20
    iam_instance_profile_name:
+   iam_instance_profile_worker: # specify if overlap_cp_etcd_worker is false and existing_vpc is true
    rancher_cluster_name: "cattle-aws-cluster"
    rancher_api_url: "https://rancher.xyz.com/v3"
    rancher_access_key:
@@ -11,10 +15,13 @@ cattle-aws:
    vpc_id:
    subnet_id:
    security_group_name:
-   os: "ubuntu"
    instance_type: "t2.medium"
    aws_secret_access_key:
    aws_default_region: "eu-central-1"
+   ami_id: "test123" # specify if you know the specific AMI ID. If used, keep below os field empty (not that setting it would impact).
+   os: "" # specify the OS. Supported values: ubuntu, centos, coreos. Keep above field empty if this is being used.
+   controlplane_instance_type: "t2.medium"
+   worker_instance_type: "t2.large"
    overlap_cp_etcd_worker: "false"
    overlap_node_pool:
       hostname_prefix:
