@@ -233,8 +233,6 @@ variable "default_tags" {
 }
 `
 var VariablesCattleAWS = `
-<<<<<<< HEAD
-=======
 variable "cloudwatch_monitoring" {
   default     = "{{.CloudwatchMonitoring}}"
   description = "Enable/Disable cloudwatch monitoring"
@@ -265,7 +263,6 @@ variable "spot_price" {
   type        = "string"
 }
 
->>>>>>> develop
 variable "root_disk_size" {
   default     = "{{.RootDiskSize}}"
   description = "Root disk size for instances in GB"
@@ -346,13 +343,9 @@ variable "os" {
   type        = "string"
 }
 
-<<<<<<< HEAD
-variable "instance_type" {
-  default     = "{{.InstanceType}}"
-=======
+
 variable "worker_instance_type" {
   default     = "{{.WorkerInstanceType}}"
->>>>>>> develop
   description = "Instance type"
   type        = "string"
 }
