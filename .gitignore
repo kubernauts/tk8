@@ -39,3 +39,4 @@ coverage.xml
 
 # dont include vendor directory
 /vendor/*
+/otpt/*
