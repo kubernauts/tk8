@@ -25,7 +25,7 @@ If name resolution fails, the installation will fail along the way.
 
 ## Reference Architecture
 
-![openshift-openstack-arch](images/openshift-openstack-arch.jpg)
+![openshift-openstack-arch](/docs/images/openshift-openstack-arch.jpg)
 
 **N.B**: The number of actual virtual machines will be different based on the final design architecture, the above is given as an example.
 
@@ -91,23 +91,23 @@ terraform apply -var-file=cluster.tfvars
 
 Successful output should be similar to below snapshot:
 
-![output](images/openshift-output-snapsnot.png)
+![output](/docs/images/openshift-output-snapsnot.png)
 
-![instances](images/openshift-instances.png)
+![instances](/docs/images/openshift-instances.png)
 
-![loadbalancer](images/openshift-loadbalancer.png)
+![loadbalancer](/docs/images/openshift-loadbalancer.png)
 
 7; Ensure you are able to resolve the all the node hostnames to their respective private IPs, the DNS solution is dependent on your specific environment.
 
-![dns](images/openshift-dns.png)
+![dns](/docs/images/openshift-dns.png)
 
 On your DNS configure the master FQDN to resolve to the public IP of the master LB. Sample resolution is given below:
 
-![masterfqdn](images/openshift-masterFQDN.png)
+![masterfqdn](/docs/images/openshift-masterFQDN.png)
 
 Also configure application URL endpoint FQDN to resolve to the public IP of the infrastructure node LB. Sample resolution is given below:
 
-![appurl](images/openshift-appURL.png)
+![appurl](/docs/images/openshift-appURL.png)
 
 ## Openshift Origin Installation
 
@@ -199,13 +199,13 @@ ansible-playbook -i /openshift-ansible/inventory/hosts.ini ./openshift-ansible/p
 
 If everything goes on fine, you should an output like the one below:
 
-![output](images/openshift-ansibleOutput.png)
+![output](/docs/images/openshift-ansibleOutput.png)
 
 ## Post-Installation
 
 1; Check the status of the Openshift cluster:
 
-![status](images/openshift-clusterstatus.png)
+![status](/docs/images/openshift-clusterstatus.png)
 
 2; Generate admin username/password \(this will be done on the master node\) that will be used to access the webpage:
 

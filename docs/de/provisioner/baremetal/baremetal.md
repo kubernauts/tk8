@@ -24,7 +24,7 @@ The following softwares are needed to have a successful deployment, these must b
 
 ## Sample Reference Architecture
 
-![baremetal-arch](images/baremetal-arch.png)
+![baremetal-arch](/docs/images/baremetal-arch.png)
 
 Description for some of the appliances is below:
 
