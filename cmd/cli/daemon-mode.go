@@ -15,9 +15,11 @@
 package cmd
 
 import (
+	"log"
 	"os"
 
 	"github.com/kubernauts/tk8/api/server"
+	"github.com/kubernauts/tk8/pkg/common"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
@@ -33,15 +35,49 @@ var daemonCmd = &cobra.Command{
 		}
 
 		// Start the REST server as well as cli
-		if err := server.StartTK8API("dummy", 8091); err != nil {
+		if err := server.StartTK8API("tk8", common.REST_API_PORT); err != nil {
 			logrus.Printf("Unable to start cluster API server: %v", err)
 		}
 
 		// daemon does not exit
 		select {}
 	},
+	PreRun: func(cmd *cobra.Command, args []string) {
+
+		if common.REST_API_PORT <= 0 {
+			log.Fatal("Port number cannot be zero")
+		}
+		switch common.REST_API_STORAGE {
+		case "local":
+			isExists := checkStoragePath(common.REST_API_STORAGEPATH)
+			if !isExists {
+				log.Fatalf("Storage path [ %s ] either doesnt exist or there is an error", common.REST_API_STORAGEPATH)
+			}
+		case "s3":
+		default:
+			log.Fatal("storage flag accepts local or s3 as valid values")
+		}
+	},
 }
 
 func init() {
+	daemonCmd.Flags().Uint16VarP(&common.REST_API_PORT, "port", "p", 8091, "Port number for the Tk8 rest api")
+	daemonCmd.Flags().StringVarP(&common.REST_API_STORAGE, "config-store", "s", "local", "Storage for config files - local or s3")
+	daemonCmd.Flags().StringVarP(&common.REST_API_STORAGEPATH, "confif-store path", "a", ".", "Storage location for config files - directory path for local , bucket name for s3")
+
 	rootCmd.AddCommand(daemonCmd)
+}
+
+func checkStoragePath(path string) bool {
+	exists := true
+	src, err := os.Stat(path)
+	if os.IsNotExist(err) {
+		exists = false
+	}
+	if os.IsExist(err) {
+		if src.Mode().IsDir() {
+			exists = true
+		}
+	}
+	return exists
 }

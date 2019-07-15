@@ -232,3 +232,174 @@ variable "default_tags" {
   type = "map"
 }
 `
+var VariablesCattleAWS = `
+variable "cloudwatch_monitoring" {
+  default     = "{{.CloudwatchMonitoring}}"
+  description = "Enable/Disable cloudwatch monitoring"
+  type        = "string"
+}
+
+variable "ami_id" {
+  default     = "{{.AmiID}}"
+  description = "AMI ID for instances"
+  type        = "string"
+}
+
+variable "controlplane_instance_type" {
+  default     = "{{.ControlPlaneInstanceType}}"
+  description = "Control plane instance type"
+  type        = "string"
+}
+
+variable "request_spot_instances" {
+  default     = "{{.RequestSpotInstances}}"
+  description = "Request spot instances for the node template"
+  type        = "string"
+}
+
+variable "spot_price" {
+  default     = "{{.SpotPrice}}"
+  description = "Spot instances price for the node template"
+  type        = "string"
+}
+
+variable "root_disk_size" {
+  default     = "{{.RootDiskSize}}"
+  description = "Root disk size for instances in GB"
+  type        = "string"
+}
+
+variable "iam_instance_profile_name_worker" {
+  default     = "{{.IAMInstanceProfileWorker}}"
+  description = "IAM instance profile name for worker"
+  type        = "string"
+}
+
+variable "iam_instance_profile_name" {
+  default     = "{{.IAMInstanceProfile}}"
+  description = "IAM instance profile name"
+  type        = "string"
+}
+
+variable "rancher_api_url" {
+  default     = "{{.RancherAPIURL}}"
+  description = "Rancher API URL"
+  type        = "string"
+}
+
+variable "rancher_access_key" {
+  description = "Rancher server's access key"
+}
+
+variable "rancher_secret_key" {
+  description = "Rancher server's secret key"
+}
+
+variable "rancher_cluster_name" {
+  default     = "{{.RancherClusterName}}"
+  description = "Rancher cluster name"
+  type        = "string"
+}
+
+variable "rke_network_plugin" {
+  default     = "{{.RKENetworkPlugin}}"
+  description = "Network plugin for cluster"
+  type        = "string"
+}
+
+variable "region" {
+  default     = "{{.Region}}"
+  description = "AWS region"
+  type        = "string"
+}
+
+variable "existing_vpc" {
+  default     = {{.ExistingVPC}}
+  description = "Use existing VPC for creating clusters"
+  type        = "string"
+}
+
+variable "vpc_id" {
+  default     = "{{.VPCID}}"
+  description = "VPC ID"
+  type        = "string"
+}
+
+variable "subnet_id" {
+  default     = "{{.SubnetID}}"
+  description = "subnet id"
+  type        = "string"
+}
+
+variable "security_group_name" {
+  default     = "{{.SecurityGroupName}}"
+  description = "security group id"
+  type        = "string"
+}
+
+variable "os" {
+  default     = "{{.OS}}"
+  description = "ami id - frankfurt"
+  type        = "string"
+}
+
+variable "worker_instance_type" {
+  default     = "{{.WorkerInstanceType}}"
+  description = "Instance type"
+  type        = "string"
+}
+
+variable "overlap_cp_etcd_worker" {
+  default     = {{.OverlapCpEtcdWorker}}
+  description = "Overlapping planes for node template"
+  type        = "string"
+}
+
+variable "overlap_node_pool_hostname_prefix" {
+  default     = "{{.OverlapHostnamePrefix}}"
+  description = "Hostname prefix for overlapped node pools"
+  type        = "string"
+}
+
+variable "no_overlap_nodepool_master_hostname_prefix" {
+  default     = "{{.MasterHostnamePrefix}}"
+  description = "Hostname prefix for master node pool"
+  type        = "string"
+}
+
+variable "no_overlap_nodepool_worker_hostname_prefix" {
+  default     = "{{.WorkerHostnamePrefix}}"
+  description = "Hostname prefix for worker node pool"
+  type        = "string"
+}
+
+variable "no_overlap_nodepool_master_quantity" {
+  default     = "{{.MasterQuantity}}"
+  description = "Node pool master quantity for non-overlapped planes"
+  type        = "string"
+}
+
+variable "no_overlap_nodepool_worker_quantity" {
+  default     = "{{.WorkerQuantity}}"
+  description = "Node pool worker quantity for non-overlapped planes"
+  type        = "string"
+}
+
+variable "overlap_node_pool_quantity" {
+  default     = "{{.OverlapQuantity}}"
+  description = "Node pool quantity for overlap planes"
+  type        = "string"
+}
+
+variable "AWS_ACCESS_KEY_ID" {
+  description = "AWS access key"
+}
+
+variable "AWS_SECRET_ACCESS_KEY" {
+  description = "AWS secret key"
+}
+
+variable "AWS_DEFAULT_REGION" {
+  description = "AWS default region"
+}
+`

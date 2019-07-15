@@ -44,30 +44,11 @@ func startServer(name string, sockBase string, port uint16, rs restServer) (*htt
 }
 
 func startServerCommon(name string, sockBase string, port uint16, rs restServer, router *mux.Router) (*http.Server, *http.Server, error) {
-	// var (
-	// 	listener net.Listener
-	// 	err      error
-	// )
-	// socket := path.Join(sockBase, name+".sock")
-	// os.Remove(socket)
-	// os.MkdirAll(path.Dir(socket), 0755)
 
-	// logrus.Printf("Starting REST service on socket : %+v", socket)
-	// listener, err = net.Listen("unix", socket)
-	// if err != nil {
-	// 	logrus.Warnln("Cannot listen on UNIX socket: ", err)
-	// 	return nil, nil, err
-	// }
-	// unixServer := &http.Server{Handler: router}
-	// go unixServer.Serve(listener)
-
-	//if port != 0 {
 	logrus.Printf("Starting REST service on port : %v", port)
 	portServer := &http.Server{Addr: fmt.Sprintf(":%d", port), Handler: router}
 	go portServer.ListenAndServe()
 	return nil, portServer, nil
-	//	}
-	//return unixServer, nil, nil
 }
 
 func (rest *restBase) logRequest(request string, id string) *logrus.Entry {
