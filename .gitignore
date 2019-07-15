@@ -36,3 +36,7 @@ config.yaml
 .scannerwork
 report.xml
 coverage.xml
+
+# dont include vendor directory
+/vendor/*
+/otpt/*

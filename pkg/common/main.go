@@ -21,6 +21,10 @@ var (
 	GITCOMMIT = "0"
 	// VERSION will hold the version number to be used in the version command.
 	VERSION = "dev"
+
+	REST_API_PORT        uint16
+	REST_API_STORAGE     string
+	REST_API_STORAGEPATH string
 )
 
 // ErrorCheck is responsbile to check if there is any error returned by a command.
