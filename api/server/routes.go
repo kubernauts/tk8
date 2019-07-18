@@ -14,7 +14,9 @@ type Route struct {
 func (c *tk8Api) Routes() []*Route {
 	return []*Route{
 		{verb: "GET", path: clusterPath("", APIVersion), fn: c.getClusters},
-		{verb: "GET", path: clusterPath("/{id}", APIVersion), fn: c.getCluster},
+		{verb: "GET", path: clusterPath("/aws/{id}", APIVersion), fn: c.getAWSClusterHandler},
+		{verb: "GET", path: clusterPath("/rke/{id}", APIVersion), fn: c.getRKEClusterHandler},
+		{verb: "GET", path: clusterPath("/eks/{id}", APIVersion), fn: c.getEKSlusterHandler},
 		{verb: "DELETE", path: clusterPath("/aws/{id}", APIVersion), fn: c.destroyAWSClusterHandler},
 		{verb: "DELETE", path: clusterPath("/eks/{id}", APIVersion), fn: c.destroyEKSClusterHandler},
 		{verb: "DELETE", path: clusterPath("/rke/{id}", APIVersion), fn: c.destroyRKEClusterHandler},

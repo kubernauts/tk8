@@ -188,9 +188,68 @@ func (c *tk8Api) getCluster(w http.ResponseWriter, r *http.Request) {
 		c.sendError(c.name, method, w, "Missing id param", http.StatusBadRequest)
 		return
 	}
-
 	// now that you have the name of the cluster that you want to get
 	// checkout
+}
+
+func (c *tk8Api) getAWSClusterHandler(w http.ResponseWriter, r *http.Request) {
+	method := "getAWSClusterHandler"
+	vars := mux.Vars(r)
+	clusterName, ok := vars["id"]
+
+	if !ok || clusterName == "" {
+		c.sendError(c.name, method, w, "Missing id param", http.StatusBadRequest)
+		return
+	}
+
+	// check if cluster exists
+	aws, err := decodeAwsClusterConfigToStruct(clusterName)
+	if err != nil {
+		c.sendError(c.name, method, w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	json.NewEncoder(w).Encode(aws)
+}
+
+func (c *tk8Api) getEKSlusterHandler(w http.ResponseWriter, r *http.Request) {
+	method := "getEKSClusterHandler"
+	vars := mux.Vars(r)
+	clusterName, ok := vars["id"]
+
+	if !ok || clusterName == "" {
+		c.sendError(c.name, method, w, "Missing id param", http.StatusBadRequest)
+		return
+	}
+
+	// check if cluster exists
+	eks, err := decodeEksClusterConfigToStruct(clusterName)
+	if err != nil {
+		c.sendError(c.name, method, w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	json.NewEncoder(w).Encode(eks)
+}
+
+func (c *tk8Api) getRKEClusterHandler(w http.ResponseWriter, r *http.Request) {
+	method := "getRKEClusterHandler"
+	vars := mux.Vars(r)
+	clusterName, ok := vars["id"]
+
+	if !ok || clusterName == "" {
+		c.sendError(c.name, method, w, "Missing id param", http.StatusBadRequest)
+		return
+	}
+
+	// check if cluster exists
+	rke, err := decodeRkeClusterConfigToStruct(clusterName)
+	if err != nil {
+		c.sendError(c.name, method, w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	json.NewEncoder(w).Encode(rke)
 }
 
 func (c *tk8Api) destroyAWSClusterHandler(w http.ResponseWriter, r *http.Request) {
