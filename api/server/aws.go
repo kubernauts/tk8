@@ -2,12 +2,12 @@ package server
 
 import (
 	"fmt"
-	"log"
+	//"log"
 	"os"
 	"path/filepath"
 
 	"github.com/kubernauts/tk8/pkg/common"
-	"github.com/spf13/viper"
+	//"github.com/spf13/viper"
 )
 
 func (a *Aws) CreateCluster() error {
@@ -19,13 +19,15 @@ func (a *Aws) CreateCluster() error {
 		return err
 	}
 
-	// create AWS cluster config file
-	err = a.CreateConfig()
+	err = getProvisioner(provisioner)
 	if err != nil {
 		return err
 	}
 
-	err = getProvisioner(provisioner)
+	// create AWS cluster config file
+	configFileName := "aws-" + a.Clustername + ".yaml"
+	l := NewLocalStore(configFileName, common.REST_API_STORAGEPATH)
+	err = l.CreateConfig(a)
 	if err != nil {
 		return err
 	}
@@ -61,46 +63,59 @@ func (a *Aws) DestroyCluster() error {
 	return nil
 }
 
-func (a *Aws) CreateConfig() error {
-	viper.New()
-	viper.SetConfigType("yaml")
+// func (a *Aws) CreateConfig() error {
+// 	viper.New()
+// 	viper.SetConfigType("yaml")
 
-	configFileName := "aws-" + a.Clustername + ".yaml"
+// 	configFileName := "aws-" + a.Clustername + ".yaml"
 
-	viper.SetConfigFile(configFileName)
-	viper.AddConfigPath(common.REST_API_STORAGEPATH)
+// 	viper.SetConfigFile(configFileName)
+// 	viper.AddConfigPath(common.REST_API_STORAGEPATH)
 
-	viper.Set("aws.clustername", a.Clustername)
-	viper.Set("aws.os", a.Os)
-	viper.Set("aws.aws_access_key_id", a.AwsAccessKeyID)
-	viper.Set("aws.aws_secret_access_key", a.AwsSecretAccessKey)
-	viper.Set("aws.aws_ssh_keypair", a.AwsSSHKeypair)
-	viper.Set("aws.aws_default_region", a.AwsDefaultRegion)
-	viper.Set("aws.aws_vpc_cidr_block", a.AwsVpcCidrBlock)
-	viper.Set("aws.aws_cidr_subnets_private", a.AwsCidrSubnetsPrivate)
-	viper.Set("aws.aws_cidr_subnets_public", a.AwsCidrSubnetsPublic)
-	viper.Set("aws.aws_bastion_size", a.AwsBastionSize)
-	viper.Set("aws.aws_kube_master_num", a.AwsKubeMasterNum)
-	viper.Set("aws.aws_kube_master_size", a.AwsKubeMasterSize)
-	viper.Set("aws.aws_etcd_num", a.AwsEtcdNum)
-	viper.Set("aws.aws_etcd_size", a.AwsEtcdSize)
-	viper.Set("aws.aws_kube_worker_num", a.AwsKubeWorkerNum)
-	viper.Set("aws.aws_kube_worker_size", a.AwsKubeWorkerSize)
-	viper.Set("aws.aws_elb_api_port", a.AwsElbAPIPort)
-	viper.Set("aws.k8s_secure_api_port", a.K8SSecureAPIPort)
-	viper.Set("aws.kube_insecure_apiserver_address", a.KubeInsecureApiserverAddress)
-	viper.Set("aws.kubeadm_enabled", a.KubeadmEnabled)
-	viper.Set("aws.kube_network_plugin", a.KubeNetworkPlugin)
+// 	if common.REST_API_STORAGE == "s3" {
+// 		// Current directory for temporary creating files ...
+// 		// Delete the file created after upload to s3 is complete
+// 		viper.AddConfigPath(".")
+// 	}
+// 	viper.Set("aws.clustername", a.Clustername)
+// 	viper.Set("aws.os", a.Os)
+// 	viper.Set("aws.aws_access_key_id", a.AwsAccessKeyID)
+// 	viper.Set("aws.aws_secret_access_key", a.AwsSecretAccessKey)
+// 	viper.Set("aws.aws_ssh_keypair", a.AwsSSHKeypair)
+// 	viper.Set("aws.aws_default_region", a.AwsDefaultRegion)
+// 	viper.Set("aws.aws_vpc_cidr_block", a.AwsVpcCidrBlock)
+// 	viper.Set("aws.aws_cidr_subnets_private", a.AwsCidrSubnetsPrivate)
+// 	viper.Set("aws.aws_cidr_subnets_public", a.AwsCidrSubnetsPublic)
+// 	viper.Set("aws.aws_bastion_size", a.AwsBastionSize)
+// 	viper.Set("aws.aws_kube_master_num", a.AwsKubeMasterNum)
+// 	viper.Set("aws.aws_kube_master_size", a.AwsKubeMasterSize)
+// 	viper.Set("aws.aws_etcd_num", a.AwsEtcdNum)
+// 	viper.Set("aws.aws_etcd_size", a.AwsEtcdSize)
+// 	viper.Set("aws.aws_kube_worker_num", a.AwsKubeWorkerNum)
+// 	viper.Set("aws.aws_kube_worker_size", a.AwsKubeWorkerSize)
+// 	viper.Set("aws.aws_elb_api_port", a.AwsElbAPIPort)
+// 	viper.Set("aws.k8s_secure_api_port", a.K8SSecureAPIPort)
+// 	viper.Set("aws.kube_insecure_apiserver_address", a.KubeInsecureApiserverAddress)
+// 	viper.Set("aws.kubeadm_enabled", a.KubeadmEnabled)
+// 	viper.Set("aws.kube_network_plugin", a.KubeNetworkPlugin)
 
-	log.Println(viper.AllKeys())
-	log.Println(viper.AllSettings())
+// 	log.Println(viper.AllKeys())
+// 	log.Println(viper.AllSettings())
 
-	err := viper.WriteConfig()
-	if err != nil {
-		return err
-	}
-	return nil
-}
+// 	err := viper.WriteConfig()
+// 	if err != nil {
+// 		return err
+// 	}
+
+// 	if common.REST_API_STORAGE == "s3" {
+
+// 		// check if bucket exists
+// 		// check if we have permissions to read/write
+// 		// upload to s3
+
+// 	}
+// 	return nil
+// }
 
 func (a *Aws) ValidateConfig() error {
 	if a.Clustername == "" {

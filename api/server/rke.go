@@ -2,12 +2,12 @@ package server
 
 import (
 	"fmt"
-	"log"
+	//	"log"
 	"os"
 	"path/filepath"
 
 	"github.com/kubernauts/tk8/pkg/common"
-	"github.com/spf13/viper"
+	//"github.com/spf13/viper"
 )
 
 func (r *Rke) CreateCluster() error {
@@ -19,13 +19,15 @@ func (r *Rke) CreateCluster() error {
 		return err
 	}
 
-	// create RKE cluster config file
-	err = r.CreateConfig()
+	err = getProvisioner(provisioner)
 	if err != nil {
 		return err
 	}
 
-	err = getProvisioner(provisioner)
+	// create RKE cluster config file
+	configFileName := "aws-" + r.ClusterName + ".yaml"
+	l := NewLocalStore(configFileName, common.REST_API_STORAGEPATH)
+	err = l.CreateConfig(r)
 	if err != nil {
 		return err
 	}
@@ -58,34 +60,34 @@ func (r *Rke) DestroyCluster() error {
 	return nil
 }
 
-func (r *Rke) CreateConfig() error {
-	viper.New()
-	viper.SetConfigType("yaml")
+// func (r *Rke) CreateConfig() error {
+// 	viper.New()
+// 	viper.SetConfigType("yaml")
 
-	configFileName := "rke-" + r.ClusterName + ".yaml"
+// 	configFileName := "rke-" + r.ClusterName + ".yaml"
 
-	viper.SetConfigFile(configFileName)
-	viper.AddConfigPath(common.REST_API_STORAGEPATH)
+// 	viper.SetConfigFile(configFileName)
+// 	viper.AddConfigPath(common.REST_API_STORAGEPATH)
 
-	viper.Set("rke.cluster_name", r.ClusterName)
-	viper.Set("rke.node_os", r.NodeOs)
-	viper.Set("rke.rke_aws_region", r.ClusterName)
+// 	viper.Set("rke.cluster_name", r.ClusterName)
+// 	viper.Set("rke.node_os", r.NodeOs)
+// 	viper.Set("rke.rke_aws_region", r.ClusterName)
 
-	viper.Set("rke.authorization", r.ClusterName)
-	viper.Set("rke.rke_node_instance_type", r.ClusterName)
-	viper.Set("rke.node_count", r.ClusterName)
-	viper.Set("rke.cloud_provider", r.CloudProvider)
+// 	viper.Set("rke.authorization", r.ClusterName)
+// 	viper.Set("rke.rke_node_instance_type", r.ClusterName)
+// 	viper.Set("rke.node_count", r.ClusterName)
+// 	viper.Set("rke.cloud_provider", r.CloudProvider)
 
-	log.Println(viper.AllKeys())
-	log.Println(viper.AllSettings())
+// 	log.Println(viper.AllKeys())
+// 	log.Println(viper.AllSettings())
 
-	err := viper.WriteConfig()
+// 	err := viper.WriteConfig()
 
-	if err != nil {
-		return err
-	}
-	return nil
-}
+// 	if err != nil {
+// 		return err
+// 	}
+// 	return nil
+// }
 
 func (r *Rke) ValidateConfig() error {
 	if r.ClusterName == "" {

@@ -2,12 +2,12 @@ package server
 
 import (
 	"fmt"
-	"log"
+	//	"log"
 	"os"
 	"path/filepath"
 
 	"github.com/kubernauts/tk8/pkg/common"
-	"github.com/spf13/viper"
+	//"github.com/spf13/viper"
 )
 
 func (e *Eks) CreateCluster() error {
@@ -19,13 +19,15 @@ func (e *Eks) CreateCluster() error {
 		return err
 	}
 
-	// create EKS cluster config file
-	err = e.CreateConfig()
+	err = getProvisioner(provisioner)
 	if err != nil {
 		return err
 	}
 
-	err = getProvisioner(provisioner)
+	// create EKS cluster config file
+	configFileName := "eks-" + e.ClusterName + ".yaml"
+	l := NewLocalStore(configFileName, common.REST_API_STORAGEPATH)
+	err = l.CreateConfig(e)
 	if err != nil {
 		return err
 	}
@@ -61,33 +63,33 @@ func (e *Eks) DestroyCluster() error {
 
 }
 
-func (e *Eks) CreateConfig() error {
+// func (e *Eks) CreateConfig() error {
 
-	viper.New()
-	viper.SetConfigType("yaml")
+// 	viper.New()
+// 	viper.SetConfigType("yaml")
 
-	configFileName := "eks-" + e.ClusterName + ".yaml"
+// 	configFileName := "eks-" + e.ClusterName + ".yaml"
 
-	viper.SetConfigFile(configFileName)
-	viper.AddConfigPath(common.REST_API_STORAGEPATH)
+// 	viper.SetConfigFile(configFileName)
+// 	viper.AddConfigPath(common.REST_API_STORAGEPATH)
 
-	viper.Set("eks.cluster-name", e.ClusterName)
-	viper.Set("eks.aws_region", e.AwsRegion)
-	viper.Set("eks.node-instance-type", e.NodeInstanceType)
-	viper.Set("eks.desired-capacity", e.DesiredCapacity)
-	viper.Set("eks.autoscalling-max-size", e.AutoscallingMaxSize)
-	viper.Set("eks.autoscalling-min-size", e.AutoscallingMinSize)
-	viper.Set("eks.key-file-path", "~/.ssh/id_rsa.pub")
+// 	viper.Set("eks.cluster-name", e.ClusterName)
+// 	viper.Set("eks.aws_region", e.AwsRegion)
+// 	viper.Set("eks.node-instance-type", e.NodeInstanceType)
+// 	viper.Set("eks.desired-capacity", e.DesiredCapacity)
+// 	viper.Set("eks.autoscalling-max-size", e.AutoscallingMaxSize)
+// 	viper.Set("eks.autoscalling-min-size", e.AutoscallingMinSize)
+// 	viper.Set("eks.key-file-path", "~/.ssh/id_rsa.pub")
 
-	log.Println(viper.AllKeys())
-	log.Println(viper.AllSettings())
+// 	log.Println(viper.AllKeys())
+// 	log.Println(viper.AllSettings())
 
-	err := viper.WriteConfig()
-	if err != nil {
-		return err
-	}
-	return nil
-}
+// 	err := viper.WriteConfig()
+// 	if err != nil {
+// 		return err
+// 	}
+// 	return nil
+// }
 
 func (e *Eks) ValidateConfig() error {
 	if e.ClusterName == "" {

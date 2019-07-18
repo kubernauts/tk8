@@ -8,9 +8,75 @@ import (
 	"strings"
 
 	"github.com/kubernauts/tk8/pkg/common"
+	"github.com/spf13/viper"
 	"gopkg.in/yaml.v2"
 )
 
+func NewLocalStore(name, path string) *LocalStore {
+	return &LocalStore{
+		FileName: name,
+		FilePath: path,
+	}
+}
+
+func (l *LocalStore) CreateConfig(t Cluster) error {
+	viper.New()
+	viper.SetConfigType("yaml")
+
+	viper.SetConfigFile(l.FileName)
+	viper.AddConfigPath(l.FilePath)
+
+	switch a := t.(type) {
+	case *Aws:
+		viper.Set("aws.clustername", a.Clustername)
+		viper.Set("aws.os", a.Os)
+		viper.Set("aws.aws_access_key_id", a.AwsAccessKeyID)
+		viper.Set("aws.aws_secret_access_key", a.AwsSecretAccessKey)
+		viper.Set("aws.aws_ssh_keypair", a.AwsSSHKeypair)
+		viper.Set("aws.aws_default_region", a.AwsDefaultRegion)
+		viper.Set("aws.aws_vpc_cidr_block", a.AwsVpcCidrBlock)
+		viper.Set("aws.aws_cidr_subnets_private", a.AwsCidrSubnetsPrivate)
+		viper.Set("aws.aws_cidr_subnets_public", a.AwsCidrSubnetsPublic)
+		viper.Set("aws.aws_bastion_size", a.AwsBastionSize)
+		viper.Set("aws.aws_kube_master_num", a.AwsKubeMasterNum)
+		viper.Set("aws.aws_kube_master_size", a.AwsKubeMasterSize)
+		viper.Set("aws.aws_etcd_num", a.AwsEtcdNum)
+		viper.Set("aws.aws_etcd_size", a.AwsEtcdSize)
+		viper.Set("aws.aws_kube_worker_num", a.AwsKubeWorkerNum)
+		viper.Set("aws.aws_kube_worker_size", a.AwsKubeWorkerSize)
+		viper.Set("aws.aws_elb_api_port", a.AwsElbAPIPort)
+		viper.Set("aws.k8s_secure_api_port", a.K8SSecureAPIPort)
+		viper.Set("aws.kube_insecure_apiserver_address", a.KubeInsecureApiserverAddress)
+		viper.Set("aws.kubeadm_enabled", a.KubeadmEnabled)
+		viper.Set("aws.kube_network_plugin", a.KubeNetworkPlugin)
+	case *Eks:
+		viper.Set("eks.cluster-name", a.ClusterName)
+		viper.Set("eks.aws_region", a.AwsRegion)
+		viper.Set("eks.node-instance-type", a.NodeInstanceType)
+		viper.Set("eks.desired-capacity", a.DesiredCapacity)
+		viper.Set("eks.autoscalling-max-size", a.AutoscallingMaxSize)
+		viper.Set("eks.autoscalling-min-size", a.AutoscallingMinSize)
+		viper.Set("eks.key-file-path", "~/.ssh/id_rsa.pub")
+	case *Rke:
+		viper.Set("rke.cluster_name", a.ClusterName)
+		viper.Set("rke.node_os", a.NodeOs)
+		viper.Set("rke.rke_aws_region", a.ClusterName)
+
+		viper.Set("rke.authorization", a.ClusterName)
+		viper.Set("rke.rke_node_instance_type", a.ClusterName)
+		viper.Set("rke.node_count", a.ClusterName)
+		viper.Set("rke.cloud_provider", a.CloudProvider)
+	}
+
+	log.Println(viper.AllKeys())
+	log.Println(viper.AllSettings())
+
+	err := viper.WriteConfig()
+	if err != nil {
+		return err
+	}
+	return nil
+}
 func ReadClusterConfigs() AllClusters {
 
 	files, _ := ioutil.ReadDir(common.REST_API_STORAGEPATH)
