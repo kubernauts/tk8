@@ -3,6 +3,8 @@ package common
 import (
 	"bufio"
 	"fmt"
+	"github.com/manifoldco/promptui"
+	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -196,4 +198,18 @@ func CopyDir(src string, dst string) (err error) {
 	}
 
 	return
+}
+
+
+func ProvisionerList() string{
+	prompt := promptui.Select{
+		Label: "Select the Tk8 provisioner",
+		Items: []string{"aws", "cattle-aws", "eks", "rke"},
+	}
+	_, result, err := prompt.Run()
+	if err != nil {
+		log.Fatalf("Prompt failed %v\n", err)
+	}
+	fmt.Printf("You chose %q\n", result)
+	return result
 }

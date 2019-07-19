@@ -16,6 +16,7 @@ package cmd
 
 import (
 	"errors"
+	"log"
 	"os"
 	"strings"
 
@@ -53,6 +54,17 @@ var provisionerInstallCmd = &cobra.Command{
 	Long:  `This command will provide the infrastructure which is needed to install and run kubernetes on your selected platform.`,
 	Args:  ArgsValidation,
 	Run: func(cmd *cobra.Command, args []string) {
+		if provisioner.Interactive {
+			provisionerName, _ := InteractiveMode()
+			strArray := strings.Fields(provisionerName)
+			if val, ok := provisioners[provisionerName]; ok {
+				val.Init(strArray[1:])
+				if !provisioner.IOnly {
+					val.Setup(strArray[1:])
+				}
+			}
+		}
+
 		if val, ok := provisioners[args[0]]; ok {
 			val.Init(args[1:])
 			if !provisioner.IOnly {
@@ -132,7 +144,28 @@ Kindly ensure that terraform is installed also.`,
 	},
 }
 
+func InteractiveMode() (string, error) {
+	provisionerName := common.ProvisionerList()
+	if _, err := os.Stat("./provisioner/" + provisionerName); err == nil {
+		return " ", nil
+	}
+	err := os.Mkdir("./provisioner", 0755)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	common.CloneGit("./provisioner", "https://github.com/kubernauts/tk8-provisioner-"+provisionerName, provisionerName)
+	common.ReplaceGit("./provisioner/" + provisionerName)
+	return provisionerName, nil
+
+}
+
 func ArgsValidation(cmd *cobra.Command, args []string) error {
+
+	if provisioner.Interactive {
+		return nil
+
+	}
 	if len(args) < 1 {
 		return errors.New("requires at least one arg")
 	}
@@ -167,6 +200,7 @@ func init() {
 
 	provisionerInstallCmd.Flags().StringVar(&common.Name, "name", common.Name, "name of the cluster workspace")
 	provisionerInstallCmd.Flags().BoolVarP(&provisioner.IOnly, "ionly", "i", provisioner.IOnly, "setup only the infrastructure")
+	provisionerInstallCmd.Flags().BoolVarP(&provisioner.Interactive, "interactive", "a", provisioner.Interactive, "Interactive mode for selecting provisioner")
 	provisionerScaleCmd.Flags().StringVar(&common.Name, "name", common.Name, "name of the cluster workspace")
 	provisionerResetCmd.Flags().StringVar(&common.Name, "name", common.Name, "name of the cluster workspace")
 	provisionerRemoveCmd.Flags().StringVar(&common.Name, "name", common.Name, "name of the cluster workspace")
