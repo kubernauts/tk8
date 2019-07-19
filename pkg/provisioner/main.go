@@ -11,6 +11,7 @@ import (
 )
 
 var IOnly bool = false
+var Interactive bool
 
 type Provisioner interface {
 	Init(args []string)
