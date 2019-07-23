@@ -200,8 +200,7 @@ func CopyDir(src string, dst string) (err error) {
 	return
 }
 
-
-func ProvisionerList() string{
+func ProvisionerList() string {
 	prompt := promptui.Select{
 		Label: "Select the Tk8 provisioner",
 		Items: []string{"aws", "cattle-aws", "eks", "rke"},
