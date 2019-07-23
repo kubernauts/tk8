@@ -27,7 +27,7 @@ type Rke struct {
 func (r *Rke) CreateCluster() error {
 
 	configFileName := "rke-" + r.ClusterName + ".yaml"
-	s := NewStore(common.REST_API_STORAGE, configFileName, common.REST_API_STORAGEPATH)
+	s := NewStore(common.REST_API_STORAGE, configFileName, common.REST_API_STORAGEPATH, common.REST_API_STORAGEREGION)
 	provisioner := "rke"
 	// validateJSON
 	err := s.ValidateConfig()
@@ -57,7 +57,7 @@ func (r *Rke) CreateCluster() error {
 func (r *Rke) DestroyCluster() error {
 	provisioner := "rke"
 	configFileName := "rke-" + r.ClusterName + ".yaml"
-	s := NewStore(common.REST_API_STORAGE, configFileName, common.REST_API_STORAGEPATH)
+	s := NewStore(common.REST_API_STORAGE, configFileName, common.REST_API_STORAGEPATH, common.REST_API_STORAGEREGION)
 
 	exists, _ := s.CheckConfigExists()
 	if !exists {
@@ -79,7 +79,7 @@ func (r *Rke) DestroyCluster() error {
 func (r *Rke) GetCluster(name string) (api.Cluster, error) {
 
 	configFileName := "rke-" + name + ".yaml"
-	s := NewStore(common.REST_API_STORAGE, configFileName, common.REST_API_STORAGEPATH)
+	s := NewStore(common.REST_API_STORAGE, configFileName, common.REST_API_STORAGEPATH, common.REST_API_STORAGEREGION)
 
 	exists, _ := s.CheckConfigExists()
 	if !exists {

@@ -28,7 +28,7 @@ func (e *Eks) CreateCluster() error {
 
 	// create AWS cluster config file
 	configFileName := "eks-" + e.ClusterName + ".yaml"
-	s := NewStore(common.REST_API_STORAGE, configFileName, common.REST_API_STORAGEPATH)
+	s := NewStore(common.REST_API_STORAGE, configFileName, common.REST_API_STORAGEPATH, common.REST_API_STORAGEREGION)
 	provisioner := "eks"
 	// validateJSON
 	err := s.ValidateConfig()
@@ -61,7 +61,7 @@ func (e *Eks) DestroyCluster() error {
 	provisioner := "eks"
 	configFileName := "eks-" + e.ClusterName + ".yaml"
 
-	s := NewStore(common.REST_API_STORAGE, configFileName, common.REST_API_STORAGEPATH)
+	s := NewStore(common.REST_API_STORAGE, configFileName, common.REST_API_STORAGEPATH, common.REST_API_STORAGEREGION)
 	exists, _ := s.CheckConfigExists()
 	if !exists {
 		return fmt.Errorf("No such cluster exists with name - ", e.ClusterName)
@@ -83,7 +83,7 @@ func (e *Eks) DestroyCluster() error {
 func (e *Eks) GetCluster(name string) (api.Cluster, error) {
 
 	configFileName := "eks-" + name + ".yaml"
-	s := NewStore(common.REST_API_STORAGE, configFileName, common.REST_API_STORAGEPATH)
+	s := NewStore(common.REST_API_STORAGE, configFileName, common.REST_API_STORAGEPATH, common.REST_API_STORAGEREGION)
 	exists, _ := s.CheckConfigExists()
 	if !exists {
 		return nil, fmt.Errorf("No cluster found with the provided name ::: ", name)

@@ -11,18 +11,20 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"github.com/kubernauts/tk8/api"
+	"github.com/kubernauts/tk8/pkg/common"
 )
 
-func NewS3Store(name, bucketName string) *S3Store {
+func NewS3Store(name, bucketName, region string) *S3Store {
 	return &S3Store{
 		FileName:   name,
 		BucketName: bucketName,
+		Region:     region,
 	}
 }
 
 func (s *S3Store) DeleteConfig() error {
 	//select Region to use.
-	conf := aws.Config{Region: aws.String("eu-west-1")}
+	conf := aws.Config{Region: aws.String(s.Region)}
 	sess := session.New(&conf)
 	svc := s3.New(sess)
 
@@ -59,7 +61,7 @@ func (s *S3Store) UpdateConfig() error {
 
 func (s *S3Store) CheckConfigExists() (bool, error) {
 	var err error
-	conf := aws.Config{Region: aws.String("eu-west-1")}
+	conf := aws.Config{Region: aws.String(s.Region)}
 
 	svc := s3.New(session.New(&conf))
 	input := &s3.ListObjectsInput{
@@ -103,7 +105,7 @@ func (s *S3Store) GetConfig() ([]byte, error) {
 
 	defer file.Close()
 
-	conf := aws.Config{Region: aws.String("eu-west-1")}
+	conf := aws.Config{Region: aws.String(s.Region)}
 	sess := session.New(&conf)
 	downloader := s3manager.NewDownloader(sess)
 
@@ -180,7 +182,7 @@ func deleteFileLocally(path string) error {
 func uploadFileToS3(filename, bucketname string) error {
 
 	//select Region to use.
-	conf := aws.Config{Region: aws.String("eu-west-1")}
+	conf := aws.Config{Region: aws.String(common.REST_API_STORAGEREGION)}
 	sess := session.New(&conf)
 	svc := s3manager.NewUploader(sess)
 

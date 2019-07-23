@@ -17,14 +17,15 @@ type S3Store struct {
 	*Storage
 	FileName   string
 	BucketName string
+	Region     string
 }
 
-func NewStore(storetype, name, location string) api.ConfigStore {
+func NewStore(storetype, name, path, region string) api.ConfigStore {
 	switch storetype {
 	case "s3":
-		return NewS3Store(name, location)
+		return NewS3Store(name, path, region)
 	case "local":
-		return NewLocalStore(name, location)
+		return NewLocalStore(name, path)
 	default:
 		return nil
 	}

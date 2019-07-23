@@ -41,7 +41,7 @@ func (a *Aws) CreateCluster() error {
 
 	// create AWS cluster config file
 	configFileName := "aws-" + a.Clustername + ".yaml"
-	s := NewStore(common.REST_API_STORAGE, configFileName, common.REST_API_STORAGEPATH)
+	s := NewStore(common.REST_API_STORAGE, configFileName, common.REST_API_STORAGEPATH, common.REST_API_STORAGEREGION)
 
 	provisioner := "aws"
 	// validateJSON
@@ -73,7 +73,7 @@ func (a *Aws) DestroyCluster() error {
 
 	//provisioner := "aws"
 	configFileName := "aws-" + a.Clustername + ".yaml"
-	s := NewStore(common.REST_API_STORAGE, configFileName, common.REST_API_STORAGEPATH)
+	s := NewStore(common.REST_API_STORAGE, configFileName, common.REST_API_STORAGEPATH, common.REST_API_STORAGEREGION)
 
 	exists, _ := s.CheckConfigExists()
 	if !exists {
@@ -97,7 +97,7 @@ func (a *Aws) GetCluster(name string) (api.Cluster, error) {
 
 	configFileName := "aws-" + name + ".yaml"
 
-	s := NewStore(common.REST_API_STORAGE, configFileName, common.REST_API_STORAGEPATH)
+	s := NewStore(common.REST_API_STORAGE, configFileName, common.REST_API_STORAGEPATH, common.REST_API_STORAGEREGION)
 	exists, _ := s.CheckConfigExists()
 
 	if !exists {

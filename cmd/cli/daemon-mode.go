@@ -54,6 +54,9 @@ var daemonCmd = &cobra.Command{
 				log.Fatalf("Storage path [ %s ] either doesnt exist or there is an error", common.REST_API_STORAGEPATH)
 			}
 		case "s3":
+			if common.REST_API_STORAGEREGION == "" {
+				log.Fatal("Region cannot be empty")
+			}
 		default:
 			log.Fatal("storage flag accepts local or s3 as valid values")
 		}
@@ -63,7 +66,8 @@ var daemonCmd = &cobra.Command{
 func init() {
 	daemonCmd.Flags().Uint16VarP(&common.REST_API_PORT, "port", "p", 8091, "Port number for the Tk8 rest api")
 	daemonCmd.Flags().StringVarP(&common.REST_API_STORAGE, "config-store", "s", "local", "Storage for config files - local or s3")
-	daemonCmd.Flags().StringVarP(&common.REST_API_STORAGEPATH, "confif-store path", "a", ".", "Storage location for config files - directory path for local , bucket name for s3")
+	daemonCmd.Flags().StringVarP(&common.REST_API_STORAGEPATH, "config-store-path", "a", ".", "Storage location for config files - directory path for local , bucket name for s3")
+	daemonCmd.Flags().StringVarP(&common.REST_API_STORAGEREGION, "config-store-region", "r", "", "Region for S3 bucket")
 
 	rootCmd.AddCommand(daemonCmd)
 }

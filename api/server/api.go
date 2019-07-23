@@ -2,7 +2,6 @@ package server
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -53,8 +52,6 @@ func (c *tk8Api) installAddon(w http.ResponseWriter, r *http.Request) {
 	var err error
 
 	if err = json.NewDecoder(r.Body).Decode(&addonReq); err != nil {
-
-		fmt.Println("returning error here")
 		c.sendError(c.name, method, w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -80,8 +77,6 @@ func (c *tk8Api) destroyAddon(w http.ResponseWriter, r *http.Request) {
 	var err error
 
 	if err = json.NewDecoder(r.Body).Decode(&addonReq); err != nil {
-
-		fmt.Println("returning error here")
 		c.sendError(c.name, method, w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -111,7 +106,6 @@ func (c *tk8Api) createAWSClusterHandler(w http.ResponseWriter, r *http.Request)
 	var aws Aws
 	var err error
 	if err = json.NewDecoder(r.Body).Decode(&aws); err != nil {
-		fmt.Println("returning error here")
 		c.sendError(c.name, method, w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -130,7 +124,6 @@ func (c *tk8Api) createRKEClusterHandler(w http.ResponseWriter, r *http.Request)
 	var rke Rke
 	var err error
 	if err = json.NewDecoder(r.Body).Decode(&rke); err != nil {
-		fmt.Println("returning error here")
 		c.sendError(c.name, method, w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -149,7 +142,6 @@ func (c *tk8Api) createEKSClusterHandler(w http.ResponseWriter, r *http.Request)
 	var eks Eks
 	var err error
 	if err = json.NewDecoder(r.Body).Decode(&eks); err != nil {
-		fmt.Println("returning error here")
 		c.sendError(c.name, method, w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -277,7 +269,6 @@ func (c *tk8Api) destroyAWSClusterHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 	aws := &Aws{}
-	fmt.Println("We got cluster name  as --- ", clusterName)
 	aws.Clustername = clusterName
 	err = aws.DestroyCluster()
 	if err != nil {
