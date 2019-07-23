@@ -3,7 +3,6 @@ package server
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -203,13 +202,17 @@ func (c *tk8Api) getAWSClusterHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// check if cluster exists
-	aws, err := decodeAwsClusterConfigToStruct(clusterName)
+
+	var aws *Aws
+	cluster, err := aws.GetCluster(clusterName)
+
+	//aws, err := decodeAwsClusterConfigToStruct(clusterName)
 	if err != nil {
 		c.sendError(c.name, method, w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	json.NewEncoder(w).Encode(aws)
+	json.NewEncoder(w).Encode(cluster)
 }
 
 func (c *tk8Api) getEKSlusterHandler(w http.ResponseWriter, r *http.Request) {
@@ -223,13 +226,16 @@ func (c *tk8Api) getEKSlusterHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// check if cluster exists
-	eks, err := decodeEksClusterConfigToStruct(clusterName)
+
+	var eks *Eks
+	cluster, err := eks.GetCluster(clusterName)
+	//eks, err := decodeEksClusterConfigToStruct(clusterName)
 	if err != nil {
 		c.sendError(c.name, method, w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	json.NewEncoder(w).Encode(eks)
+	json.NewEncoder(w).Encode(cluster)
 }
 
 func (c *tk8Api) getRKEClusterHandler(w http.ResponseWriter, r *http.Request) {
@@ -242,14 +248,17 @@ func (c *tk8Api) getRKEClusterHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var rke *Rke
+	cluster, err := rke.GetCluster(clusterName)
+
 	// check if cluster exists
-	rke, err := decodeRkeClusterConfigToStruct(clusterName)
+	//rke, err := decodeRkeClusterConfigToStruct(clusterName)
 	if err != nil {
 		c.sendError(c.name, method, w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	json.NewEncoder(w).Encode(rke)
+	json.NewEncoder(w).Encode(cluster)
 }
 
 func (c *tk8Api) destroyAWSClusterHandler(w http.ResponseWriter, r *http.Request) {
@@ -264,19 +273,12 @@ func (c *tk8Api) destroyAWSClusterHandler(w http.ResponseWriter, r *http.Request
 	var err error
 
 	if clusterName == "" {
-		//	c.sendError(c.name, method, w, "Cluster name cannot be empty", http.StatusBadRequest)
-		//	return
-	}
-
-	// check if cluster exists
-	aws, err := decodeAwsClusterConfigToStruct(clusterName)
-	if err != nil {
-		c.sendError(c.name, method, w, err.Error(), http.StatusBadRequest)
+		c.sendError(c.name, method, w, "Cluster name cannot be empty", http.StatusBadRequest)
 		return
 	}
-
-	log.Printf("Coming here ..... >>>%+v", aws)
-
+	aws := &Aws{}
+	fmt.Println("We got cluster name  as --- ", clusterName)
+	aws.Clustername = clusterName
 	err = aws.DestroyCluster()
 	if err != nil {
 		c.sendError(c.name, method, w, err.Error(), http.StatusBadRequest)
@@ -300,13 +302,7 @@ func (c *tk8Api) destroyEKSClusterHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	// check if cluster exists
-	eks, err := decodeEksClusterConfigToStruct(clusterName)
-	if err != nil {
-		c.sendError(c.name, method, w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
+	eks := &Eks{}
 	err = eks.DestroyCluster()
 	if err != nil {
 		c.sendError(c.name, method, w, err.Error(), http.StatusBadRequest)
@@ -330,13 +326,7 @@ func (c *tk8Api) destroyRKEClusterHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	// check if cluster exists
-	rke, err := decodeRkeClusterConfigToStruct(clusterName)
-	if err != nil {
-		c.sendError(c.name, method, w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
+	rke := &Rke{}
 	err = rke.DestroyCluster()
 	if err != nil {
 		c.sendError(c.name, method, w, err.Error(), http.StatusBadRequest)

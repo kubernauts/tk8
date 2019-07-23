@@ -2,19 +2,35 @@ package server
 
 import (
 	"fmt"
-	//	"log"
-	"os"
-	"path/filepath"
-
+	"gopkg.in/yaml.v2"
+	"log"
+	//"os"
+	"github.com/kubernauts/tk8/api"
 	"github.com/kubernauts/tk8/pkg/common"
 	//"github.com/spf13/viper"
 )
 
+type RkeYaml struct {
+	Rke *Rke `yaml:"rke"`
+}
+
+type Rke struct {
+	ClusterName         string `yaml:"cluster_name" json:"cluster_name"`
+	NodeOs              string `yaml:"node_os" json:"node_os"`
+	RkeAwsRegion        string `yaml:"rke_aws_region" json:"rke_aws_region"`
+	Authorization       string `yaml:"authorization" json:"authorization"`
+	RkeNodeInstanceType string `yaml:"rke_node_instance_type" json:"rke_node_instance_type"`
+	NodeCount           int    `yaml:"node_count" json:"node_count"`
+	CloudProvider       string `yaml:"cloud_provider" json:"cloud_provider"`
+}
+
 func (r *Rke) CreateCluster() error {
 
+	configFileName := "rke-" + r.ClusterName + ".yaml"
+	s := NewStore(common.REST_API_STORAGE, configFileName, common.REST_API_STORAGEPATH)
 	provisioner := "rke"
 	// validateJSON
-	err := r.ValidateConfig()
+	err := s.ValidateConfig()
 	if err != nil {
 		return err
 	}
@@ -25,9 +41,8 @@ func (r *Rke) CreateCluster() error {
 	}
 
 	// create RKE cluster config file
-	configFileName := "aws-" + r.ClusterName + ".yaml"
-	l := NewLocalStore(configFileName, common.REST_API_STORAGEPATH)
-	err = l.CreateConfig(r)
+	//l := NewLocalStore(configFileName, common.REST_API_STORAGEPATH)
+	err = s.CreateConfig(r)
 	if err != nil {
 		return err
 	}
@@ -41,9 +56,10 @@ func (r *Rke) CreateCluster() error {
 }
 func (r *Rke) DestroyCluster() error {
 	provisioner := "rke"
-	configFileName := "aws-" + r.ClusterName + ".yaml"
-	configFileName = filepath.Join(common.REST_API_STORAGEPATH, configFileName)
-	exists := isExistsClusterConfig(configFileName)
+	configFileName := "rke-" + r.ClusterName + ".yaml"
+	s := NewStore(common.REST_API_STORAGE, configFileName, common.REST_API_STORAGEPATH)
+
+	exists, _ := s.CheckConfigExists()
 	if !exists {
 		return fmt.Errorf("No such cluster exists with name - ", r.ClusterName)
 	}
@@ -52,7 +68,7 @@ func (r *Rke) DestroyCluster() error {
 	}()
 
 	// Delete AWS cluster config file
-	err := r.DeleteConfig()
+	err := s.DeleteConfig()
 	if err != nil {
 		return fmt.Errorf("Error deleting cluster config ...")
 	}
@@ -60,62 +76,25 @@ func (r *Rke) DestroyCluster() error {
 	return nil
 }
 
-// func (r *Rke) CreateConfig() error {
-// 	viper.New()
-// 	viper.SetConfigType("yaml")
+func (r *Rke) GetCluster(name string) (api.Cluster, error) {
 
-// 	configFileName := "rke-" + r.ClusterName + ".yaml"
+	configFileName := "rke-" + name + ".yaml"
+	s := NewStore(common.REST_API_STORAGE, configFileName, common.REST_API_STORAGEPATH)
 
-// 	viper.SetConfigFile(configFileName)
-// 	viper.AddConfigPath(common.REST_API_STORAGEPATH)
-
-// 	viper.Set("rke.cluster_name", r.ClusterName)
-// 	viper.Set("rke.node_os", r.NodeOs)
-// 	viper.Set("rke.rke_aws_region", r.ClusterName)
-
-// 	viper.Set("rke.authorization", r.ClusterName)
-// 	viper.Set("rke.rke_node_instance_type", r.ClusterName)
-// 	viper.Set("rke.node_count", r.ClusterName)
-// 	viper.Set("rke.cloud_provider", r.CloudProvider)
-
-// 	log.Println(viper.AllKeys())
-// 	log.Println(viper.AllSettings())
-
-// 	err := viper.WriteConfig()
-
-// 	if err != nil {
-// 		return err
-// 	}
-// 	return nil
-// }
-
-func (r *Rke) ValidateConfig() error {
-	if r.ClusterName == "" {
-		return fmt.Errorf("Cluster name cannot be empty")
+	exists, _ := s.CheckConfigExists()
+	if !exists {
+		return nil, fmt.Errorf("No cluster found with the provided name ::: ", name)
 	}
 
-	configFileName := "rke-" + r.ClusterName + ".yaml"
-	configFileName = filepath.Join(common.REST_API_STORAGEPATH, configFileName)
-
-	if isExistsClusterConfig(configFileName) {
-		return fmt.Errorf("Cluster name must be unique")
-	}
-
-	return nil
-}
-
-func (r *Rke) DeleteConfig() error {
-
-	configFileName := "aws-" + r.ClusterName + ".yaml"
-	configFileName = filepath.Join(common.REST_API_STORAGEPATH, configFileName)
-
-	err := os.Remove(configFileName)
+	rkeConfig := &RkeYaml{}
+	yamlFile, err := s.GetConfig()
 	if err != nil {
-		return err
+		log.Printf("yamlFile.Get err   #%v ", err)
 	}
-	return nil
-}
+	err = yaml.Unmarshal(yamlFile, rkeConfig)
+	if err != nil {
+		return nil, fmt.Errorf("unable to decode into rke config struct, %v", err)
+	}
 
-func (r *Rke) UpdateConfig() error {
-	return nil
+	return rkeConfig.Rke, nil
 }

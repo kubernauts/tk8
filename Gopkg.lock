@@ -24,7 +24,7 @@
   revision = "a0175ee3bccc567396460bf5acd36800cb10c49c"
 
 [[projects]]
-  digest = "1:7f93d2813efdc7396f4fc488e7f2f93ceb666974e36718e0f16a0f63e0f8228b"
+  digest = "1:b3eb10ccc087bb783f92288b96880c1c7384d0c26cfdaff7794e2387be7b7a5c"
   name = "github.com/aws/aws-sdk-go"
   packages = [
     "aws",
@@ -50,11 +50,17 @@
     "internal/shareddefaults",
     "private/protocol",
     "private/protocol/ec2query",
+    "private/protocol/eventstream",
+    "private/protocol/eventstream/eventstreamapi",
     "private/protocol/query",
     "private/protocol/query/queryutil",
     "private/protocol/rest",
+    "private/protocol/restxml",
     "private/protocol/xml/xmlutil",
     "service/ec2",
+    "service/s3",
+    "service/s3/s3iface",
+    "service/s3/s3manager",
     "service/sts",
   ]
   pruneopts = "UT"
@@ -94,6 +100,14 @@
   version = "v1.38.3"
 
 [[projects]]
+  digest = "1:cbec35fe4d5a4fba369a656a8cd65e244ea2c743007d8f6c1ccb132acf9d1296"
+  name = "github.com/gorilla/mux"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "00bdffe0f3c77e27d2cf6f5c70232a2d3e4d9c15"
+  version = "v1.7.3"
+
+[[projects]]
   digest = "1:c0d19ab64b32ce9fe5cf4ddceba78d5bc9807f0016db6b1183599da3dcc24d10"
   name = "github.com/hashicorp/hcl"
   packages = [
@@ -126,6 +140,14 @@
   packages = ["."]
   pruneopts = "UT"
   revision = "0b12d6b5"
+
+[[projects]]
+  digest = "1:31e761d97c76151dde79e9d28964a812c46efc5baee4085b86f68f0c654450de"
+  name = "github.com/konsorten/go-windows-terminal-sequences"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "f55edac94c9bbba5d6182a4be46d86a2c9b5b50e"
+  version = "v1.0.2"
 
 [[projects]]
   branch = "master"
@@ -163,6 +185,17 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:86ff240bc45a3b957383a4f7da88c9d8879298e1a8b1da499ade6fc4bcbd58de"
+  name = "github.com/kubernauts/tk8-provisioner-cattle-aws"
+  packages = [
+    ".",
+    "internal/cluster",
+  ]
+  pruneopts = "UT"
+  revision = "12b98de2be290d65167cf89d1948167f6cd7bd0f"
+
+[[projects]]
+  branch = "master"
   digest = "1:d37390e6a304c4be387e10885d78d6ac5be8a6b91bda7b5f454fec4c0fb041ed"
   name = "github.com/kubernauts/tk8-provisioner-eks"
   packages = [
@@ -196,6 +229,17 @@
   revision = "f29d34a5a87c0347618f17dfef609ad01486e759"
 
 [[projects]]
+  branch = "master"
+  digest = "1:85a6e907a4e3336e52c86e4699045543323142e62af5b3589e20b9623a8c2ed2"
+  name = "github.com/kubernauts/tk8-provisioner-rke"
+  packages = [
+    ".",
+    "internal/cluster",
+  ]
+  pruneopts = "UT"
+  revision = "a966b1acdb16b9111387b2e7f34ad01467b8a407"
+
+[[projects]]
   digest = "1:c568d7727aa262c32bdf8a3f7db83614f7af0ed661474b24588de635c20024c7"
   name = "github.com/magiconair/properties"
   packages = ["."]
@@ -226,6 +270,14 @@
   pruneopts = "UT"
   revision = "c01d1270ff3e442a8a57cddc1c92dc1138598194"
   version = "v1.2.0"
+
+[[projects]]
+  digest = "1:04457f9f6f3ffc5fea48e71d62f2ca256637dee0a04d710288e27e05c8b41976"
+  name = "github.com/sirupsen/logrus"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "839c75faf7f98a33d445d181f3018b5c3409a45e"
+  version = "v1.4.2"
 
 [[projects]]
   digest = "1:6a4a11ba764a56d2758899ec6f3848d24698d48442ebce85ee7a3f63284526cd"
@@ -313,6 +365,7 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/CrowdSurge/banner",
     "github.com/alecthomas/template",
     "github.com/aws/aws-sdk-go/aws",
     "github.com/aws/aws-sdk-go/aws/awserr",
@@ -321,16 +374,27 @@
     "github.com/aws/aws-sdk-go/aws/ec2metadata",
     "github.com/aws/aws-sdk-go/aws/session",
     "github.com/aws/aws-sdk-go/service/ec2",
+    "github.com/aws/aws-sdk-go/service/s3",
+    "github.com/aws/aws-sdk-go/service/s3/s3manager",
+    "github.com/blang/semver",
     "github.com/dustinkirkland/golang-petname",
+    "github.com/gorilla/mux",
     "github.com/kubernauts/tk8-provisioner-aws",
+    "github.com/kubernauts/tk8-provisioner-aws/internal/cluster",
     "github.com/kubernauts/tk8-provisioner-azure",
     "github.com/kubernauts/tk8-provisioner-baremetal",
+    "github.com/kubernauts/tk8-provisioner-cattle-aws",
     "github.com/kubernauts/tk8-provisioner-eks",
+    "github.com/kubernauts/tk8-provisioner-eks/internal/cluster",
+    "github.com/kubernauts/tk8-provisioner-eks/internal/templates",
     "github.com/kubernauts/tk8-provisioner-nutanix",
     "github.com/kubernauts/tk8-provisioner-openstack",
+    "github.com/kubernauts/tk8-provisioner-rke",
     "github.com/mitchellh/go-homedir",
+    "github.com/sirupsen/logrus",
     "github.com/spf13/cobra",
     "github.com/spf13/viper",
+    "gopkg.in/yaml.v2",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

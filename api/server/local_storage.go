@@ -4,10 +4,13 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"os"
 	"path/filepath"
 	"strings"
 
+	"github.com/kubernauts/tk8/api"
 	"github.com/kubernauts/tk8/pkg/common"
+
 	"github.com/spf13/viper"
 	"gopkg.in/yaml.v2"
 )
@@ -19,10 +22,38 @@ func NewLocalStore(name, path string) *LocalStore {
 	}
 }
 
-func (l *LocalStore) CreateConfig(t Cluster) error {
+func (l *LocalStore) DeleteConfig() error {
+	fullpath := filepath.Join(l.FilePath, l.FileName)
+	err := os.Remove(fullpath)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (l *LocalStore) ValidateConfig() error {
+
+	return nil
+}
+
+func (l *LocalStore) UpdateConfig() error {
+
+	return nil
+}
+
+func (l *LocalStore) CheckConfigExists() (bool, error) {
+	fullpath := filepath.Join(l.FilePath, l.FileName)
+	if _, err := os.Stat(fullpath); err != nil {
+		if os.IsNotExist(err) {
+			return false, nil
+		}
+	}
+	return true, nil
+}
+
+func (l *LocalStore) CreateConfig(t api.Cluster) error {
 	viper.New()
 	viper.SetConfigType("yaml")
-
 	viper.SetConfigFile(l.FileName)
 	viper.AddConfigPath(l.FilePath)
 
@@ -71,16 +102,17 @@ func (l *LocalStore) CreateConfig(t Cluster) error {
 	log.Println(viper.AllKeys())
 	log.Println(viper.AllSettings())
 
-	err := viper.WriteConfig()
+	fullPath := filepath.Join(l.FilePath, l.FileName)
+	err := viper.WriteConfigAs(fullPath)
 	if err != nil {
 		return err
 	}
 	return nil
 }
-func ReadClusterConfigs() AllClusters {
+func ReadClusterConfigs() api.AllClusters {
 
 	files, _ := ioutil.ReadDir(common.REST_API_STORAGEPATH)
-	clusters := make(AllClusters)
+	clusters := make(api.AllClusters)
 	for _, file := range files {
 		switch {
 		case strings.Contains(file.Name(), "aws-"):
@@ -97,7 +129,7 @@ func ReadClusterConfigs() AllClusters {
 				fmt.Printf("unable to decode into aws config struct, %v", err)
 				continue
 			}
-			clusters["aws"] = append([]Cluster{awsConfig.Aws})
+			clusters["aws"] = append([]api.Cluster{awsConfig.Aws})
 
 		case strings.Contains(file.Name(), "eks-"):
 			configFileName := filepath.Join(common.REST_API_STORAGEPATH, file.Name())
@@ -112,7 +144,7 @@ func ReadClusterConfigs() AllClusters {
 				fmt.Printf("unable to decode into eks config struct, %v", err)
 				continue
 			}
-			clusters["eks"] = append([]Cluster{eksConfig.Eks})
+			clusters["eks"] = append([]api.Cluster{eksConfig.Eks})
 
 		case strings.Contains(file.Name(), "rke-"):
 			configFileName := filepath.Join(common.REST_API_STORAGEPATH, file.Name())
@@ -126,77 +158,88 @@ func ReadClusterConfigs() AllClusters {
 				fmt.Printf("unable to decode into rke config struct, %v", err)
 				continue
 			}
-			clusters["rke"] = append([]Cluster{rkeConfig.Rke})
+			clusters["rke"] = append([]api.Cluster{rkeConfig.Rke})
 		}
 	}
 	return clusters
 }
 
-func decodeAwsClusterConfigToStruct(name string) (*Aws, error) {
-	configFileName := "aws-" + name + ".yaml"
-	configFileName = filepath.Join(common.REST_API_STORAGEPATH, configFileName)
-
-	exists := isExistsClusterConfig(configFileName)
-
-	if !exists {
-		return nil, fmt.Errorf("No cluster found with the provided name ::: ", name)
-	}
-
-	awsConfig := &AwsYaml{}
-	yamlFile, err := ioutil.ReadFile(configFileName)
+func (l *LocalStore) GetConfig() ([]byte, error) {
+	fullPath := filepath.Join(l.FilePath, l.FileName)
+	yamlFile, err := ioutil.ReadFile(fullPath)
 	if err != nil {
 		log.Printf("yamlFile.Get err   #%v ", err)
-	}
-	err = yaml.Unmarshal(yamlFile, awsConfig)
-	if err != nil {
-		return nil, fmt.Errorf("unable to decode into rke config struct, %v", err)
+		return nil, err
 	}
 
-	return awsConfig.Aws, nil
+	return yamlFile, nil
 }
 
-func decodeEksClusterConfigToStruct(name string) (*Eks, error) {
-	configFileName := "eks-" + name + ".yaml"
-	configFileName = filepath.Join(common.REST_API_STORAGEPATH, configFileName)
+// func decodeAwsClusterConfigToStruct(name string) (*Aws, error) {
+// 	configFileName := "aws-" + name + ".yaml"
+// 	configFileName = filepath.Join(common.REST_API_STORAGEPATH, configFileName)
 
-	exists := isExistsClusterConfig(configFileName)
+// 	exists := isExistsClusterConfig(configFileName)
 
-	if !exists {
-		return nil, fmt.Errorf("No cluster found with the provided name ::: ", name)
-	}
-	eksConfig := &EksYaml{}
-	yamlFile, err := ioutil.ReadFile(configFileName)
-	if err != nil {
-		log.Printf("yamlFile.Get err   #%v ", err)
-	}
-	err = yaml.Unmarshal(yamlFile, eksConfig)
-	if err != nil {
-		return nil, fmt.Errorf("unable to decode into rke config struct, %v", err)
-	}
+// 	if !exists {
+// 		return nil, fmt.Errorf("No cluster found with the provided name ::: ", name)
+// 	}
 
-	return eksConfig.Eks, nil
-}
+// 	awsConfig := &AwsYaml{}
+// 	yamlFile, err := ioutil.ReadFile(configFileName)
+// 	if err != nil {
+// 		log.Printf("yamlFile.Get err   #%v ", err)
+// 	}
+// 	err = yaml.Unmarshal(yamlFile, awsConfig)
+// 	if err != nil {
+// 		return nil, fmt.Errorf("unable to decode into rke config struct, %v", err)
+// 	}
 
-func decodeRkeClusterConfigToStruct(name string) (*Rke, error) {
+// 	return awsConfig.Aws, nil
+// }
 
-	configFileName := "rke-" + name + ".yaml"
-	configFileName = filepath.Join(common.REST_API_STORAGEPATH, configFileName)
+// func decodeEksClusterConfigToStruct(name string) (*Eks, error) {
+// 	configFileName := "eks-" + name + ".yaml"
+// 	configFileName = filepath.Join(common.REST_API_STORAGEPATH, configFileName)
 
-	exists := isExistsClusterConfig(configFileName)
+// 	exists := isExistsClusterConfig(configFileName)
 
-	if !exists {
-		return nil, fmt.Errorf("No cluster found with the provided name ::: ", name)
-	}
+// 	if !exists {
+// 		return nil, fmt.Errorf("No cluster found with the provided name ::: ", name)
+// 	}
+// 	eksConfig := &EksYaml{}
+// 	yamlFile, err := ioutil.ReadFile(configFileName)
+// 	if err != nil {
+// 		log.Printf("yamlFile.Get err   #%v ", err)
+// 	}
+// 	err = yaml.Unmarshal(yamlFile, eksConfig)
+// 	if err != nil {
+// 		return nil, fmt.Errorf("unable to decode into rke config struct, %v", err)
+// 	}
 
-	rkeConfig := &RkeYaml{}
-	yamlFile, err := ioutil.ReadFile(configFileName)
-	if err != nil {
-		log.Printf("yamlFile.Get err   #%v ", err)
-	}
-	err = yaml.Unmarshal(yamlFile, rkeConfig)
-	if err != nil {
-		return nil, fmt.Errorf("unable to decode into rke config struct, %v", err)
-	}
+// 	return eksConfig.Eks, nil
+// }
 
-	return rkeConfig.Rke, nil
-}
+// func decodeRkeClusterConfigToStruct(name string) (*Rke, error) {
+
+// 	configFileName := "rke-" + name + ".yaml"
+// 	configFileName = filepath.Join(common.REST_API_STORAGEPATH, configFileName)
+
+// 	exists := isExistsClusterConfig(configFileName)
+
+// 	if !exists {
+// 		return nil, fmt.Errorf("No cluster found with the provided name ::: ", name)
+// 	}
+
+// 	rkeConfig := &RkeYaml{}
+// 	yamlFile, err := ioutil.ReadFile(configFileName)
+// 	if err != nil {
+// 		log.Printf("yamlFile.Get err   #%v ", err)
+// 	}
+// 	err = yaml.Unmarshal(yamlFile, rkeConfig)
+// 	if err != nil {
+// 		return nil, fmt.Errorf("unable to decode into rke config struct, %v", err)
+// 	}
+
+// 	return rkeConfig.Rke, nil
+// }
