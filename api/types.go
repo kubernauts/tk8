@@ -9,13 +9,11 @@ type Cluster interface {
 }
 
 type ConfigStore interface {
-	// ReadConfig() error
-	// ReadAllConfigs error
 	CreateConfig(Cluster) error
 	DeleteConfig() error
 	UpdateConfig() error
 	ValidateConfig() error
 	CheckConfigExists() (bool, error)
 	GetConfig() ([]byte, error)
-	//	GetConfigs() AllClusters
+	GetConfigs() (AllClusters, error)
 }

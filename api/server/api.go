@@ -6,6 +6,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/kubernauts/tk8/internal/addon"
+	"github.com/kubernauts/tk8/pkg/common"
 
 	aws "github.com/kubernauts/tk8-provisioner-aws"
 	azure "github.com/kubernauts/tk8-provisioner-azure"
@@ -157,17 +158,17 @@ func (c *tk8Api) getClusters(w http.ResponseWriter, r *http.Request) {
 	//method := "getClusters"
 	enableCors(&w)
 
-	clusters := ReadClusterConfigs()
+	s := NewStore(common.REST_API_STORAGE, "", common.REST_API_STORAGEPATH, common.REST_API_STORAGEREGION)
+	clusters, err := s.GetConfigs()
+	if err != nil {
+		json.NewEncoder(w).Encode("Error getting clusters")
+	}
 	if len(clusters) > 0 {
 		json.NewEncoder(w).Encode(clusters)
 		return
 	}
 
 	json.NewEncoder(w).Encode("No clusters found")
-
-	// lists all the clusters that are created
-	// by listing all the files created in the config directory
-
 }
 
 func (c *tk8Api) getCluster(w http.ResponseWriter, r *http.Request) {
@@ -294,6 +295,7 @@ func (c *tk8Api) destroyEKSClusterHandler(w http.ResponseWriter, r *http.Request
 	}
 
 	eks := &Eks{}
+	eks.ClusterName = clusterName
 	err = eks.DestroyCluster()
 	if err != nil {
 		c.sendError(c.name, method, w, err.Error(), http.StatusBadRequest)
@@ -318,6 +320,7 @@ func (c *tk8Api) destroyRKEClusterHandler(w http.ResponseWriter, r *http.Request
 	}
 
 	rke := &Rke{}
+	rke.ClusterName = clusterName
 	err = rke.DestroyCluster()
 	if err != nil {
 		c.sendError(c.name, method, w, err.Error(), http.StatusBadRequest)

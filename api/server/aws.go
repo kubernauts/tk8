@@ -3,11 +3,10 @@ package server
 import (
 	"fmt"
 	"gopkg.in/yaml.v2"
-	"log"
-	//"os"
+
 	"github.com/kubernauts/tk8/api"
 	"github.com/kubernauts/tk8/pkg/common"
-	//"github.com/spf13/viper"
+	"github.com/sirupsen/logrus"
 )
 
 type AwsYaml struct {
@@ -37,6 +36,7 @@ type Aws struct {
 	KubeNetworkPlugin            string `yaml:"kube_network_plugin"  json:"kube_network_plugin"`
 }
 
+// CreateCluster creates AWS cluster
 func (a *Aws) CreateCluster() error {
 
 	// create AWS cluster config file
@@ -47,72 +47,73 @@ func (a *Aws) CreateCluster() error {
 	// validateJSON
 	err := s.ValidateConfig()
 	if err != nil {
+		logrus.Errorf("Error validating config ::: %s", err)
 		return err
 	}
 
 	err = getProvisioner(provisioner)
 	if err != nil {
+		logrus.Errorf("Error getting provisioner ::: %s", err)
 		return err
 	}
-
-	//s := NewS3Store(configFileName, common.REST_API_STORAGEPATH)
 	err = s.CreateConfig(a)
 	if err != nil {
+		logrus.Errorf("Error creating config ::: %s", err)
 		return err
 	}
-
-	// go func() {
-	// 	Provisioners[provisioner].Init(nil)
-	// 	Provisioners[provisioner].Setup(nil)
-	// }()
-
+	go func() {
+		Provisioners[provisioner].Init(nil)
+		Provisioners[provisioner].Setup(nil)
+	}()
 	return nil
 }
 
+// DestroyCluster destroys AWS cluster
 func (a *Aws) DestroyCluster() error {
-
-	//provisioner := "aws"
 	configFileName := "aws-" + a.Clustername + ".yaml"
 	s := NewStore(common.REST_API_STORAGE, configFileName, common.REST_API_STORAGEPATH, common.REST_API_STORAGEREGION)
 
 	exists, _ := s.CheckConfigExists()
 	if !exists {
-		return fmt.Errorf("No such cluster exists with name - ", a.Clustername)
+		logrus.Errorf("Error , no such cluster with name %s", a.Clustername)
+		return fmt.Errorf("No such cluster exists with name - %s", a.Clustername)
 	}
 
-	//	go func() {
-	//	Provisioners[provisioner].Destroy(nil)
-	//	}()
+	go func() {
+		Provisioners["aws"].Destroy(nil)
+	}()
 
 	// Delete AWS cluster config file
 	err := s.DeleteConfig()
 	if err != nil {
-		return fmt.Errorf("Error deleting cluster config ...")
+		logrus.Errorf("Error , deleting cluster named  %s , Error details are %s ", a.Clustername, err.Error())
+		return fmt.Errorf("Error deleting cluster %s", a.Clustername)
 	}
 
 	return nil
 }
 
+// GetCluster gets the details of thge requested AWS cluster
 func (a *Aws) GetCluster(name string) (api.Cluster, error) {
 
 	configFileName := "aws-" + name + ".yaml"
-
 	s := NewStore(common.REST_API_STORAGE, configFileName, common.REST_API_STORAGEPATH, common.REST_API_STORAGEREGION)
 	exists, _ := s.CheckConfigExists()
 
 	if !exists {
-		return nil, fmt.Errorf("No cluster found with the provided name ::: ", name)
+		return nil, fmt.Errorf("No cluster found with the provided name ::: %s", name)
 	}
 
 	awsConfig := &AwsYaml{}
 	yamlFile, err := s.GetConfig()
 	if err != nil {
-		log.Printf("yamlFile.Get err   #%v ", err)
+		logrus.Errorf("Error getting details of cluster named %s , Error details are %s ", name, err.Error())
 		return nil, err
 	}
 	err = yaml.Unmarshal(yamlFile, awsConfig)
 	if err != nil {
-		return nil, fmt.Errorf("unable to decode into rke config struct, %v", err)
+		logrus.Errorf("unable to decode into rke config struct, %v", err)
+		return nil, err
 	}
 	return awsConfig.Aws, nil
 

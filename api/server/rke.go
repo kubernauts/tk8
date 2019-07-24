@@ -2,12 +2,10 @@ package server
 
 import (
 	"fmt"
-	"gopkg.in/yaml.v2"
-	"log"
-	//"os"
 	"github.com/kubernauts/tk8/api"
 	"github.com/kubernauts/tk8/pkg/common"
-	//"github.com/spf13/viper"
+	"github.com/sirupsen/logrus"
+	"gopkg.in/yaml.v2"
 )
 
 type RkeYaml struct {
@@ -24,6 +22,7 @@ type Rke struct {
 	CloudProvider       string `yaml:"cloud_provider" json:"cloud_provider"`
 }
 
+// CreateCluster creates RKE cluster
 func (r *Rke) CreateCluster() error {
 
 	configFileName := "rke-" + r.ClusterName + ".yaml"
@@ -32,6 +31,7 @@ func (r *Rke) CreateCluster() error {
 	// validateJSON
 	err := s.ValidateConfig()
 	if err != nil {
+		logrus.Errorf("Error validating config --  %s", err.Error())
 		return err
 	}
 
@@ -41,9 +41,9 @@ func (r *Rke) CreateCluster() error {
 	}
 
 	// create RKE cluster config file
-	//l := NewLocalStore(configFileName, common.REST_API_STORAGEPATH)
 	err = s.CreateConfig(r)
 	if err != nil {
+		logrus.Errorf("Error creating config --  %s", err.Error())
 		return err
 	}
 
@@ -54,28 +54,32 @@ func (r *Rke) CreateCluster() error {
 
 	return nil
 }
+
+// DestroyCluster destroys given RKE cluster
 func (r *Rke) DestroyCluster() error {
-	provisioner := "rke"
 	configFileName := "rke-" + r.ClusterName + ".yaml"
 	s := NewStore(common.REST_API_STORAGE, configFileName, common.REST_API_STORAGEPATH, common.REST_API_STORAGEREGION)
 
 	exists, _ := s.CheckConfigExists()
 	if !exists {
-		return fmt.Errorf("No such cluster exists with name - ", r.ClusterName)
+		logrus.Errorf("Error no such cluster existswith name --  %s", r.ClusterName)
+		return fmt.Errorf("No such cluster exists with name - %s", r.ClusterName)
 	}
 	go func() {
-		Provisioners[provisioner].Destroy(nil)
+		Provisioners["rke"].Destroy(nil)
 	}()
 
 	// Delete AWS cluster config file
 	err := s.DeleteConfig()
 	if err != nil {
-		return fmt.Errorf("Error deleting cluster config ...")
+		logrus.Errorf("Error deleting cluster --  %s", err.Error())
+		return fmt.Errorf("Error deleting cluster named  - %s", r.ClusterName)
 	}
 
 	return nil
 }
 
+// GetCluster for RKE
 func (r *Rke) GetCluster(name string) (api.Cluster, error) {
 
 	configFileName := "rke-" + name + ".yaml"
@@ -83,17 +87,19 @@ func (r *Rke) GetCluster(name string) (api.Cluster, error) {
 
 	exists, _ := s.CheckConfigExists()
 	if !exists {
-		return nil, fmt.Errorf("No cluster found with the provided name ::: ", name)
+		logrus.Errorf("Error no such cluster existswith name --  %s", name)
+		return nil, fmt.Errorf("No cluster found with the provided name ::: %s", name)
 	}
 
 	rkeConfig := &RkeYaml{}
 	yamlFile, err := s.GetConfig()
 	if err != nil {
-		log.Printf("yamlFile.Get err   #%v ", err)
+		logrus.Errorf("Error unable to get cluster details , %v", err)
+		return nil, err
 	}
 	err = yaml.Unmarshal(yamlFile, rkeConfig)
 	if err != nil {
-		return nil, fmt.Errorf("unable to decode into rke config struct, %v", err)
+		return nil, fmt.Errorf("Error unable to get cluster, %v", err)
 	}
 
 	return rkeConfig.Rke, nil
