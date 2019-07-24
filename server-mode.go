@@ -24,10 +24,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var daemonCmd = &cobra.Command{
-	Use:   "daemon-mode",
-	Short: "Start tk8 in daemon mode",
-	Long:  `Daemon mode for TK8 , listens on port ::8091`,
+var serverCmd = &cobra.Command{
+	Use:   "server-mode",
+	Short: "Start tk8 in server mode",
+	Long:  `server mode for TK8 , listens on port ::8091`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) > 0 {
 			cmd.Help()
@@ -39,7 +39,7 @@ var daemonCmd = &cobra.Command{
 			logrus.Printf("Unable to start cluster API server: %v", err)
 		}
 
-		// daemon does not exit
+		// server does not exit
 		select {}
 	},
 	PreRun: func(cmd *cobra.Command, args []string) {
@@ -64,12 +64,12 @@ var daemonCmd = &cobra.Command{
 }
 
 func init() {
-	daemonCmd.Flags().Uint16VarP(&common.REST_API_PORT, "port", "p", 8091, "Port number for the Tk8 rest api")
-	daemonCmd.Flags().StringVarP(&common.REST_API_STORAGE, "config-store", "s", "local", "Storage for config files - local or s3")
-	daemonCmd.Flags().StringVarP(&common.REST_API_STORAGEPATH, "config-store-path", "a", ".", "Storage location for config files - directory path for local , bucket name for s3")
-	daemonCmd.Flags().StringVarP(&common.REST_API_STORAGEREGION, "config-store-region", "r", "", "Region for S3 bucket")
+	serverCmd.Flags().Uint16VarP(&common.REST_API_PORT, "port", "p", 8091, "Port number for the Tk8 rest api")
+	serverCmd.Flags().StringVarP(&common.REST_API_STORAGE, "config-store", "s", "local", "Storage for config files - local or s3")
+	serverCmd.Flags().StringVarP(&common.REST_API_STORAGEPATH, "config-store-path", "a", ".", "Storage location for config files - directory path for local , bucket name for s3")
+	serverCmd.Flags().StringVarP(&common.REST_API_STORAGEREGION, "config-store-region", "r", "", "Region for S3 bucket")
 
-	rootCmd.AddCommand(daemonCmd)
+	rootCmd.AddCommand(serverCmd)
 }
 
 func checkStoragePath(path string) bool {
