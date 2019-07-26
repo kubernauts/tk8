@@ -68,20 +68,23 @@ func (a *Addon) Get(addonNameOrGitPath string) (error, string) {
 
 }
 
-func (a *Addon) Install(addonNameOrGitPath string, scope string) {
+func (a *Addon) Install(addonNameOrGitPath string, scope string) error {
 	_, addonName := a.Get(addonNameOrGitPath)
 	fmt.Println("Install", addonName)
 	err := executeMainSh(addonName, scope)
 	if err != nil {
 		fmt.Println("Error in executing main.sh , aborting addon installation.")
-		return
+		return err
 	}
 	err = applyMainYml(addonName)
 	if err == nil {
 		fmt.Println(addonName, "installation complete")
 	} else {
 		fmt.Println(err)
+		return err
 	}
+
+	return nil
 }
 
 // KubeConfig provide the path to the local kube config

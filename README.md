@@ -65,6 +65,12 @@ If you no longer need the cluster, you can use the command:
 `tk8 cluster destroy aws`
 to automatically remove all of the resources.
 
+
+## Rest API
+
+TK8 can now run as a server rather than from the command line.
+For usage details on rest api. Checkout the link [REST-API](https://github.com/kubernauts/tk8/REST-API-README.md)
+
 ## Add-Ons
 
 You might want to check out our numerous add-ons for TK8: 
