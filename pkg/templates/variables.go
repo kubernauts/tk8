@@ -14,6 +14,135 @@
 
 package templates
 
+var VariablesCattleEKS = `
+variable "service_role" {
+  default     = "{{.ServiceRole}}"
+  description = "Service linked role for EKS"
+  type        = string
+}
+
+variable "associate_worker_node_public_ip" {
+  default     = {{.AssociatePublicIp}}
+  description = "Associate public IP with worker nodes"
+  type        = string
+}
+
+variable "kubernetes_version" {
+  default     = "{{.KubernetesVersion}}"
+  description = "Kubernetes version"
+  type        = string
+}
+variable "maximum_nodes" {
+  default     = {{.MaximumNodes}}
+  description = "Maximum worker nodes"
+  type        = string
+}
+
+variable "minimum_nodes" {
+  default     = {{.MinimumNodes}}
+  description = "Minimum size for worker nodes"
+  type        = string
+}
+
+variable "instance_type" {
+  default     = "{{.InstanceType}}"
+  description = "Instance type for worker nodes"
+  type        = string
+}
+
+variable "ami_id" {
+  default     = "{{.AmiId}}"
+  description = "AMI id for the instance"
+  type        = string
+}
+
+variable "session_token" {
+  default     = "{{.SessionToken}}"
+  description = "Session token to use with the client key and secret key if applicable"
+  type        = string
+}
+
+variable "disk_size" {
+  default     = "{{.DiskSize}}"
+  description = "Root disk size for instances in GB"
+  type        = string
+}
+
+variable "rancher_api_url" {
+  default     = "{{.RancherApiUrl}}"
+  description = "Rancher API URL"
+  type        = string
+}
+
+variable "rancher_access_key" {
+  description = "Rancher server's access key"
+}
+
+variable "rancher_secret_key" {
+  description = "Rancher server's secret key"
+}
+
+variable "rancher_cluster_name" {
+  default     = "{{.RancherClusterName}}"
+  description = "Rancher cluster name"
+  type        = string
+}
+
+variable "region" {
+  default     = "{{.Region}}"
+  description = "AWS region"
+  type        = string
+}
+
+variable "existing_vpc" {
+  default     = {{.ExistingVpc}}
+  description = "Use existing VPC for creating clusters"
+  type        = string
+}
+
+variable "vpc_id" {
+  default     = "{{.VpcId}}"
+  description = "VPC ID"
+  type        = string
+}
+
+variable "subnet_id1" {
+  default     = "{{.SubnetId1}}"
+  description = "subnet id"
+  type        = string
+}
+
+variable "subnet_id2" {
+  default     = "{{.SubnetId2}}"
+  description = "Subnet Id 2"
+  type        = string
+}
+
+variable "subnet_id3" {
+  default     = "{{.SubnetId3}}"
+  description = "Subnet Id 3"
+  type        = string
+}
+
+variable "security_group_name" {
+  default     = "{{.SecurityGroupName}}"
+  description = "security group id"
+  type        = string
+}
+
+variable "AWS_ACCESS_KEY_ID" {
+  description = "AWS access key"
+}
+
+variable "AWS_SECRET_ACCESS_KEY" {
+  description = "AWS secret key"
+}
+
+variable "AWS_DEFAULT_REGION" {
+  description = "AWS default region"
+}
+`
+
 var VariablesRKE = `
 variable "cluster_name" {
   default     = "{{.ClusterName}}"
