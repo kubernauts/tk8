@@ -74,12 +74,8 @@ variable "rancher_api_url" {
   type        = string
 }
 
-variable "rancher_access_key" {
-  description = "Rancher server's access key"
-}
-
-variable "rancher_secret_key" {
-  description = "Rancher server's secret key"
+variable "TOKEN_KEY" {
+  description = "Rancher token key"
 }
 
 variable "rancher_cluster_name" {
