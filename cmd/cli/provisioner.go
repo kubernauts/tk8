@@ -24,6 +24,7 @@ import (
 	azure "github.com/kubernauts/tk8-provisioner-azure"
 	baremetal "github.com/kubernauts/tk8-provisioner-baremetal"
 	cattleaws "github.com/kubernauts/tk8-provisioner-cattle-aws"
+	cattleeks "github.com/kubernauts/tk8-provisioner-cattle-eks"
 	eks "github.com/kubernauts/tk8-provisioner-eks"
 	nutanix "github.com/kubernauts/tk8-provisioner-nutanix"
 	openstack "github.com/kubernauts/tk8-provisioner-openstack"
@@ -40,6 +41,7 @@ var provisioners = map[string]provisioner.Provisioner{
 	"azure":      azure.NewAzure(),
 	"baremetal":  baremetal.NewBaremetal(),
 	"cattle-aws": cattleaws.NewCattleAWS(),
+	"cattle-eks": cattleeks.NewCattleEKS(),
 	"eks":        eks.NewEKS(),
 	"nutanix":    nutanix.NewNutanix(),
 	"openstack":  openstack.NewOpenstack(),
