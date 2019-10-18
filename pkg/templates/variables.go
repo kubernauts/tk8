@@ -364,6 +364,24 @@ variable "cloudwatch_monitoring" {
   type        = "string"
 }
 
+variable "zone" {
+  default     = "{{.Zone}}"
+  description = "Zone. Ex - eu-central-1a"
+  type        = "string"
+}
+
+variable "vpc_cidr_block" {
+  default     = "{{.VpcCidrBlock}}"
+  description = "VPC CIDR block for creating VPC with the provisioner"
+  type        = "string"
+}
+
+variable "ssh_user" {
+  default     = "{{.SshUser}}"
+  description = "SSH user"
+  type        = "string"
+}
+
 variable "ami_id" {
   default     = "{{.AmiID}}"
   description = "AMI ID for instances"
@@ -459,12 +477,6 @@ variable "subnet_id" {
 variable "security_group_name" {
   default     = "{{.SecurityGroupName}}"
   description = "security group id"
-  type        = "string"
-}
-
-variable "os" {
-  default     = "{{.OS}}"
-  description = "ami id - frankfurt"
   type        = "string"
 }
 
