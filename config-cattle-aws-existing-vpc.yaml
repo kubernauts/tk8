@@ -12,11 +12,12 @@ cattle-aws:
    rke_network_plugin: "canal"
    region: "eu-central-1"
    existing_vpc: "true"
+   zone: "eu-central-1a"
+   vpc_cidr_block:
    vpc_id: "vpc-1abcdgggga72a691a"
    subnet_id: "subnet-1f98d368767ge1e71"
    security_group_name: "rancher-nodes"
-   ami_id: "test123" # specify if you know the specific AMI ID. If used, keep below os field empty (not that setting it would impact).
-   os: "" # specify the OS. Supported values: ubuntu, centos, coreos. Keep above field empty if this is being used.
+   ami_id: "test123" 
    controlplane_instance_type: "t2.medium"
    worker_instance_type: "t2.large"
    overlap_cp_etcd_worker: "true"
