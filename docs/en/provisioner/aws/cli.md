@@ -48,7 +48,7 @@ aws:
 Once done run:
 
 ```shell
-tk8 cluster install aws
+tk8ctl cluster install aws
 ```
 
 Post installation the **kubeconfig** will be available at: _$(pwd)/inventory/*yourWorkspaceOrClusterName*/artifacts/admin.conf_
@@ -65,5 +65,5 @@ If you use a different workspace name with the --name flag please provided it on
 To delete the provisioned cluster run:
 
 ```shell
-tk8 cluster destroy aws
+tk8ctl cluster destroy aws
 ```

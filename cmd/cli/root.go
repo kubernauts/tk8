@@ -27,7 +27,7 @@ var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "tk8",
+	Use:   "tk8ctl",
 	Short: "CLI application to deploy kubernetes and some addons",
 	Long: `
 Command line application to deploy kubernetes using the pure kubespray distribution. 

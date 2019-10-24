@@ -90,9 +90,9 @@ aws:
 Once done run:
 
 ```shell
-tk8 cluster init
-tk8 cluster aws --create
-tk8 cluster aws --install
+tk8ctl cluster init
+tk8ctl cluster aws --create
+tk8ctl cluster aws --install
 ```
 
 Post installation the **kubeconfig** will be available at: _./kubespray/inventory/awscluster/artifacts/admin.conf_
@@ -103,10 +103,10 @@ Post installation the **kubeconfig** will be available at: _./kubespray/inventor
 
 ## Destroy the provisioned cluster
 
-Make sure you are in same directory where you executed `tk8 cluster init` with the cloned kubespray directory.
+Make sure you are in same directory where you executed `tk8ctl cluster init` with the cloned kubespray directory.
 
 To delete the provisioned cluster run:
 
 ```shell
-tk8 cluster aws --destroy
+tk8ctl cluster aws --destroy
 ```

@@ -10,33 +10,33 @@ Wir machen einen Switch mit installierten tk8 Add-ons und stellen eine Verknüpf
 #### Den kompletten Pfad verwenden
 
 ```shell
-tk8 addon install https://github.com/kubernauts/tk8-addon-rancher
-tk8 addon install https://github.com/kubernauts/tk8-addon-prometheus
-tk8 addon install https://github.com/kubernauts/tk8-addon-grafana
-tk8 addon install https://github.com/kubernauts/tk8-addon-monitoring-stack
-tk8 addon install https://github.com/kubernauts/tk8-addon-elk
-tk8 addon install https://github.com/kubernauts/tk8-addon-...
-tk8 addon install https://github.com/USERNAME/ADDON-REPO
+tk8ctl addon install https://github.com/kubernauts/tk8-addon-rancher
+tk8ctl addon install https://github.com/kubernauts/tk8-addon-prometheus
+tk8ctl addon install https://github.com/kubernauts/tk8-addon-grafana
+tk8ctl addon install https://github.com/kubernauts/tk8-addon-monitoring-stack
+tk8ctl addon install https://github.com/kubernauts/tk8-addon-elk
+tk8ctl addon install https://github.com/kubernauts/tk8-addon-...
+tk8ctl addon install https://github.com/USERNAME/ADDON-REPO
 ```
 
 #### Verwenden Sie die Shortcuts
 
 ```shell
-tk8 addon install rancher
-tk8 addon install prometheus
-tk8 addon install grafana
-tk8 addon install monitoring-stack
-tk8 addon install elk
+tk8ctl addon install rancher
+tk8ctl addon install prometheus
+tk8ctl addon install grafana
+tk8ctl addon install monitoring-stack
+tk8ctl addon install elk
 ```
 
 ### Add-on entfernen
 
 ```shell
-tk8 addon destroy rancher
-tk8 addon destroy prometheus
-tk8 addon destroye grafana
-tk8 addon destroy monitoring-stack
-tk8 addon destroy elk
+tk8ctl addon destroy rancher
+tk8ctl addon destroy prometheus
+tk8ctl addon destroye grafana
+tk8ctl addon destroy monitoring-stack
+tk8ctl addon destroy elk
 ```
 
 ## Entwicklung
@@ -48,5 +48,5 @@ Die create-Methode von tk8 erstellt ein neues Add-on im lokalen Ordner. Dieses A
 [Weitere Informationen hier](development.md)
 
 ```shell
-tk8 addon erstellen my-addon erstellen
+tk8ctl addon erstellen my-addon erstellen
 ```

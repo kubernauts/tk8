@@ -57,12 +57,12 @@ Create a separate folder and store the executable binary file there, a configura
 `export AWS_ACCESS_KEY_ID=xxx`
 
 Then execute the CLI with the command:
-`tk8 cluster install aws`
+`tk8ctl cluster install aws`
 
 With this command the TK8 CLI will create all of the required resources in AWS and installs Kubernetes on it.
 
 If you no longer need the cluster, you can use the command:
-`tk8 cluster destroy aws`
+`tk8ctl cluster destroy aws`
 to automatically remove all of the resources.
 
 

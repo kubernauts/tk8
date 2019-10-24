@@ -54,12 +54,12 @@ Erstellen Sie einen separaten Ordner und speichern Sie die ausführbare Datei do
 `export AWS_ACCESS_KEY_ID=xxx`
 
 Sie führen dann die CLI mit dem Befehl aus:
-`tk8 cluster install aws`
+`tk8ctl cluster install aws`
 
 Mit diesem Befehl erstellt der TK8 CLI alle benötigten Ressourcen in AWS und installiert dafür einen Kubernet-Cluster.
 
 Wenn Sie den Cluster nicht mehr benötigen, können Sie den Befehl verwenden:
-`tk8 cluster destroy aws`
+`tk8ctl cluster destroy aws`
 um automatisch alle Ressourcen zu entfernen.
 
 ## Contributing

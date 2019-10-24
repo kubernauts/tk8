@@ -11,33 +11,33 @@ We make a switch with install tk8 add-ons and provide a shortcut. A shortcut cou
 ### Use the complete Path
 
 ```shell
-tk8 addon install https://github.com/kubernauts/tk-addon-rancher
-tk8 addon install https://github.com/kubernauts/tk-addon-prometheus
-tk8 addon install https://github.com/kubernauts/tk-addon-grafana
-tk8 addon install https://github.com/kubernauts/tk-addon-monitoring-stack
-tk8 addon install https://github.com/kubernauts/tk-addon-elk
-tk8 addon install https://github.com/kubernauts/tk-addon-...
-tk8 addon install https://github.com/USERNAME/ADDON-REPO
+tk8ctl addon install https://github.com/kubernauts/tk-addon-rancher
+tk8ctl addon install https://github.com/kubernauts/tk-addon-prometheus
+tk8ctl addon install https://github.com/kubernauts/tk-addon-grafana
+tk8ctl addon install https://github.com/kubernauts/tk-addon-monitoring-stack
+tk8ctl addon install https://github.com/kubernauts/tk-addon-elk
+tk8ctl addon install https://github.com/kubernauts/tk-addon-...
+tk8ctl addon install https://github.com/USERNAME/ADDON-REPO
 ```
 
 ### Use the shortcut
 
 ```shell
-tk8 addon install rancher
-tk8 addon install prometheus
-tk8 addon install grafana
-tk8 addon install monitoring-stack
-tk8 addon install elk
+tk8ctl addon install rancher
+tk8ctl addon install prometheus
+tk8ctl addon install grafana
+tk8ctl addon install monitoring-stack
+tk8ctl addon install elk
 ```
 
 ### Destroy a add-on
 
 ```shell
-tk8 addon destroy rancher
-tk8 addon destroy prometheus
-tk8 addon destroy grafana
-tk8 addon destroy monitoring-stack
-tk8 addon destroy elk
+tk8ctl addon destroy rancher
+tk8ctl addon destroy prometheus
+tk8ctl addon destroy grafana
+tk8ctl addon destroy monitoring-stack
+tk8ctl addon destroy elk
 ```
 
 ## Development
@@ -48,5 +48,5 @@ The create method of tk8 creates a new add-on in the local folder. This add-on i
 [More information here](development.md)
 
 ```shell
-tk8 addon create my-addon
+tk8ctl addon create my-addon
 ```

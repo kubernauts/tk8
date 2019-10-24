@@ -7,7 +7,7 @@ The Add-On implementation needs to be a  general solution so we provide a comman
 The command to create the example add-on gets created with this.
 
 ```shell
-tk8 addon create my-addon
+tk8ctl addon create my-addon
 ```
 
 This command pulls the tk8-addon-develop from GitHub and creates a new folder below ./addons/my-addon
@@ -15,13 +15,13 @@ This command pulls the tk8-addon-develop from GitHub and creates a new folder be
 The example is a simple nginx deployment and a LoadBalancer service to expose this. So the user who creates this add-on can directly use it and apply it to the k8s cluster
 
 ```shell
-tk8 addon install my-addon
+tk8ctl addon install my-addon
 ```
 
 and could remove it from the k8s cluster with
 
 ```shell
-tk8 addon destroy my-addon
+tk8ctl addon destroy my-addon
 ```
 
 The default developer add-on doesn't contain a main.sh file. But we need to create documentation for it. Our own add-ons could use and need it.
