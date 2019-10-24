@@ -45,7 +45,7 @@ rke:
 * After appropriate values are filled, run:
 
 ```shell
-tk8 cluster install rke
+tk8ctl cluster install rke
 ```
 
 Once the infrastructure and cluster is setup, `kubeconfig` file and `rancher-cluster.yml` file will be available at:
@@ -62,7 +62,7 @@ Once the infrastructure and cluster is setup, `kubeconfig` file and `rancher-clu
 * For removing the rke cluster and keep the underlying infrastructure, run:
 
 ```shell
-tk8 cluster remove rke
+tk8ctl cluster remove rke
 ```
 
 This is equivalent to `rke remove --config rancher-cluster.yml`.
@@ -72,13 +72,13 @@ This is equivalent to `rke remove --config rancher-cluster.yml`.
 * This will destroy the complete infrastructure. Run:
 
 ```shell
-tk8 cluster destroy rke
+tk8ctl cluster destroy rke
 ```
 
 > **Note** This is just a cluster provisioner, it will not install `rancher-2.x` on the cluster by itself. Use
 
 ```shell
-tk8 addon install rancher
+tk8ctl addon install rancher
 ```
 
 on the cluster.

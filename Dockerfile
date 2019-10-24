@@ -27,7 +27,7 @@ LABEL  org.label-schema.description="CLI to deploy kubernetes using kubespray an
        org.label-schema.vcs-url="https://github.com/kubernauts/tk8" \
        org.label-schema.vendor="kubernauts"
 
-COPY --from=builder /go/src/github.com/kubernauts/tk8/tk8 /usr/local/bin/tk8
+COPY --from=builder /go/src/github.com/kubernauts/tk8/tk8ctl /usr/local/bin/tk8ctl
 
 RUN apk --update add \
     python \
@@ -52,7 +52,7 @@ RUN pip install --upgrade cffi
 RUN pip install --upgrade ansible
 RUN pip install --upgrade ansible-modules-hashivault
 
-RUN chmod +x /usr/local/bin/tk8
+RUN chmod +x /usr/local/bin/tk8ctl
 
 ## Install terraform
 
@@ -68,4 +68,4 @@ RUN mkdir /tk8
 
 WORKDIR /tk8
 
-ENTRYPOINT [ "/usr/local/bin/tk8" ]
+ENTRYPOINT [ "/usr/local/bin/tk8ctl" ]

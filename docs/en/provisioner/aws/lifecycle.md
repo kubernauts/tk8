@@ -11,39 +11,39 @@ To scale the cluster, you can increase the desired count of any of the following
 * `aws_kube_worker_num`
 * `aws_etcd_num`
 
-Make sure you are in the same directory where you executed `tk8 cluster install aws` with the inventory directory.
+Make sure you are in the same directory where you executed `tk8ctl cluster install aws` with the inventory directory.
 If you use a different workspace name with the --name flag please provide it on scaling too.
 
 To scale the provisioned cluster run:
 
 ```shell
-tk8 cluster scale aws
+tk8ctl cluster scale aws
 ```
 
 Once executed a confirmation would be needed to overwrite the existing inventory file post which above command will scale your infrastructure as well as the Kubernetes cluster together to the specified capacity.
 
 ## Reset the cluster
 
-Make sure you are in the same directory where you executed `tk8 cluster install aws` with the inventory directory.
+Make sure you are in the same directory where you executed `tk8ctl cluster install aws` with the inventory directory.
 If you use a different workspace name with the --name flag please provide it on resetting too.
 
 To reset the provisioned cluster run:
 
 ```shell
-tk8 cluster reset aws
+tk8ctl cluster reset aws
 ```
 
 Once executed the current kubernetes installation get removed and a new setup will run.
 
 ## Remove the cluster
 
-Make sure you are in the same directory where you executed `tk8 cluster install aws` with the inventory directory.
+Make sure you are in the same directory where you executed `tk8ctl cluster install aws` with the inventory directory.
 If you use a different workspace name with the --name flag please provide it on resetting too.
 
 To reset the provisioned cluster run:
 
 ```shell
-tk8 cluster remove aws
+tk8ctl cluster remove aws
 ```
 
 Once executed the current kubernetes installation get removed from the infrastructure.

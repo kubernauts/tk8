@@ -59,7 +59,7 @@ Erstellen Sie nun ein Issue im Git Repository und verweisen auf die neue Impleme
 Der Provisioner muss in die Map cmd.provisioners (cmd/provisioners.go) hinzugefügt werden und kann anschließend über die CLI verwendet werden.
 
 ```shell
-tk8 cluster install MyProvisioner
+tk8ctl cluster install MyProvisioner
 ```
 
 Benötigen Sie Unterstützung oder haben Fragen zur implementierung dann treten Sie unseren [Slack Server](https://kubernauts-slack-join.herokuapp.com/) bei.

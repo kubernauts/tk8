@@ -36,7 +36,7 @@ eks:
 Once done run:
 
 ```shell
-tk8 cluster install eks
+tk8ctl cluster install eks
 ```
 
 or with Docker
@@ -59,7 +59,7 @@ If you use a different workspace name with the --name flag please provide it on 
 To delete the provisioned cluster run:
 
 ```shell
-tk8 cluster destroy eks
+tk8ctl cluster destroy eks
 ```
 
 or with Docker

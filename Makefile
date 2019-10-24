@@ -10,7 +10,7 @@ default: bin
 .PHONY: bin
 bin:
 	go get -u ./...
-	go build ${BUILD_FLAGS} -o tk8 main.go
+	go build ${BUILD_FLAGS} -o tk8ctl main.go
 
 .PHONY: install
 install:
@@ -47,7 +47,7 @@ release:
 	./scripts/check-gofmt.sh
 	golint $(PKGS)
 	go vet $(PKGS)
-	go build ${BUILD_FLAGS} -o tk8 main.go
-	GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build ${BUILD_FLAGS} -o tk8-darwin-amd64 main.go
-	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build ${BUILD_FLAGS}  -o tk8-linux-amd64 main.go
-	GOOS=linux GOARCH=386 CGO_ENABLED=0 go build ${BUILD_FLAGS}  -o tk8-linux-386 main.go
+	go build ${BUILD_FLAGS} -o tk8ctl main.go
+	GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build ${BUILD_FLAGS} -o tk8ctl-darwin-amd64 main.go
+	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build ${BUILD_FLAGS}  -o tk8ctl-linux-amd64 main.go
+	GOOS=linux GOARCH=386 CGO_ENABLED=0 go build ${BUILD_FLAGS}  -o tk8ctl-linux-386 main.go

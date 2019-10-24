@@ -90,7 +90,7 @@ Create the inventory file on the Ansible host.
 Initialize the kubespray repo:
 
 ```shell
-tk8 cluster init
+tk8ctl cluster init
 ```
 
 Set the neecessary parameters
@@ -112,7 +112,7 @@ os:
 Start the kubernetes installation on the bare metal servers:
 
 ```shell
-tk8 cluster baremetal --install
+tk8ctl cluster baremetal --install
 ```
 
 ## Configure and Deploy MetalLB
@@ -139,7 +139,7 @@ The address field above is the IP address range that will be used for the LB ser
 To deploy MetalLB run:
 
 ```shell
-tk8 cluster baremetal --loadbalancer
+tk8ctl cluster baremetal --loadbalancer
 ```
 
 ## Post Installation
